@@ -44,6 +44,7 @@ public class Sort extends Iterator implements GlobalConst
   private SpoofIbuf[]  i_buf;
   private PageId[]     bufs_pids;
   private boolean useBM = true; // flag for whether to use buffer manager
+  private static Descriptor target;		   //to store target
   
   /**
    * Set up for merging the runs.
@@ -210,8 +211,12 @@ public class Sort extends Iterator implements GlobalConst
       cur_node = pcurr_Q.deq();
       if (cur_node == null) break; 
       p_elems_curr_Q --;
-      
-      comp_res = TupleUtils.CompareTupleWithValue(sortFldType, cur_node.tuple, _sort_fld, lastElem);  // need tuple_utils.java
+      if(sortFldType.attrType!=AttrType.attrDesc)
+		  comp_res = TupleUtils.CompareTupleWithValue(sortFldType, cur_node.tuple, _sort_fld, lastElem);  // need tuple_utils.java
+	  else{
+		  double distance=target.distance(cur_node.tuple.getDescFld(_sort_fld));	//get the distance between current node's descriptor and target
+		  comp_res = TupleUtils.CompareTupleWithValue(sortFldType, cur_node.tuple, _sort_fld, lastElem, distance, target);  // need tuple_utils.java
+	  }
       
       if ((comp_res < 0 && order.tupleOrder == TupleOrder.Ascending) || (comp_res > 0 && order.tupleOrder == TupleOrder.Descending)) {
 	// doesn't fit in current run, put into the other queue
@@ -491,6 +496,8 @@ public class Sort extends Iterator implements GlobalConst
       //      lastElem.setHdr(fld_no, junk, s_size);
       lastElem.setStrFld(_sort_fld, s);
       break;
+	case AttrType.attrDesc:
+	  lastElem.setDescFld(_sort_fld, target);	//Min value is target
     default:
       // don't know how to handle attrSymbol, attrNull
       //System.err.println("error in sort.java");
@@ -533,6 +540,14 @@ public class Sort extends Iterator implements GlobalConst
       //      lastElem.setHdr(fld_no, junk, s_size);
       lastElem.setStrFld(_sort_fld, s);
       break;
+	case AttrType.attrDesc:
+	  Descriptor d=new Descriptor();
+	  d.set(target.get(0)<0?(-1):1*Integer.MIN_VALUE, 
+		target.get(1)<0?(-1):1*Integer.MIN_VALUE, 
+		target.get(2)<0?(-1):1*Integer.MIN_VALUE, 
+		target.get(3)<0?(-1):1*Integer.MIN_VALUE, 
+		target.get(4)<0?(-1):1*Integer.MIN_VALUE);
+	  lastElem.setDescFld(_sort_fld, d);	/*d is the max value of descriptor*/
     default:
       // don't know how to handle attrSymbol, attrNull
       //System.err.println("error in sort.java");
@@ -652,7 +667,108 @@ public class Sort extends Iterator implements GlobalConst
       throw new SortException(e, "Sort.java: op_buf.setHdr() failed");
     }
   }
-  
+
+ /**
+  * Reload Sort() to add target parameter
+  */
+      public Sort(AttrType[] in,         
+	      short      len_in,             
+	      short[]    str_sizes,
+	      Iterator   am,                 
+	      int        sort_fld,          
+	      TupleOrder sort_order,     
+	      int        sort_fld_len,  
+	      int        n_pages,
+		  Descriptor target
+	      ) throws IOException, SortException
+  {
+	this.target=target;
+    _in = new AttrType[len_in];
+    n_cols = len_in;
+    int n_strs = 0;
+
+    for (int i=0; i<len_in; i++) {
+      _in[i] = new AttrType(in[i].attrType);
+      if (in[i].attrType == AttrType.attrString) {
+	n_strs ++;
+      } 
+    }
+    
+    str_lens = new short[n_strs];
+    
+    n_strs = 0;
+    for (int i=0; i<len_in; i++) {
+      if (_in[i].attrType == AttrType.attrString) {
+	str_lens[n_strs] = str_sizes[n_strs];
+	n_strs ++;
+      }
+    }
+    
+    Tuple t = new Tuple(); // need Tuple.java
+    try {
+      t.setHdr(len_in, _in, str_sizes);
+    }
+    catch (Exception e) {
+      throw new SortException(e, "Sort.java: t.setHdr() failed");
+    }
+    tuple_size = t.size();
+    
+    _am = am;
+    _sort_fld = sort_fld;
+    order = sort_order;
+    _n_pages = n_pages;
+    
+    // this may need change, bufs ???  need io_bufs.java
+    //    bufs = get_buffer_pages(_n_pages, bufs_pids, bufs);
+    bufs_pids = new PageId[_n_pages];
+    bufs = new byte[_n_pages][];
+
+    if (useBM) {
+      try {
+	get_buffer_pages(_n_pages, bufs_pids, bufs);
+      }
+      catch (Exception e) {
+	throw new SortException(e, "Sort.java: BUFmgr error");
+      }
+    }
+    else {
+      for (int k=0; k<_n_pages; k++) bufs[k] = new byte[MAX_SPACE];
+    }
+    
+    first_time = true;
+    
+    // as a heuristic, we set the number of runs to an arbitrary value
+    // of ARBIT_RUNS
+    temp_files = new Heapfile[ARBIT_RUNS];
+    n_tempfiles = ARBIT_RUNS;
+    n_tuples = new int[ARBIT_RUNS]; 
+    n_runs = ARBIT_RUNS;
+
+    try {
+      temp_files[0] = new Heapfile(null);
+    }
+    catch (Exception e) {
+      throw new SortException(e, "Sort.java: Heapfile error");
+    }
+    
+    o_buf = new OBuf();
+    
+    o_buf.init(bufs, _n_pages, tuple_size, temp_files[0], false);
+    //    output_tuple = null;
+    
+    max_elems_in_heap = 200;
+    sortFldLen = sort_fld_len;
+    
+    Q = new pnodeSplayPQ(sort_fld, in[sort_fld - 1], order);
+
+    op_buf = new Tuple(tuple_size);   // need Tuple.java
+    try {
+      op_buf.setHdr(n_cols, _in, str_lens);
+    }
+    catch (Exception e) {
+      throw new SortException(e, "Sort.java: op_buf.setHdr() failed");
+    }
+  }
   /**
    * Returns the next tuple in sorted order.
    * Note: You need to copy out the content of the tuple, otherwise it
@@ -678,7 +794,7 @@ public class Sort extends Iterator implements GlobalConst
       first_time = false;
       
       // generate runs
-      Nruns = generate_runs(max_elems_in_heap, _in[_sort_fld-1], sortFldLen);
+	  Nruns = generate_runs(max_elems_in_heap, _in[_sort_fld-1], sortFldLen);
       //      System.out.println("Generated " + Nruns + " runs");
       
       // setup state to perform merge of runs. 
