@@ -12,8 +12,9 @@ public class Node extends Tuple{
     * Class constructor
     * Creat a new tuple with length = max_size,tuple offset = 0.
     */
-   private String label;
-   private Descriptor descriptor;
+
+   public static int FldID_Desc = 1;
+   public static int FldID_Label = 2;
 
    public  Node()
    {
@@ -29,20 +30,32 @@ public class Node extends Tuple{
     super(fromNode);
   }
 
-  public String getLabel(){
-    return label;
+  public String getLabel() 
+  throws IOException,
+  FieldNumberOutOfBoundException
+  {
+    return getStrFld(FldID_Label);
   }
 
-  public Descriptor getDesc(){
-    return descriptor;
+  public Descriptor getDesc() 
+  throws IOException,
+  FieldNumberOutOfBoundException
+  {
+    return getDescFld(FldID_Desc);
   }
 
-  public void setLabel(String alabel){
-    label = alabel;
+  public void setLabel(String alabel) 
+  throws IOException,
+  FieldNumberOutOfBoundException
+  {
+    setStrFld(FldID_Label, alabel);
   }
 
-  public void setDesc(Descriptor adesc){
-    descriptor = adesc;
+  public void setDesc(Descriptor adesc) 
+  throws IOException,
+  FieldNumberOutOfBoundException
+  {
+    setDescFld(FldID_Desc, adesc);
   }
 
   public byte[] getNodeByteArray(){
@@ -50,19 +63,15 @@ public class Node extends Tuple{
   }
 
   public void print()
-      throws IOException
+      throws IOException,
+  FieldNumberOutOfBoundException
   {
+    Descriptor descriptor = getDesc();
     System.out.println(descriptor.toString());
-  }
-
-  public double getSize(){
-    return descriptor.getLength();
   }
 
   public void nodeCopy(Node fromNode){
     super.tupleCopy(fromNode);
-    label = fromNode.getLabel();
-    descriptor.copyDesc(fromNode.getDesc());
   }
 
   public void nodeInit(byte[] anode, int offset){
