@@ -14,6 +14,13 @@ public class Edge extends Tuple{
 	private String label;
 	private int weight;
 
+	public static int EdgeFld_Src_SN = 1;
+	public static int EdgeFld_Src_PN = 2;
+	public static int EdgeFld_Dst_SN = 3;
+	public static int EdgeFld_Dst_PN = 4;
+	public static int EdgeFld_Wgt = 5;
+	public static int EdgeFld_Lbl = 6;
+
 	public Edge(){
 		super();
 	}
@@ -22,51 +29,84 @@ public class Edge extends Tuple{
 		super(aedge, offset,max_size);
 	}
 
-	public Edge(Edge fromEdge){
+	public Edge(Edge fromEdge)
+	throws IOException,
+	FieldNumberOutOfBoundException
+	{
 		super(fromEdge);
-		source = fromEdge.getSource();
-		destination = fromEdge.getDestination();
-		label = fromEdge.getLabel();
-		weight = fromEdge.getWeight();
 	}
 
-	public NID getSource(){
+	public NID getSource()
+	throws IOException,
+	FieldNumberOutOfBoundException
+	{
+		NID source = new NID();
+		source.pageNo.pid = getIntFld(EdgeFld_Src_PN);
+		source.slotNo = getIntFld(EdgeFld_Src_SN);
 		return source;
 	}
 
-	public NID getDestination(){
+	public NID getDestination()
+	throws IOException,
+	FieldNumberOutOfBoundException
+	{
+		NID destination = new NID();;
+		destination.pageNo.pid = getIntFld(EdgeFld_Dst_PN);
+		destination.slotNo = getIntFld(EdgeFld_Dst_SN);
 		return destination;
 	}
 
-	public String getLabel(){
+	public String getLabel()
+	throws IOException,
+	FieldNumberOutOfBoundException
+	{
+		String label = getStrFld(EdgeFld_Lbl);
 		return label;
 	}
 
-	public int getWeight(){
+	public int getWeight()
+	throws IOException,
+	FieldNumberOutOfBoundException{
+		int weight = getIntFld(EdgeFld_Wgt);
 		return weight;
 	}
 
-	public Edge setLabel(String alabel){
-		label = alabel;
+	public Edge setLabel(String alabel)
+	throws IOException,
+	FieldNumberOutOfBoundException
+	{
+		setStrFld(EdgeFld_Lbl, alabel);
 		return this;
 	}
 
-	public Edge setWeight(int aweight){
-		weight = aweight;
+	public Edge setWeight(int aweight)
+	throws IOException,
+	FieldNumberOutOfBoundException
+	{
+		setIntFld(EdgeFld_Wgt, aweight);
 		return this;
 	}
 
-	public Edge setSource(NID sourceID){
-		source = sourceID;
+	public Edge setSource(NID sourceID)
+	throws IOException,
+	FieldNumberOutOfBoundException
+	{
+		setIntFld(EdgeFld_Src_PN, sourceID.pageNo.pid);
+		setIntFld(EdgeFld_Src_SN, sourceID.slotNo);
 		return this;
 	}
 
-	public Edge setDestination(NID destID){
-		destination = destID;
+	public Edge setDestination(NID destID)
+	throws IOException,
+	FieldNumberOutOfBoundException
+	{
+		setIntFld(EdgeFld_Dst_PN, destID.pageNo.pid);
+		setIntFld(EdgeFld_Dst_SN, destID.slotNo);
 		return this;
 	}
 
-	public byte [] getEdgeByteArray(){
+	public byte [] getEdgeByteArray()
+	{
 		return getTupleByteArray(); 
 	}
 
@@ -76,16 +116,8 @@ public class Edge extends Tuple{
 		System.out.println("{" +  "}");
 	}
 
-	public double getSize(){
-		return 10;
-	}
-
 	public void edgeCopy(Edge fromEdge){
 		super.tupleCopy(fromEdge);
-		source = fromEdge.getSource();
-		destination = fromEdge.getDestination();
-		label = fromEdge.getLabel();
-		weight = fromEdge.getWeight();
 	}
 
 	public void edgeInit(byte[] aedge, int offset){
