@@ -385,6 +385,25 @@ public class Tuple implements GlobalConst{
        throw new FieldNumberOutOfBoundException (null, "TUPLE:TUPLE_FLDNO_OUT_OF_BOUND");
     }
 
+/**
+    * setHdr will set the header of this tuple.   
+    *
+    * @param  numFlds   number of fields
+    * @param  types[]   contains the types that will be in this tuple
+    * @param  strSizes[]      contains the sizes of the string 
+    *       
+    * @exception IOException I/O errors
+    * @exception InvalidTypeException Invalid tupe type
+    * @exception InvalidTupleSizeException Tuple size too big
+    *
+    */
+
+  public void setHdr (short numFlds,  short[] offsets)
+  throws IOException, InvalidTypeException, InvalidTupleSizeException    
+  {
+    fldCnt = numFlds;
+    fldOffset = offsets;
+  }
 
    /**
     * setHdr will set the header of this tuple.   
@@ -438,7 +457,7 @@ public void setHdr (short numFlds,  AttrType types[], short strSizes[])
      break;
    case AttrType.attrDesc:
      incr = 4 * 5; // five integers, 4 * 5 bytes      
- 
+     break;
    default:
     throw new InvalidTypeException (null, "TUPLE: TUPLE_TYPE_ERROR");
    }
@@ -462,7 +481,7 @@ public void setHdr (short numFlds,  AttrType types[], short strSizes[])
      break;
    case AttrType.attrDesc:
      incr = 4 * 5; // five integers, 4 * 5 bytes 
-
+     break;
    default:
     throw new InvalidTypeException (null, "TUPLE: TUPLE_TYPE_ERROR");
    }
