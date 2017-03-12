@@ -135,7 +135,7 @@ class HFManager implements  GlobalConst{
 		initScanEdge();
 		Edge edge = scanNextEdge();
 		while(edge != null){
-			edge.print();
+			//edge.print();
 			edge = scanNextEdge();
 		}
 		return true;
@@ -188,6 +188,11 @@ class HFManager implements  GlobalConst{
 			e.printStackTrace();
 		}
 		return null;
+	}
+
+	public RID getCurRID(){
+		RID newrid = new RID(rid.pageNo, rid.slotNo);
+		return newrid;
 	}
 
 }
