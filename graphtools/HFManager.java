@@ -13,7 +13,7 @@ import chainexception.*;
 import java.util.Scanner;
 
 
-class NodeManager implements  GlobalConst{
+class HFManager implements  GlobalConst{
 	public static String nodefilename = "nodefile";
 	public static String edgefilename = "edgefile";
 	private Heapfile nodefile;
@@ -22,7 +22,7 @@ class NodeManager implements  GlobalConst{
 	private RID rid;
 	Tuple tuple = null;
 
-	public NodeManager(){
+	public HFManager(){
 		init();
 	}
 

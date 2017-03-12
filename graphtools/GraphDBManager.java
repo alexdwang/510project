@@ -16,13 +16,14 @@ class GraphDBManager implements  GlobalConst{
 	private String logpath;
 	private String nodefilenname;
 	private String edgefilename;
+	public HFManager hfmgr;
 
 	public void init(String dbname){
 		dbpath = dbname + ".minibase-db"; 
 		logpath = dbname + ".minibase-log";
 		SystemDefs sysdef = new SystemDefs( dbpath, 5000 ,5000,"Clock");
 		System.out.println ("\n" + "DB initializing" + "\n");
-
+		hfmgr = new HFManager();
 	}
 
 	public void deleteDBFile(){
@@ -47,15 +48,45 @@ class GraphDBManager implements  GlobalConst{
 	    
 	}
 
+	public void insertNodes(String fileName)
+	throws FileNotFoundException,
+	InvalidTypeException,
+	IOException,
+	InvalidTupleSizeException,
+	FieldNumberOutOfBoundException,
+	InvalidSlotNumberException,
+	SpaceNotAvailableException,
+	HFException,
+	HFBufMgrException,
+	HFDiskMgrException
+	{
+		hfmgr.insertNodesFromFile(fileName);
+	}
+
+	public void insertEdges(String fileName)
+	throws FileNotFoundException,
+	InvalidTypeException,
+	IOException,
+	InvalidTupleSizeException,
+	FieldNumberOutOfBoundException,
+	InvalidSlotNumberException,
+	SpaceNotAvailableException,
+	HFException,
+	HFBufMgrException,
+	HFDiskMgrException
+	{
+		hfmgr.insertEdgesFromFile(fileName);
+	}
+
+
 	public static void main(String [] argvs) {
 		String dbname = argvs[1];
 		String nodefilename = argvs[0];
 	    try{ 
 	      GraphDBManager db = new GraphDBManager();
 	      db.init(dbname);
-	      NodeManager nodemgr = new NodeManager();
 	      //nodemgr.insertNodesFromFile(nodefilename);
-	      nodemgr.insertEdgesFromFile(nodefilename);
+	      db.insertEdges(nodefilename);
 	      db.deleteDBFile();
 	    }
 	    catch (Exception e) {
