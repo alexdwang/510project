@@ -75,7 +75,7 @@ class HFManager implements  GlobalConst{
 		}
 		System.out.println(cnt + " nodes inserted");
 
-		
+		/*
 		//test scan
 		initScanNode();
 		Node node = scanNextNode();
@@ -83,6 +83,7 @@ class HFManager implements  GlobalConst{
 			node.print();
 			node = scanNextNode();
 		}
+		*/
 		return true;
 	}
 
@@ -123,21 +124,21 @@ class HFManager implements  GlobalConst{
 			aedge.setSource(data[0]);
 			aedge.setDestination(data[1]);
 			aedge.setLabel(data[2]);
-
-			System.out.println(aedge.getLength());
 			edgefile.insertRecord(aedge.getEdgeByteArray());
 			cnt++;
 		}
 		System.out.println(cnt + " edges inserted");
 
-		
+		System.out.println(getLabelCnt());
+		/*
 		//test scan
 		initScanEdge();
 		Edge edge = scanNextEdge();
 		while(edge != null){
-			//edge.print();
+			edge.print();
 			edge = scanNextEdge();
 		}
+		*/
 		return true;
 		
 	}
@@ -158,6 +159,9 @@ class HFManager implements  GlobalConst{
 			tuple = nscan.getNext(rid);
 			Node node = null;
 			if(tuple != null) node = new Node(tuple);
+			else{
+				nscan.closescan();
+			}
 			return node;
 		}catch(Exception e){
 			System.err.println ("*** Error Scan next node");
@@ -182,6 +186,9 @@ class HFManager implements  GlobalConst{
 			tuple = nscan.getNext(rid);
 			Edge edge = null;
 			if(tuple != null) edge = new Edge(tuple);
+			else{
+				nscan.closescan();
+			}
 			return edge;
 		}catch(Exception e){
 			System.err.println ("*** Error Scan next node");
@@ -193,6 +200,80 @@ class HFManager implements  GlobalConst{
 	public RID getCurRID(){
 		RID newrid = new RID(rid.pageNo, rid.slotNo);
 		return newrid;
+	}
+
+	public int getNodeCnt(){
+		initScanNode();
+		int cnt = 0;
+		Node node = scanNextNode();
+		while(node != null){
+			cnt++;
+			node = scanNextNode();
+		}
+		return cnt;
+	}
+
+	public int getEdgeCnt(){
+		initScanEdge();
+		int cnt = 0;
+		Edge edge = scanNextEdge();
+		while(edge != null){
+			cnt++;
+			edge = scanNextEdge();
+		}
+		return cnt;
+	}
+
+	public int getSourceCnt()
+	throws IOException,
+	FieldNumberOutOfBoundException
+	{
+		initScanEdge();
+		Set<String> srcSet = new HashSet<String>();
+		Edge edge = scanNextEdge();
+		while(edge != null){
+			String src = edge.getSource();
+			if(!srcSet.contains(src)) srcSet.add(src); 
+			edge = scanNextEdge();
+		}
+		return srcSet.size();
+	}
+
+	public int getDestinationCnt()
+	throws IOException,
+	FieldNumberOutOfBoundException
+	{
+		initScanEdge();
+		Set<String> dstSet = new HashSet<String>();
+		Edge edge = scanNextEdge();
+		while(edge != null){
+			String src = edge.getDestination();
+			if(!dstSet.contains(src)) dstSet.add(src); 
+			edge = scanNextEdge();
+		}
+		return dstSet.size();
+	}
+
+	public int getLabelCnt()
+	throws IOException,
+	FieldNumberOutOfBoundException
+	{
+		Set<String> lblSet = new HashSet<String>();
+		initScanNode();
+		Node node = scanNextNode();
+		while(node != null){
+			String src = node.getLabel();
+			if(!lblSet.contains(src)) lblSet.add(src); 
+			node = scanNextNode();
+		}
+		initScanEdge();
+		Edge edge = scanNextEdge();
+		while(edge != null){
+			String src = edge.getLabel();
+			if(!lblSet.contains(src)) lblSet.add(src); 
+			edge = scanNextEdge();
+		}
+		return lblSet.size();
 	}
 
 }
