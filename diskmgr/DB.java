@@ -1068,3 +1068,7 @@ class DBDirectoryPage extends DBHeaderPage  { //implements PageUsedBytes
     }
   
 }
+
+class graphDB {
+
+}
