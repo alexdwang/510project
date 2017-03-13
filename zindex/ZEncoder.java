@@ -1,5 +1,7 @@
 package zindex;
 
+import global.Descriptor;
+
 import java.util.LinkedList;
 import java.util.List;
 
@@ -7,7 +9,7 @@ public class ZEncoder {
 
     static final int N_DIMS = 5;
 
-    static final int N_BITS = 32;
+    static final int N_BITS = 39;
 
     private List<long[]> filters;
 
@@ -15,19 +17,31 @@ public class ZEncoder {
         filters = this.createFilter(N_DIMS, N_BITS);
     }
 
-    public long encode(int[] points) {
-        if (points.length != N_DIMS) {
-            throw new IllegalNumOfDimensionException("Illegal number of dimension of the coordinate");
-        }
+    public long encodeDescriptor(Descriptor desc) {
         long code = 0;
-        for (int i = 0; i < points.length; i++) {
-            code |= this.spread(points[i]) << i;
+        for (int i = 0; i < N_DIMS; i++) {
+            code |= this.spread(desc.get(i)) << i;
         }
 
         return code;
     }
 
-    public int[] decode(long code) {
+    public long encodeArray(int[] desc) {
+        long code = 0;
+        for (int i = 0; i < N_DIMS; i++) {
+            code |= this.spread(desc[i]) << i;
+        }
+
+        return code;
+    }
+
+    public Descriptor decodeAsDescriptor(long code) {
+        Descriptor ret = new Descriptor();
+        ret.set(this.decodeAsArray(code));
+        return ret;
+    }
+
+    public int[] decodeAsArray(long code) {
         int[] point = new int[N_DIMS];
         for (int i = 0; i < N_DIMS; i++) {
             point[i] = (int) this.compact(code >> i);
