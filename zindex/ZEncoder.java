@@ -2,119 +2,69 @@ package zindex;
 
 import global.Descriptor;
 
-import java.util.LinkedList;
-import java.util.List;
-
 public class ZEncoder {
 
-    static final int N_DIMS = 5;
-
-    static final int N_BITS = 39;
-
-    private List<long[]> filters;
-
-    public ZEncoder() {
-        filters = this.createFilter(N_DIMS, N_BITS);
-    }
-
-    public long encodeDescriptor(Descriptor desc) {
-        long code = 0;
-        for (int i = 0; i < N_DIMS; i++) {
-            code |= this.spread(desc.get(i)) << i;
+    public static String encode(Descriptor desc) {
+        int[] point = new int[5];
+        for (int i = 0; i < 5; i++) {
+            point[i] = desc.get(i);
         }
-
-        return code;
+        return encodeArray(point);
     }
 
-    public long encodeArray(int[] desc) {
-        long code = 0;
-        for (int i = 0; i < N_DIMS; i++) {
-            code |= this.spread(desc[i]) << i;
-        }
-
-        return code;
-    }
-
-    public Descriptor decodeAsDescriptor(long code) {
-        Descriptor ret = new Descriptor();
-        ret.set(this.decodeAsArray(code));
-        return ret;
-    }
-
-    public int[] decodeAsArray(long code) {
-        int[] point = new int[N_DIMS];
-        for (int i = 0; i < N_DIMS; i++) {
-            point[i] = (int) this.compact(code >> i);
-        }
-
-        return point;
-    }
-
-    private List<long[]> createFilter(int ndims, int nbits) {
-        List<long[]> filters = new LinkedList<>();
-
-        /*
-         * Construct the initial mask: this selects just the lower (nbits/ndim)
-         * bits of a number
-         */
-        int width = nbits / ndims;
-        long mask = (1 << width) - 1;
-
-        /*
-         * Each bit in a coordinate needs to move (ndim * width) positions
-         * First get the maximum shifts we need to do:
-         */
-        long maxShift = getLessThanOrEqualsToPowerOf2(ndims * (width - 1));
-        filters.add(new long[] { mask, 0, maxShift });
-
-        /*
-         * Now figure out which bits need to be moved by each shift, and build masks
-         */
-        long shift = maxShift;
-        while (shift > 0) {
-            mask = 0;
-            long shifted = 0;
-            long shiftMask = ~(shift - 1);
-            for (int bit = 0; bit < width; bit++) {
-                long distance = ndims * bit - bit;
-                shifted |= (shift & distance);
-                mask |= 1 << bit << (distance & shiftMask);
+    public static String encodeArray(int[] desc) {
+        // Construct the binary vector of the point
+        String[] binVector = new String[5];
+        StringBuilder builder;
+        for (int i = 0; i < 5; i++) {
+            builder = new StringBuilder(16);
+            String bitStr = Integer.toBinaryString(desc[i]);
+            // Fill with 0s
+            if (bitStr.length() < 16) {
+                for (int j = 0; j < 16 - bitStr.length(); j++) {
+                    builder.append('0');
+                }
             }
-            if (shifted != 0) {
-                filters.add(new long[] { mask, shift, shift >> 1 });
+            builder.append(bitStr);
+            binVector[i] = builder.toString();
+        }
+
+        // Interleaving
+        StringBuilder result = new StringBuilder(80);
+        for (int i = 0; i < 16; i++) {
+            result.append(binVector[4].charAt(i));
+            result.append(binVector[3].charAt(i));
+            result.append(binVector[2].charAt(i));
+            result.append(binVector[1].charAt(i));
+            result.append(binVector[0].charAt(i));
+        }
+
+        return result.toString();
+    }
+
+    public static Descriptor decodeAsDesc(String zvalue) {
+        Descriptor desc = new Descriptor();
+        desc.set(decodeAsArray(zvalue));
+        return desc;
+    }
+
+    public static int[] decodeAsArray(String zvalue) {
+        StringBuilder[] binVectors = new StringBuilder[5];
+        for (int i = 0; i < 5; i++) {
+            binVectors[i] = new StringBuilder(16);
+        }
+        // Reverse the z-value
+        for (int i = 0; i < 80; ) {
+            for (int j = 0; j < 5; j++) {
+                binVectors[j].append(zvalue.charAt(i));
+                i++;
             }
-            shift >>= 1;
         }
 
-        // Set the last right shift to zero for compact operation
-        filters.get(filters.size()-1)[2] = 0;
-        return filters;
-    }
-
-    private long getLessThanOrEqualsToPowerOf2(long num) {
-        num |= (num >> 1);
-        num |= (num >> 2);
-        num |= (num >> 4);
-        num |= (num >> 8);
-        num |= (num >> 16);
-        num |= (num >> 32);
-        return num - (num >> 1);
-    }
-
-    private long spread(long x) {
-        // Structure of a filter: [mask, shift, num_of_right_shifts]
-        for (long[] filter : this.filters) {
-            x = (x | x << filter[1]) & filter[0];
+        int[] result = new int[5];
+        for (int i = 4; i >= 0; i--) {
+            result[i] = Integer.parseInt(binVectors[4-i].toString(), 2);
         }
-        return x;
-    }
-
-    private long compact(long x) {
-        // Structure of a filter: [mask, shift, num_of_right_shifts]
-        for (int i = this.filters.size()-1; i >= 0; i--) {
-            long[] filter = filters.get(i);
-            x = (x | (x >> filter[2])) & filter[0];
-        }
-        return x;
+        return result;
     }
 }
