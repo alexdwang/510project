@@ -19,6 +19,7 @@ class GraphDBManager implements GlobalConst {
 	private String edgefilename;
 	public HFManager hfmgr;
 	public BTManager btmgr;
+	/* TODO: init() will cause a problem */
 	boolean firsttime = true;
 	boolean firsttime_e=true;
 
@@ -64,8 +65,10 @@ class GraphDBManager implements GlobalConst {
 		hfmgr.insertNodesFromFile(nodefilename);
 		if (firsttime) {
 			NodeLabelsDriver nld = new NodeLabelsDriver(hfmgr, btmgr);
+			NodeDescriptorDriver ndd = new NodeDescriptorDriver(hfmgr, btmgr);
 			try {
 				nld.ConstructBTNL();
+				ndd.ConstructZT();
 			} catch (Exception e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
@@ -73,6 +76,7 @@ class GraphDBManager implements GlobalConst {
 			firsttime = false;
 		} else {
 			btmgr.insertNodetoNLBT(hfmgr, nodefilename);
+			btmgr.insertNodetoZT(hfmgr, nodefilename);
 		}
 	}
 
