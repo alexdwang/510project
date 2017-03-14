@@ -12,7 +12,7 @@ import btree.*;
 import graphtools.*;
 
 class EdgeLabelsDriver implements GlobalConst {
-	public int keyType;
+	public int keyType = AttrType.attrString;
 	public BTreeFile file;
 	public HFManager hfm = null;
 	public BTManager btm = null;
@@ -29,7 +29,6 @@ class EdgeLabelsDriver implements GlobalConst {
 	}
 
 	public void runTests() throws Exception {
-		keyType = AttrType.attrString;
 		System.out.println("start constructing Edgelabel BTree!!!");
 		ConstructBTEL();
 //		System.out.println("start test 2!!!");

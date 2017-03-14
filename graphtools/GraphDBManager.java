@@ -20,6 +20,7 @@ class GraphDBManager implements GlobalConst {
 	public HFManager hfmgr;
 	public BTManager btmgr;
 	boolean firsttime = true;
+	boolean firsttime_e=true;
 
 	public void init(String dbname) {
 		dbpath = dbname + ".minibase-db";
@@ -28,14 +29,6 @@ class GraphDBManager implements GlobalConst {
 		System.out.println("\n" + "DB initializing" + "\n");
 		hfmgr = new HFManager();
 		btmgr = new BTManager();
-	}
-
-	public void init(String dbname, int bufNum){
-		dbpath = dbname + ".minibase-db"; 
-		logpath = dbname + ".minibase-log";
-		SystemDefs sysdef = new SystemDefs( dbpath, 5000 ,bufNum,"Clock");
-		System.out.println ("\n" + "DB initializing" + "\n");
-		hfmgr = new HFManager();
 	}
 
 	public void deleteDBFile() {
@@ -64,7 +57,7 @@ class GraphDBManager implements GlobalConst {
 		if (firsttime) {
 			NodeLabelsDriver nld = new NodeLabelsDriver(hfmgr, btmgr);
 			try {
-				nld.runTests();
+				nld.ConstructBTNL();
 			} catch (Exception e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
@@ -77,21 +70,26 @@ class GraphDBManager implements GlobalConst {
 
 	public void insertEdges(String edgefilename) throws Exception {
 		hfmgr.insertEdgesFromFile(edgefilename);
-		if (firsttime) {
-			EdgeLabelsDriver nld = new EdgeLabelsDriver(hfmgr, btmgr);
+		if (firsttime_e) {
+			EdgeLabelsDriver eld = new EdgeLabelsDriver(hfmgr, btmgr);
+			EdgeWeightDriver ewd = new EdgeWeightDriver(hfmgr, btmgr);
 			try {
-				nld.runTests();
+				eld.ConstructBTEL();
+				eld.ConstructBTEL_D();
+				eld.ConstructBTEL_S();
+				ewd.ConstructBTEW();
 			} catch (Exception e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
-			firsttime = false;
+			firsttime_e = false;
 		} else {
 			btmgr.insertEdgetoELBT(hfmgr, edgefilename);
 			btmgr.insertEdgetoELBT_S(hfmgr, edgefilename);
 			btmgr.insertEdgetoELBT_D(hfmgr, edgefilename);
 			btmgr.insertEdgetoEWBT(hfmgr, edgefilename);
 		}
+		BT.printAllLeafPages(btmgr.getEdgelabelbtree().getHeaderPage());
 
 	}
 
@@ -180,11 +178,54 @@ class GraphDBManager implements GlobalConst {
 			String data[] = line.split(" ");
 			String sourcelabel = data[0];
 			String destinationlabel = data[1];
-			RID rid_node = new RID();
+			String nodelabel = data[2];
 			
+			KeyClass[] key = {new StringKey(sourcelabel), new StringKey(destinationlabel), new StringKey(nodelabel)};
+			
+			List<RID> rid_s = new LinkedList<>();
+			List<RID> rid_d = new LinkedList<>();
+			List<RID> rid_l = new LinkedList<>();
+			BTFileScan mysfilescan = btmgr.getEdgelabelbtree_s().new_scan(key[0], key[0]);
+			KeyDataEntry itr = mysfilescan.get_next();
+			while (itr != null) {
+				rid_s.add(((LeafData) itr.data).getData());
+				itr = mysfilescan.get_next();
+			}
+			BTFileScan mydfilescan = btmgr.getEdgelabelbtree_d().new_scan(key[1], key[1]);
+			KeyDataEntry itrd = mydfilescan.get_next();
+			while (itrd != null) {
+				rid_d.add(((LeafData) itrd.data).getData());
+				itrd = mydfilescan.get_next();
+			}
+			BTFileScan myefilescan = btmgr.getEdgelabelbtree().new_scan(key[2], key[2]);
+			KeyDataEntry itre = myefilescan.get_next();
+			while (itre != null) {
+				rid_l.add(((LeafData) itre.data).getData());
+				itre = myefilescan.get_next();
+			}
+			mysfilescan.DestroyBTreeFileScan();
+			mydfilescan.DestroyBTreeFileScan();
+			myefilescan.DestroyBTreeFileScan();
+			
+			System.out.println();
+			rid_s.retainAll(rid_d);
+			rid_s.retainAll(rid_l);
+			
+			if(!rid_s.isEmpty()){
+				for(int i=0;i<rid_s.size();i++){
+					btmgr.deleteedge_s(key[0], rid_s.get(i));
+					btmgr.deleteedge_d(key[1], rid_s.get(i));
+					btmgr.deleteedge(key[2], rid_s.get(i));
+					hfmgr.deleteedge(rid_s.get(i));
+					hfmgr.deleteedge(rid_s.get(i));
+				}
+				
+			}
+			cnt++;
 			
 		}
-		
+		System.out.println("deleted "+cnt+" edges");
+		BT.printAllLeafPages(btmgr.getEdgelabelbtree().getHeaderPage());
 	}
 
 	public static void main(String[] argvs) {
@@ -199,16 +240,9 @@ class GraphDBManager implements GlobalConst {
 			db.init(dbname);
 			db.insertNodes(nodefilename);
 			db.insertEdges(edgefilename);
-			db.insertEdges(edgefilename);
 			// db.insertNodes(insertdeletefilename);
 
-			EdgeLabelsDriver eld = new EdgeLabelsDriver(db.hfmgr, db.btmgr);
-			eld.runTests();
-
-			EdgeWeightDriver ewd = new EdgeWeightDriver(db.hfmgr, db.btmgr);
-			ewd.runTests();
-
-			db.deleteNode(nodedeletefilename);
+			db.deleteEdge(nodedeletefilename);
 
 			db.deleteDBFile();
 		} catch (Exception e) {

@@ -13,7 +13,7 @@ import btree.*;
 import graphtools.*;
 
 class NodeLabelsDriver implements GlobalConst {
-	public int keyType;
+	public int keyType = AttrType.attrString;
 	public BTreeFile file;
 	public HFManager hfm = null;
 	public BTManager btm = null;

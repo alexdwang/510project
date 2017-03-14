@@ -5,6 +5,10 @@ import java.io.IOException;
 import java.util.Scanner;
 
 import btree.*;
+import bufmgr.HashEntryNotFoundException;
+import bufmgr.InvalidFrameNumberException;
+import bufmgr.PageUnpinnedException;
+import bufmgr.ReplacerException;
 import edgeheap.*;
 import global.*;
 import heap.*;
@@ -195,7 +199,24 @@ public class BTManager {
 			ConstructPageException, PinPageException, UnpinPageException, IOException {
 		KeyClass key = new StringKey(label);
 		try {
-			return ((LeafData) this.getNodelabelbtree().new_scan(key, key).get_next().data).getData();
+			BTFileScan s = this.getNodelabelbtree().new_scan(key, key);
+			RID rid = ((LeafData) s.get_next().data).getData();
+			try {
+				s.DestroyBTreeFileScan();
+			} catch (InvalidFrameNumberException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			} catch (ReplacerException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			} catch (PageUnpinnedException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			} catch (HashEntryNotFoundException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+			return rid;
 		} catch (KeyNotMatchException e) {
 			// TODO Auto-generated catch block
 			// e.printStackTrace();
@@ -208,7 +229,24 @@ public class BTManager {
 			ConstructPageException, PinPageException, UnpinPageException, IOException {
 		KeyClass key = new StringKey(label);
 		try {
-			return ((LeafData) this.getEdgelabelbtree().new_scan(key, key).get_next().data).getData();
+			BTFileScan s = this.getEdgelabelbtree().new_scan(key, key);
+			RID rid = ((LeafData) s.get_next().data).getData();
+			try {
+				s.DestroyBTreeFileScan();
+			} catch (InvalidFrameNumberException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			} catch (ReplacerException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			} catch (PageUnpinnedException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			} catch (HashEntryNotFoundException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+			return rid;
 		} catch (KeyNotMatchException e) {
 			// TODO Auto-generated catch block
 			// e.printStackTrace();
@@ -221,7 +259,24 @@ public class BTManager {
 			IteratorException, ConstructPageException, PinPageException, UnpinPageException, IOException {
 		KeyClass key = new StringKey(label);
 		try {
-			return ((LeafData) this.getEdgelabelbtree_s().new_scan(key, key).get_next().data).getData();
+			BTFileScan s = this.getEdgelabelbtree_s().new_scan(key, key);
+			RID rid = ((LeafData) s.get_next().data).getData();
+			try {
+				s.DestroyBTreeFileScan();
+			} catch (InvalidFrameNumberException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			} catch (ReplacerException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			} catch (PageUnpinnedException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			} catch (HashEntryNotFoundException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+			return rid;
 		} catch (KeyNotMatchException e) {
 			// TODO Auto-generated catch block
 			// e.printStackTrace();
@@ -234,7 +289,24 @@ public class BTManager {
 			IteratorException, ConstructPageException, PinPageException, UnpinPageException, IOException {
 		KeyClass key = new StringKey(label);
 		try {
-			return ((LeafData) this.getEdgelabelbtree_d().new_scan(key, key).get_next().data).getData();
+			BTFileScan s = this.getEdgelabelbtree_d().new_scan(key, key);
+			RID rid = ((LeafData) s.get_next().data).getData();
+			try {
+				s.DestroyBTreeFileScan();
+			} catch (InvalidFrameNumberException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			} catch (ReplacerException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			} catch (PageUnpinnedException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			} catch (HashEntryNotFoundException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+			return rid;
 		} catch (KeyNotMatchException e) {
 			// TODO Auto-generated catch block
 			// e.printStackTrace();

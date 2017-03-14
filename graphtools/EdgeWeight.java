@@ -12,7 +12,7 @@ import btree.*;
 import graphtools.*;
 
 class EdgeWeightDriver implements GlobalConst {
-	public int keyType;
+	public int keyType = AttrType.attrInteger;
 	public BTreeFile file;
 	public HFManager hfm = null;
 	public BTManager btm = null;
@@ -29,7 +29,6 @@ class EdgeWeightDriver implements GlobalConst {
 	}
 
 	public void runTests() throws Exception {
-		keyType = AttrType.attrInteger;
 		System.out.println("start constructing Edgeweight BTree!!!");
 		ConstructBTEW();
 //		System.out.println("start test 2!!!");
@@ -41,7 +40,8 @@ class EdgeWeightDriver implements GlobalConst {
 
 	public void ConstructBTEW() throws Exception {
 
-		file = new BTreeFile("EdgeWeightTree", keyType, 20, 1);// full delete
+		keyType = AttrType.attrInteger;
+		file = new BTreeFile("EdgeWeightTree", keyType, 4, 1);// full delete
 		Edge edge = new Edge();
 		KeyClass key;
 		RID rid = new RID();
