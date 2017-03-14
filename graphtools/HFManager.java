@@ -93,7 +93,7 @@ class HFManager implements  GlobalConst{
 		}
 		System.out.println(cnt + " nodes inserted");
 
-		
+		/*
 		//test scan
 		initScanNode();
 		Node node = scanNextNode();
@@ -101,7 +101,7 @@ class HFManager implements  GlobalConst{
 			node.print();
 			node = scanNextNode();
 		}
-		
+		*/
 		return true;
 	}
 
@@ -172,6 +172,9 @@ class HFManager implements  GlobalConst{
 
 	}
 
+	public void closeScan(){
+		if(nscan != null) nscan.closescan();
+	}
 	public Node scanNextNode(){
 		try{
 			tuple = nscan.getNext(rid);
