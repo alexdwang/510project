@@ -1,6 +1,7 @@
 package graphtools;
 
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.Scanner;
 
@@ -13,9 +14,12 @@ import edgeheap.*;
 import global.*;
 import heap.*;
 import nodeheap.*;
+import zindex.ZEncoder;
+import zindex.ZTreeFile;
 
 public class BTManager {
 	private BTreeFile nodelabelbtree;
+	private ZTreeFile nodeDescritorTree;
 	private BTreeFile edgelabelbtree;
 	private BTreeFile edgeweightbtree;
 	private BTreeFile edgelabelbtree_s;
@@ -59,6 +63,33 @@ public class BTManager {
 
 	public void setEdgelabelbtree_d(BTreeFile edgelabelbtree_d) {
 		this.edgelabelbtree_d = edgelabelbtree_d;
+	}
+
+	public void insertNodetoZT(HFManager hfm, String filename) throws Exception {
+		System.out.println("start inserting nodes to Z-Tree");
+		File file = new File(filename);
+		Scanner scan = new Scanner(file);
+		int cnt = 0;
+		while (scan.hasNextLine()) {
+			String line = scan.nextLine();
+			String[] data = line.split(" ");
+			String label = data[0];
+
+			RID rid = new RID();
+			Node node = new Node();
+			KeyClass key;
+			hfm.initScanNode();
+
+			while ((node = hfm.scanNextNode()) != null) {
+				if (node.getLabel().equals(label)) {
+					rid = hfm.getCurRID();
+					key = new StringKey(ZEncoder.encode(node.getDesc()));
+					nodeDescritorTree.insert(key, rid);
+					hfm.closeScan();
+					break;
+				}
+			}
+		}
 	}
 
 	public void insertNodetoNLBT(HFManager hfm, String fileName) throws Exception {
@@ -336,4 +367,11 @@ public class BTManager {
 		return true;
 	}
 
+	public ZTreeFile getNodeDescritorTree() {
+		return nodeDescritorTree;
+	}
+
+	public void setNodeDescritorTree(ZTreeFile nodeDescritorTree) {
+		this.nodeDescritorTree = nodeDescritorTree;
+	}
 }
