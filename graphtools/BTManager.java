@@ -19,7 +19,7 @@ import zindex.ZTreeFile;
 
 public class BTManager {
 	private BTreeFile nodelabelbtree;
-	private ZTreeFile nodeDescritorTree;
+	private ZTreeFile nodeDescriptorTree;
 	private BTreeFile edgelabelbtree;
 	private BTreeFile edgeweightbtree;
 	private BTreeFile edgelabelbtree_s;
@@ -84,7 +84,7 @@ public class BTManager {
 				if (node.getLabel().equals(label)) {
 					rid = hfm.getCurRID();
 					key = new StringKey(ZEncoder.encode(node.getDesc()));
-					nodeDescritorTree.insert(key, rid);
+					nodeDescriptorTree.insert(key, rid);
 					hfm.closeScan();
 					break;
 				}
@@ -367,12 +367,12 @@ public class BTManager {
 		return true;
 	}
 
-	public ZTreeFile getNodeDescritorTree() {
-		return nodeDescritorTree;
+	public ZTreeFile getNodeDescriptorTree() {
+		return nodeDescriptorTree;
 	}
 
-	public void setNodeDescritorTree(ZTreeFile nodeDescritorTree) {
-		this.nodeDescritorTree = nodeDescritorTree;
+	public void setNodeDescriptorTree(ZTreeFile nodeDescritorTree) {
+		this.nodeDescriptorTree = nodeDescritorTree;
 	}
 
 	public void NodeQuery1(GraphDBManager db) throws InvalidSlotNumberException, InvalidTupleSizeException, HFException, HFDiskMgrException, HFBufMgrException, Exception{
