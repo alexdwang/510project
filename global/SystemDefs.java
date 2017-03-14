@@ -3,6 +3,7 @@ package global;
 import bufmgr.*;
 import diskmgr.*;
 import catalog.*;
+import java.io.*;
 
 public class SystemDefs {
   public static BufMgr	JavabaseBM;
@@ -68,9 +69,12 @@ public class SystemDefs {
       JavabaseDBName = new String(dbname);
       JavabaseLogName = new String(logname);
       MINIBASE_DBNAME = new String(JavabaseDBName);
+
+      //check if file exists
+      File varTmpDir = new File(dbname);
+      MINIBASE_RESTART_FLAG = varTmpDir.exists();
       
       // create or open the DB
-      
       if ((MINIBASE_RESTART_FLAG)||(num_pgs == 0)){//open an existing database
 	try {
 	  JavabaseDB.openDB(dbname);
@@ -93,4 +97,12 @@ public class SystemDefs {
 	}
       }
     }
+
+  public static void closeSystem()
+  throws HashOperationException, IOException, PageUnpinnedException, PagePinnedException,
+  PageNotFoundException, BufMgrException
+  {
+    JavabaseBM.flushAllPages();
+    JavabaseDB.closeDB();
+  }
 }
