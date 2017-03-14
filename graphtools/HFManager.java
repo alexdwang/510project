@@ -293,5 +293,14 @@ class HFManager implements  GlobalConst{
 		}
 		return lblSet.size();
 	}
+	
+	public boolean deletenode(RID rid)
+			throws Exception
+	{
+		nodefile.deleteRecord(rid);
+		
+		return true;
+		
+	}
 
 }
