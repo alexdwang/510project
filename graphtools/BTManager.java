@@ -84,6 +84,7 @@ public class BTManager {
 					rid = hfm.getCurRID();
 					key = new StringKey(node.getLabel());
 					nodelabelbtree.insert(key, rid);
+					hfm.closeScan();
 					break;
 				}
 			}
