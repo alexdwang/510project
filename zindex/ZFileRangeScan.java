@@ -29,7 +29,13 @@ public class ZFileRangeScan {
             e.printStackTrace();
         } catch (PinPageException e) {
             e.printStackTrace();
-        }
+        } catch (AddFileEntryException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
         this.distance = distance;
 
         String keyCode = key.getKey();

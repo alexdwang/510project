@@ -5,14 +5,15 @@ import bufmgr.HashEntryNotFoundException;
 import bufmgr.InvalidFrameNumberException;
 import bufmgr.PageUnpinnedException;
 import bufmgr.ReplacerException;
+import global.AttrType;
 import global.RID;
 
 import java.io.IOException;
 
 public class ZTreeFile extends BTreeFile {
 
-    public ZTreeFile(String filename) throws ConstructPageException, GetFileEntryException, PinPageException {
-        super(filename);
+    public ZTreeFile(String filename) throws ConstructPageException, GetFileEntryException, PinPageException, AddFileEntryException, IOException {
+    	super(filename, AttrType.attrString, 100, 1);
     }
 
     public void close() throws PageUnpinnedException, InvalidFrameNumberException, HashEntryNotFoundException, ReplacerException {
