@@ -8,11 +8,14 @@ class NodeInsert implements GlobalConst{
 		String nodefilename = argvs[0];
 	    try{ 
 	      GraphDBManager db = new GraphDBManager();
-	      db.init(dbname);
+	      db.init("asdf");
 	      HFManager nodemgr = new HFManager();
 	      nodemgr.insertNodesFromFile(nodefilename);
-	      //nodemgr.insertEdgesFromFile(nodefilename);
-	      db.deleteDBFile();
+	      System.out.println(nodemgr.getNodeCnt());
+	      //db.init("asdf");
+	      //System.out.println(nodemgr.getNodeCnt());
+	      SystemDefs.closeSystem();
+	      //db.deleteDBFile();
 	    }
 	    catch (Exception e) {
 	      e.printStackTrace();

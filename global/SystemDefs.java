@@ -98,6 +98,10 @@ public class SystemDefs {
       }
     }
 
+public static void updateBM(int bufNum){
+  JavabaseBM = new BufMgr(bufNum, "Clock");
+}
+
   public static void closeSystem()
   throws HashOperationException, IOException, PageUnpinnedException, PagePinnedException,
   PageNotFoundException, BufMgrException
