@@ -30,12 +30,14 @@ class EdgeLabelsDriver implements GlobalConst {
 
 	public void runTests() throws Exception {
 		keyType = AttrType.attrString;
-		System.out.println("start test 1!!!");
+		System.out.println("start constructing Edgelabel BTree!!!");
 		ConstructBTEL();
-		System.out.println("start test 2!!!");
-		BT.printBTree(file.getHeaderPage());
-		System.out.println("start test 3!!!");
-		BT.printAllLeafPages(file.getHeaderPage());
+//		System.out.println("start test 2!!!");
+//		BT.printBTree(btm.getEdgelabelbtree().getHeaderPage());
+//		System.out.println("start test 3!!!");
+//		BT.printAllLeafPages(btm.getEdgelabelbtree().getHeaderPage());
+		ConstructBTEL_S();
+		ConstructBTEL_D();
 
 	}
 
@@ -53,6 +55,38 @@ class EdgeLabelsDriver implements GlobalConst {
 			file.insert(key, rid);
 		}
 		btm.setEdgelabelbtree(file);
+	}
+	
+	public void ConstructBTEL_S() throws Exception {
+
+		file = new BTreeFile("EdgeLabelTree_Source", keyType, 20, 1);// full delete
+		Edge edge = new Edge();
+		KeyClass key;
+		RID rid = new RID();
+		hfm.initScanEdge();
+
+		while ((edge = hfm.scanNextEdge()) != null) {
+			key = new StringKey(edge.getSource());
+			rid = hfm.getCurRID();
+			file.insert(key, rid);
+		}
+		btm.setEdgelabelbtree_s(file);
+	}
+	
+	public void ConstructBTEL_D() throws Exception {
+
+		file = new BTreeFile("EdgeLabelTree_Source", keyType, 20, 1);// full delete
+		Edge edge = new Edge();
+		KeyClass key;
+		RID rid = new RID();
+		hfm.initScanEdge();
+
+		while ((edge = hfm.scanNextEdge()) != null) {
+			key = new StringKey(edge.getDestination());
+			rid = hfm.getCurRID();
+			file.insert(key, rid);
+		}
+		btm.setEdgelabelbtree_d(file);
 	}
 
 }

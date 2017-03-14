@@ -34,9 +34,9 @@ class NodeLabelsDriver implements GlobalConst {
 		System.out.println("start test 1!!!");
 		ConstructBTNL();
 		System.out.println("start test 2!!!");
-		BT.printBTree(file.getHeaderPage());
+		BT.printBTree(btm.getNodelabelbtree().getHeaderPage());
 		System.out.println("start test 3!!!");
-		BT.printAllLeafPages(file.getHeaderPage());
+		BT.printAllLeafPages(btm.getNodelabelbtree().getHeaderPage());
 
 	}
 

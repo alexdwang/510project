@@ -93,7 +93,7 @@ class HFManager implements  GlobalConst{
 		}
 		System.out.println(cnt + " nodes inserted");
 
-		/*
+		
 		//test scan
 		initScanNode();
 		Node node = scanNextNode();
@@ -101,7 +101,7 @@ class HFManager implements  GlobalConst{
 			node.print();
 			node = scanNextNode();
 		}
-		*/
+		
 		return true;
 	}
 
@@ -640,6 +640,15 @@ class HFManager implements  GlobalConst{
 			throws Exception
 	{
 		nodefile.deleteRecord(rid);
+		
+		return true;
+		
+	}
+	
+	public boolean deleteedge(RID rid)
+			throws Exception
+	{
+		edgefile.deleteRecord(rid);
 		
 		return true;
 		

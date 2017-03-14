@@ -30,12 +30,12 @@ class EdgeWeightDriver implements GlobalConst {
 
 	public void runTests() throws Exception {
 		keyType = AttrType.attrInteger;
-		System.out.println("start test 1!!!");
+		System.out.println("start constructing Edgeweight BTree!!!");
 		ConstructBTEW();
-		System.out.println("start test 2!!!");
-		BT.printBTree(file.getHeaderPage());
-		System.out.println("start test 3!!!");
-		BT.printAllLeafPages(file.getHeaderPage());
+//		System.out.println("start test 2!!!");
+//		BT.printBTree(btm.getEdgeweightbtree().getHeaderPage());
+//		System.out.println("start test 3!!!");
+//		BT.printAllLeafPages(btm.getEdgeweightbtree().getHeaderPage());
 
 	}
 
@@ -52,7 +52,7 @@ class EdgeWeightDriver implements GlobalConst {
 			rid = hfm.getCurRID();
 			file.insert(key, rid);
 		}
-		btm.setEdgelabelbtree(file);
+		btm.setEdgeweightbtree(file);
 	}
 }
 
