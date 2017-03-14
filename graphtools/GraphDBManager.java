@@ -6,6 +6,7 @@ import java.lang.*;
 import heap.*;
 import bufmgr.*;
 import diskmgr.*;
+import edgeheap.Edge;
 import global.*;
 import btree.*;
 
@@ -77,6 +78,64 @@ class GraphDBManager implements  GlobalConst{
 	HFDiskMgrException
 	{
 		hfmgr.insertEdgesFromFile(fileName);
+	}
+	
+	public void deleteNode(String fileName) throws Exception{
+
+		System.out.println("start deleting nodes");
+		File file = new File(fileName);
+		Scanner scan = new Scanner(file);
+		int cnt = 0;
+		while(scan.hasNextLine()){
+			String line = scan.nextLine();
+			RID rid_node=new RID();
+			RID rid_es=new RID();
+			RID rid_ed=new RID();
+
+			String label=line;
+			KeyClass key=new StringKey(label); 
+			rid_node = btmgr.getRIDFromLabel_Node(label);
+			rid_es = btmgr.getRIDFromLabel_EdgeS(label);
+			rid_ed = btmgr.getRIDFromLabel_EdgeD(label);
+			
+			
+			//delete node
+			if(rid_node!=null){
+				hfmgr.deletenode(rid_node);
+				btmgr.deletenode(key, rid_node);
+			}else{
+				System.err.println("Delete failed: no such node");
+			}
+
+			//delete edge whose source is this node
+			if(rid_es!=null){
+				if(rid_ed!=null){
+					hfmgr.deleteedge(rid_es);
+					btmgr.deleteedge_d(key, rid_ed);
+					btmgr.deleteedge_s(key, rid_es);
+					Edge edge = new Edge(hfmgr.getEdgefile().getRecord(rid_es));
+					String Elabel=edge.getLabel();
+					KeyClass ekey = new StringKey(Elabel);
+					btmgr.deleteedge(ekey, rid_es);
+				}else{
+					hfmgr.deleteedge(rid_es);
+					btmgr.deleteedge_s(key, rid_es);
+					Edge edge = new Edge(hfmgr.getEdgefile().getRecord(rid_es));
+					String Elabel=edge.getLabel();
+					KeyClass ekey = new StringKey(Elabel);
+					btmgr.deleteedge(ekey, rid_es);
+				}
+			}else if(rid_ed!=null){
+				hfmgr.deleteedge(rid_ed);
+				btmgr.deleteedge_d(key, rid_ed);
+				Edge edge = new Edge(hfmgr.getEdgefile().getRecord(rid_ed));
+				String Elabel=edge.getLabel();
+				KeyClass ekey = new StringKey(Elabel);
+				btmgr.deleteedge(ekey, rid_ed);
+			}
+			cnt++;
+		}
+		System.out.println(cnt + " nodes deleted");
 	}
 
 

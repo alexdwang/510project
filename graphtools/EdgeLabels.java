@@ -54,6 +54,38 @@ class EdgeLabelsDriver implements GlobalConst {
 		}
 		btm.setEdgelabelbtree(file);
 	}
+	
+	public void ConstructBTEL_S() throws Exception {
+
+		file = new BTreeFile("EdgeLabelTree_Source", keyType, 20, 1);// full delete
+		Edge edge = new Edge();
+		KeyClass key;
+		RID rid = new RID();
+		hfm.initScanEdge();
+
+		while ((edge = hfm.scanNextEdge()) != null) {
+			key = new StringKey(edge.getSource());
+			rid = hfm.getCurRID();
+			file.insert(key, rid);
+		}
+		btm.setEdgelabelbtree_s(file);
+	}
+	
+	public void ConstructBTEL_D() throws Exception {
+
+		file = new BTreeFile("EdgeLabelTree_Source", keyType, 20, 1);// full delete
+		Edge edge = new Edge();
+		KeyClass key;
+		RID rid = new RID();
+		hfm.initScanEdge();
+
+		while ((edge = hfm.scanNextEdge()) != null) {
+			key = new StringKey(edge.getDestination());
+			rid = hfm.getCurRID();
+			file.insert(key, rid);
+		}
+		btm.setEdgelabelbtree_d(file);
+	}
 
 }
 

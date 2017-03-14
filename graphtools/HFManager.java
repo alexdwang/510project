@@ -302,5 +302,14 @@ class HFManager implements  GlobalConst{
 		return true;
 		
 	}
+	
+	public boolean deleteedge(RID rid)
+			throws Exception
+	{
+		edgefile.deleteRecord(rid);
+		
+		return true;
+		
+	}
 
 }
