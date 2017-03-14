@@ -97,7 +97,7 @@ class GraphDBManager implements GlobalConst {
 			btmgr.insertEdgetoELBT_D(hfmgr, edgefilename);
 			btmgr.insertEdgetoEWBT(hfmgr, edgefilename);
 		}
-		BT.printAllLeafPages(btmgr.getEdgelabelbtree().getHeaderPage());
+//		BT.printAllLeafPages(btmgr.getEdgelabelbtree().getHeaderPage());
 
 	}
 
@@ -130,6 +130,9 @@ class GraphDBManager implements GlobalConst {
 				rid_edl.add(((LeafData) itrd.data).getData());
 				itrd = mydfilescan.get_next();
 			}
+			
+			mysfilescan.DestroyBTreeFileScan();
+			mydfilescan.DestroyBTreeFileScan();
 
 			// delete node
 			if (rid_node != null) {
@@ -241,7 +244,7 @@ class GraphDBManager implements GlobalConst {
 			
 		}
 		System.out.println("deleted "+cnt+" edges");
-		BT.printAllLeafPages(btmgr.getEdgelabelbtree().getHeaderPage());
+//		BT.printAllLeafPages(btmgr.getEdgelabelbtree().getHeaderPage());
 	}
 
 	public static void main(String[] argvs) {
