@@ -16,6 +16,7 @@ class NodeLabelsDriver implements GlobalConst {
 	public int keyType;
 	public BTreeFile file;
 	public HFManager hfm = null;
+	public BTManager btm = null;
 
 	protected String dbpath;
 
@@ -23,8 +24,9 @@ class NodeLabelsDriver implements GlobalConst {
 
 	}
 
-	NodeLabelsDriver(HFManager hfms) {
+	NodeLabelsDriver(HFManager hfms, BTManager btms) {
 		this.hfm = hfms;
+		this.btm = btms;
 	}
 
 	public void runTests() throws Exception {
@@ -51,6 +53,7 @@ class NodeLabelsDriver implements GlobalConst {
 			rid = hfm.getCurRID();
 			file.insert(key, rid);
 		}
+		btm.setNodelabelbtree(file);
 	}
 
 }

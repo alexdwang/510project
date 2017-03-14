@@ -11,6 +11,7 @@ import diskmgr.*;
 import global.*;
 import chainexception.*;
 import java.util.Scanner;
+import btree.*;
 
 
 class HFManager implements  GlobalConst{
@@ -26,6 +27,23 @@ class HFManager implements  GlobalConst{
 		init();
 	}
 
+	public Heapfile getNodefile() {
+		return nodefile;
+	}
+
+	public void setNodefile(Heapfile nodefile) {
+		this.nodefile = nodefile;
+	}
+
+	public Heapfile getEdgefile() {
+		return edgefile;
+	}
+
+	public void setEdgefile(Heapfile edgefile) {
+		this.edgefile = edgefile;
+	}
+
+	
 	public void init(){
 		System.out.println ("  - Create a node heap file\n");
 	    try {

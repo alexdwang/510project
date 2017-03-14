@@ -17,6 +17,7 @@ class GraphDBManager implements  GlobalConst{
 	private String nodefilenname;
 	private String edgefilename;
 	public HFManager hfmgr;
+	public BTManager btmgr;
 
 	public void init(String dbname){
 		dbpath = dbname + ".minibase-db"; 
@@ -87,6 +88,8 @@ class GraphDBManager implements  GlobalConst{
 	      db.init(dbname);
 	      //nodemgr.insertNodesFromFile(nodefilename);
 	      db.insertEdges(nodefilename);
+	      EdgeWeightDriver ewd=new EdgeWeightDriver(db.hfmgr,db.btmgr);
+	      ewd.runTests();
 	      db.deleteDBFile();
 	    }
 	    catch (Exception e) {

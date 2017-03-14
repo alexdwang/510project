@@ -15,6 +15,7 @@ class EdgeLabelsDriver implements GlobalConst {
 	public int keyType;
 	public BTreeFile file;
 	public HFManager hfm = null;
+	public BTManager btm = null;
 
 	protected String dbpath;
 
@@ -22,8 +23,9 @@ class EdgeLabelsDriver implements GlobalConst {
 
 	}
 
-	EdgeLabelsDriver(HFManager hfms) {
+	EdgeLabelsDriver(HFManager hfms, BTManager btms) {
 		this.hfm = hfms;
+		this.btm = btms;
 	}
 
 	public void runTests() throws Exception {
@@ -50,6 +52,7 @@ class EdgeLabelsDriver implements GlobalConst {
 			rid = hfm.getCurRID();
 			file.insert(key, rid);
 		}
+		btm.setEdgelabelbtree(file);
 	}
 
 }
