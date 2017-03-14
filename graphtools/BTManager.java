@@ -13,6 +13,9 @@ import edgeheap.*;
 import global.*;
 import heap.*;
 import nodeheap.*;
+import zindex.DescriptorKey;
+import zindex.ZEncoder;
+import zindex.ZFileRangeScan;
 import zindex.ZTreeFile;
 
 public class BTManager {
@@ -465,5 +468,17 @@ public class BTManager {
 			itr = s.get_next();
 		}
 		s.DestroyBTreeFileScan();
+	}
+
+	public void NodeQueryIndex3(GraphDBManager db, Descriptor target, int distance) throws Exception {
+		DescriptorKey descKey = new DescriptorKey(ZEncoder.encode(target));
+		ZFileRangeScan rangeScan = new ZFileRangeScan(this.nodeDescriptorTree, descKey, distance);
+		KeyDataEntry itr = rangeScan.getNext();
+		while (itr != null) {
+			Node node = new Node(db.hfmgr.getNodefile().getRecord(((LeafData) itr.data).getData()));
+			node.print();
+			itr = rangeScan.getNext();
+		}
+		rangeScan.endScan();
 	}
 }

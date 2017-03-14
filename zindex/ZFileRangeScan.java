@@ -20,22 +20,8 @@ public class ZFileRangeScan {
 
     private BTFileScan scan;
 
-    public ZFileRangeScan(String filename, DescriptorKey key, int distance) {
-        try {
-            this.zTreeFile = new ZTreeFile(filename);
-        } catch (ConstructPageException e) {
-            e.printStackTrace();
-        } catch (GetFileEntryException e) {
-            e.printStackTrace();
-        } catch (PinPageException e) {
-            e.printStackTrace();
-        } catch (AddFileEntryException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
+    public ZFileRangeScan(ZTreeFile zFile, DescriptorKey key, int distance) {
+        this.zTreeFile = zFile;
         this.distance = distance;
 
         String keyCode = key.getKey();

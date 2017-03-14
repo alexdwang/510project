@@ -16,12 +16,8 @@ public class ZFileScan {
 
     private BTFileScan scan;
 
-    public ZFileScan(String filename) {
-        try {
-            this.zTreeFile = new ZTreeFile(filename);
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
+    public ZFileScan(ZTreeFile zfile) {
+        this.zTreeFile = zfile;
         this.scan = zTreeFile.new_scan(null, null);
     }
 
