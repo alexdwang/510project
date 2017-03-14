@@ -396,20 +396,23 @@ public class BTManager {
 			Node n = new Node(db.hfmgr.getNodefile().getRecord(((LeafData) itr.data).getData()));
 			n.print();
 			
-			BTFileScan d = db.btmgr.edgelabelbtree_d.new_scan(null, null);
-			KeyDataEntry itrd = s.get_next();
+			BTFileScan d = db.btmgr.edgelabelbtree_d.new_scan(k, k);
+			KeyDataEntry itrd = d.get_next();
 			while(itrd!=null){
 				Edge e = new Edge(db.hfmgr.getEdgefile().getRecord(((LeafData) itrd.data).getData()));
 				e.print();
+				itrd = d.get_next();
 			}
 			d.DestroyBTreeFileScan();
-			BTFileScan ss = db.btmgr.edgelabelbtree_s.new_scan(null, null);
+			BTFileScan ss = db.btmgr.edgelabelbtree_s.new_scan(k, k);
 			KeyDataEntry itrs = ss.get_next();
 			while(itrs!=null){
 				Edge e = new Edge(db.hfmgr.getEdgefile().getRecord(((LeafData) itrs.data).getData()));
 				e.print();
+				itrs = ss.get_next();
 			}
 			ss.DestroyBTreeFileScan();
+			System.out.println();
 		}
 		s.DestroyBTreeFileScan();
 		System.out.println();
@@ -477,6 +480,40 @@ public class BTManager {
 		while (itr != null) {
 			Node node = new Node(db.hfmgr.getNodefile().getRecord(((LeafData) itr.data).getData()));
 			node.print();
+			itr = rangeScan.getNext();
+		}
+		rangeScan.endScan();
+	}
+
+	public void NodeQueryIndex5(GraphDBManager db, Descriptor target, int distance) throws Exception {
+		DescriptorKey descKey = new DescriptorKey(ZEncoder.encode(target));
+		ZFileRangeScan rangeScan = new ZFileRangeScan(this.nodeDescriptorTree, descKey, distance);
+		KeyDataEntry itr = rangeScan.getNext();
+		while (itr != null) {
+			Node node = new Node(db.hfmgr.getNodefile().getRecord(((LeafData) itr.data).getData()));
+			if (node.getDesc().distance(target) == distance) {
+				node.print();
+
+				StringKey k = new StringKey(node.getLabel());
+
+				BTFileScan d = db.btmgr.edgelabelbtree_d.new_scan(k, k);
+				KeyDataEntry itrd = d.get_next();
+				while(itrd!=null){
+					Edge e = new Edge(db.hfmgr.getEdgefile().getRecord(((LeafData) itrd.data).getData()));
+					e.print();
+					itrd = d.get_next();
+				}
+				d.DestroyBTreeFileScan();
+				BTFileScan ss = db.btmgr.edgelabelbtree_s.new_scan(k, k);
+				KeyDataEntry itrs = ss.get_next();
+				while(itrs!=null){
+					Edge e = new Edge(db.hfmgr.getEdgefile().getRecord(((LeafData) itrs.data).getData()));
+					e.print();
+					itrs = ss.get_next();
+				}
+				ss.DestroyBTreeFileScan();
+				System.out.println();
+			}
 			itr = rangeScan.getNext();
 		}
 		rangeScan.endScan();
