@@ -1,7 +1,13 @@
 package zindex;
 
 import btree.*;
+import bufmgr.HashEntryNotFoundException;
+import bufmgr.InvalidFrameNumberException;
+import bufmgr.PageUnpinnedException;
+import bufmgr.ReplacerException;
 import global.Descriptor;
+
+import java.io.IOException;
 
 public class ZFileRangeScan {
 
@@ -65,6 +71,22 @@ public class ZFileRangeScan {
             }
         }
         return pending;
+    }
+
+    public void endScan() {
+        try {
+            this.scan.DestroyBTreeFileScan();
+        } catch (IOException e) {
+            e.printStackTrace();
+        } catch (InvalidFrameNumberException e) {
+            e.printStackTrace();
+        } catch (ReplacerException e) {
+            e.printStackTrace();
+        } catch (PageUnpinnedException e) {
+            e.printStackTrace();
+        } catch (HashEntryNotFoundException e) {
+            e.printStackTrace();
+        }
     }
 
     private boolean isInHypercube(String point, String lo, String hi) {
