@@ -30,12 +30,14 @@ class EdgeLabelsDriver implements GlobalConst {
 
 	public void runTests() throws Exception {
 		keyType = AttrType.attrString;
-		System.out.println("start test 1!!!");
+		System.out.println("start constructing Edgelabel BTree!!!");
 		ConstructBTEL();
-		System.out.println("start test 2!!!");
-		BT.printBTree(file.getHeaderPage());
-		System.out.println("start test 3!!!");
-		BT.printAllLeafPages(file.getHeaderPage());
+//		System.out.println("start test 2!!!");
+//		BT.printBTree(btm.getEdgelabelbtree().getHeaderPage());
+//		System.out.println("start test 3!!!");
+//		BT.printAllLeafPages(btm.getEdgelabelbtree().getHeaderPage());
+		ConstructBTEL_S();
+		ConstructBTEL_D();
 
 	}
 

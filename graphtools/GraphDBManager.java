@@ -19,6 +19,7 @@ class GraphDBManager implements  GlobalConst{
 	private String edgefilename;
 	public HFManager hfmgr;
 	public BTManager btmgr;
+	boolean firsttime=true;
 
 	public void init(String dbname){
 		dbpath = dbname + ".minibase-db"; 
@@ -26,6 +27,7 @@ class GraphDBManager implements  GlobalConst{
 		SystemDefs sysdef = new SystemDefs( dbpath, 5000 ,5000,"Clock");
 		System.out.println ("\n" + "DB initializing" + "\n");
 		hfmgr = new HFManager();
+		btmgr = new BTManager();
 	}
 
 	public void deleteDBFile(){
@@ -50,22 +52,27 @@ class GraphDBManager implements  GlobalConst{
 	    
 	}
 
-	public void insertNodes(String fileName)
-	throws FileNotFoundException,
-	InvalidTypeException,
-	IOException,
-	InvalidTupleSizeException,
-	FieldNumberOutOfBoundException,
-	InvalidSlotNumberException,
-	SpaceNotAvailableException,
-	HFException,
-	HFBufMgrException,
-	HFDiskMgrException
+	public void insertNodes(String nodefilename)
+	throws Exception
 	{
-		hfmgr.insertNodesFromFile(fileName);
+		hfmgr.insertNodesFromFile(nodefilename);
+		if(firsttime){
+			NodeLabelsDriver nld=new NodeLabelsDriver(hfmgr,btmgr);
+		    try {
+				nld.runTests();
+			} catch (Exception e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+		    firsttime=false;
+		}else{
+			btmgr.insertNodetoNLBT(hfmgr, nodefilename);
+			BT.printBTree(btmgr.getNodelabelbtree().getHeaderPage());
+			BT.printAllLeafPages(btmgr.getNodelabelbtree().getHeaderPage());
+		}
 	}
 
-	public void insertEdges(String fileName)
+	public void insertEdges(String edgefilename)
 	throws FileNotFoundException,
 	InvalidTypeException,
 	IOException,
@@ -77,7 +84,7 @@ class GraphDBManager implements  GlobalConst{
 	HFBufMgrException,
 	HFDiskMgrException
 	{
-		hfmgr.insertEdgesFromFile(fileName);
+		hfmgr.insertEdgesFromFile(edgefilename);
 	}
 	
 	public void deleteNode(String fileName) throws Exception{
@@ -108,47 +115,61 @@ class GraphDBManager implements  GlobalConst{
 			}
 
 			//delete edge whose source is this node
-			if(rid_es!=null){
-				if(rid_ed!=null){
-					hfmgr.deleteedge(rid_es);
-					btmgr.deleteedge_d(key, rid_ed);
-					btmgr.deleteedge_s(key, rid_es);
-					Edge edge = new Edge(hfmgr.getEdgefile().getRecord(rid_es));
-					String Elabel=edge.getLabel();
-					KeyClass ekey = new StringKey(Elabel);
-					btmgr.deleteedge(ekey, rid_es);
-				}else{
-					hfmgr.deleteedge(rid_es);
-					btmgr.deleteedge_s(key, rid_es);
-					Edge edge = new Edge(hfmgr.getEdgefile().getRecord(rid_es));
-					String Elabel=edge.getLabel();
-					KeyClass ekey = new StringKey(Elabel);
-					btmgr.deleteedge(ekey, rid_es);
-				}
-			}else if(rid_ed!=null){
-				hfmgr.deleteedge(rid_ed);
-				btmgr.deleteedge_d(key, rid_ed);
-				Edge edge = new Edge(hfmgr.getEdgefile().getRecord(rid_ed));
-				String Elabel=edge.getLabel();
-				KeyClass ekey = new StringKey(Elabel);
-				btmgr.deleteedge(ekey, rid_ed);
-			}
+//			if(rid_es!=null){
+//				if(rid_ed!=null){
+//					hfmgr.deleteedge(rid_es);
+//					btmgr.deleteedge_d(key, rid_ed);
+//					btmgr.deleteedge_s(key, rid_es);
+//					Edge edge = new Edge(hfmgr.getEdgefile().getRecord(rid_es));
+//					String Elabel=edge.getLabel();
+//					KeyClass ekey = new StringKey(Elabel);
+//					btmgr.deleteedge(ekey, rid_es);
+//				}else{
+//					hfmgr.deleteedge(rid_es);
+//					btmgr.deleteedge_s(key, rid_es);
+//					Edge edge = new Edge(hfmgr.getEdgefile().getRecord(rid_es));
+//					String Elabel=edge.getLabel();
+//					KeyClass ekey = new StringKey(Elabel);
+//					btmgr.deleteedge(ekey, rid_es);
+//				}
+//			}else if(rid_ed!=null){
+//				hfmgr.deleteedge(rid_ed);
+//				btmgr.deleteedge_d(key, rid_ed);
+//				Edge edge = new Edge(hfmgr.getEdgefile().getRecord(rid_ed));
+//				String Elabel=edge.getLabel();
+//				KeyClass ekey = new StringKey(Elabel);
+//				btmgr.deleteedge(ekey, rid_ed);
+//			}
 			cnt++;
 		}
 		System.out.println(cnt + " nodes deleted");
+		BT.printAllLeafPages(btmgr.getNodelabelbtree().getHeaderPage());
 	}
 
 
 	public static void main(String [] argvs) {
 		String dbname = argvs[1];
 		String nodefilename = argvs[0];
+		String edgefilename = argvs[2];
+		//String nodedeletefilename = argvs[3];
+		String nodedeletefilename = argvs[3];
+		
 	    try{ 
 	      GraphDBManager db = new GraphDBManager();
 	      db.init(dbname);
-	      //nodemgr.insertNodesFromFile(nodefilename);
-	      db.insertEdges(nodefilename);
+	      db.insertNodes(nodefilename);
+	      db.insertEdges(edgefilename);
+	      db.insertNodes(nodedeletefilename);
+	      
+	      
+	      EdgeLabelsDriver eld=new EdgeLabelsDriver(db.hfmgr,db.btmgr);
+	      eld.runTests();
+	      
 	      EdgeWeightDriver ewd=new EdgeWeightDriver(db.hfmgr,db.btmgr);
 	      ewd.runTests();
+	      
+	      //db.deleteNode(nodedeletefilename);
+	      
 	      db.deleteDBFile();
 	    }
 	    catch (Exception e) {
