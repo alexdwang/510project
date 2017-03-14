@@ -97,7 +97,7 @@ class GraphDBManager implements GlobalConst {
 			btmgr.insertEdgetoELBT_D(hfmgr, edgefilename);
 			btmgr.insertEdgetoEWBT(hfmgr, edgefilename);
 		}
-		BT.printAllLeafPages(btmgr.getEdgelabelbtree().getHeaderPage());
+//		BT.printAllLeafPages(btmgr.getEdgelabelbtree().getHeaderPage());
 
 	}
 
@@ -130,6 +130,9 @@ class GraphDBManager implements GlobalConst {
 				rid_edl.add(((LeafData) itrd.data).getData());
 				itrd = mydfilescan.get_next();
 			}
+			
+			mysfilescan.DestroyBTreeFileScan();
+			mydfilescan.DestroyBTreeFileScan();
 
 			// delete node
 			if (rid_node != null) {
@@ -193,6 +196,7 @@ class GraphDBManager implements GlobalConst {
 			List<RID> rid_s = new LinkedList<>();
 			List<RID> rid_d = new LinkedList<>();
 			List<RID> rid_l = new LinkedList<>();
+			List<RID> rid = new LinkedList<>();
 			BTFileScan mysfilescan = btmgr.getEdgelabelbtree_s().new_scan(key[0], key[0]);
 			KeyDataEntry itr = mysfilescan.get_next();
 			while (itr != null) {
@@ -216,16 +220,23 @@ class GraphDBManager implements GlobalConst {
 			myefilescan.DestroyBTreeFileScan();
 			
 			System.out.println();
-			rid_s.retainAll(rid_d);
-			rid_s.retainAll(rid_l);
+			for(int i=0;i<rid_s.size();i++){
+				for (int j =0;j<rid_d.size();j++){
+					if(rid_s.get(i).pageNo.pid==rid_d.get(j).pageNo.pid&&rid_s.get(i).slotNo==rid_d.get(j).slotNo){
+						for(int k=0;k<rid_l.size();k++){
+							if(rid_s.get(i).pageNo.pid==rid_l.get(k).pageNo.pid&&rid_s.get(i).slotNo==rid_l.get(k).slotNo)
+								rid.add(rid_s.get(i));
+						}
+					}
+				}
+			}
 			
-			if(!rid_s.isEmpty()){
-				for(int i=0;i<rid_s.size();i++){
-					btmgr.deleteedge_s(key[0], rid_s.get(i));
-					btmgr.deleteedge_d(key[1], rid_s.get(i));
-					btmgr.deleteedge(key[2], rid_s.get(i));
-					hfmgr.deleteedge(rid_s.get(i));
-					hfmgr.deleteedge(rid_s.get(i));
+			if(!rid.isEmpty()){
+				for(int i=0;i<rid.size();i++){
+					btmgr.deleteedge_s(key[0], rid.get(i));
+					btmgr.deleteedge_d(key[1], rid.get(i));
+					btmgr.deleteedge(key[2], rid.get(i));
+					hfmgr.deleteedge(rid.get(i));
 				}
 				
 			}
@@ -233,7 +244,7 @@ class GraphDBManager implements GlobalConst {
 			
 		}
 		System.out.println("deleted "+cnt+" edges");
-		BT.printAllLeafPages(btmgr.getEdgelabelbtree().getHeaderPage());
+//		BT.printAllLeafPages(btmgr.getEdgelabelbtree().getHeaderPage());
 	}
 
 	public static void main(String[] argvs) {
