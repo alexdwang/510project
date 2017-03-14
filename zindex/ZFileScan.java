@@ -1,21 +1,21 @@
 package zindex;
 
-import btree.*;
 
-public class ZFileScan extends BTFileScan {
+import btree.BTFileScan;
 
-    @Override
-    public KeyDataEntry get_next() throws ScanIteratorException {
-        return super.get_next();
+public class ZFileScan {
+
+    private ZTreeFile zTreeFile;
+
+    public ZFileScan(String filename) {
+        try {
+            this.zTreeFile = new ZTreeFile(filename);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
-    @Override
-    public void delete_current() throws ScanDeleteException {
-        super.delete_current();
-    }
-
-    @Override
-    public int keysize() {
-        return super.keysize();
+    public BTFileScan startScan() {
+        return zTreeFile.new_scan(null, null);
     }
 }
