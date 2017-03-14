@@ -254,12 +254,12 @@ public class BTManager {
 	}
 
 	public boolean deleteedge_d(KeyClass key, RID rid) throws Exception {
-		edgelabelbtree.Delete(key, rid);
+		edgelabelbtree_d.Delete(key, rid);
 		return true;
 	}
 
 	public boolean deleteedge_s(KeyClass key, RID rid) throws Exception {
-		edgelabelbtree.Delete(key, rid);
+		edgelabelbtree_s.Delete(key, rid);
 		return true;
 	}
 
