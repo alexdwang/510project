@@ -74,7 +74,7 @@ class EdgeLabelsDriver implements GlobalConst {
 	
 	public void ConstructBTEL_D() throws Exception {
 
-		file = new BTreeFile("EdgeLabelTree_Source", keyType, 20, 1);// full delete
+		file = new BTreeFile("EdgeLabelTree_Destination", keyType, 20, 1);// full delete
 		Edge edge = new Edge();
 		KeyClass key;
 		RID rid = new RID();
