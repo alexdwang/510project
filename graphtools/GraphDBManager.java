@@ -128,7 +128,7 @@ class GraphDBManager implements GlobalConst {
 				itr = mysfilescan.get_next();
 			}
 
-			BTFileScan mydfilescan = btmgr.getEdgelabelbtree_s().new_scan(key, key);
+			BTFileScan mydfilescan = btmgr.getEdgelabelbtree_d().new_scan(key, key);
 			KeyDataEntry itrd = mydfilescan.get_next();
 			while (itrd != null) {
 				rid_edl.add(((LeafData) itrd.data).getData());
