@@ -458,21 +458,21 @@ public class BTManager {
 			}
 			ss.DestroyBTreeFileScan();
 			System.out.println();
+			itr = s.get_next();
 		}
 		s.DestroyBTreeFileScan();
 		System.out.println();
 	}
 	
 	public void EdgeQuery1(GraphDBManager db) throws InvalidSlotNumberException, InvalidTupleSizeException, HFException, HFDiskMgrException, HFBufMgrException, Exception{
-//		BTFileScan s = db.btmgr.edgelabelbtree_s.new_scan(null, null);
-//		KeyDataEntry itr = s.get_next();
-//		while (itr != null) {
-//			Edge e = new Edge(db.hfmgr.getEdgefile().getRecord(((LeafData) itr.data).getData()));
-//			e.print();
-//			itr = s.get_next();
-//		}
-//		s.DestroyBTreeFileScan();
-		BT.printAllLeafPages(db.btmgr.edgelabelbtree_s.getHeaderPage());
+		BTFileScan s = db.btmgr.edgelabelbtree_s.new_scan(null, null);
+		KeyDataEntry itr = s.get_next();
+		while (itr != null) {
+			Edge e = new Edge(db.hfmgr.getEdgefile().getRecord(((LeafData) itr.data).getData()));
+			e.print();
+			itr = s.get_next();
+		}
+		s.DestroyBTreeFileScan();
 	}
 	
 	public void EdgeQuery2(GraphDBManager db) throws InvalidSlotNumberException, InvalidTupleSizeException, HFException, HFDiskMgrException, HFBufMgrException, Exception{
