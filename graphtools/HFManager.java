@@ -175,6 +175,7 @@ class HFManager implements  GlobalConst{
 	public void closeScan(){
 		if(nscan != null) nscan.closescan();
 	}
+
 	public Node scanNextNode(){
 		try{
 			tuple = nscan.getNext(rid);
@@ -503,6 +504,7 @@ class HFManager implements  GlobalConst{
 				String lbl = node.getLabel();
 				if(label.compareTo(lbl) == 0){
 					node.print();
+					closeScan();
 					break;
 				}
 			}catch(Exception e){

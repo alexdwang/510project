@@ -28,8 +28,6 @@ public class GraphDBRunner implements GlobalConst{
 		Scanner scan = new Scanner(System.in);
 		String cmd = null;
 		GraphDBManager db = new GraphDBManager();
-		db.init("g9");
-		curdb = "g9";
 		PCounter.initialize();
 		do{
 			System.out.print("###");
@@ -45,7 +43,7 @@ public class GraphDBRunner implements GlobalConst{
 					}
 					if(curdb.compareTo(cmds[2]) != 0){
 						try{
-							if(dbset.size() > 0) SystemDefs.closeSystem();
+							if(dbset.size() > 0) db.closeDB();;
 							db.init(cmds[2]);
 						}catch(Exception e){
 							System.err.println ("failed to change to new db\n");
@@ -72,7 +70,7 @@ public class GraphDBRunner implements GlobalConst{
 					}
 					if(curdb.compareTo(cmds[2]) != 0){
 						try{
-							if(dbset.size() > 0) SystemDefs.closeSystem();
+							if(dbset.size() > 0) db.closeDB();;
 							db.init(cmds[2]);
 						}catch(Exception e){
 							System.err.println ("failed to change to new db\n");
@@ -91,13 +89,14 @@ public class GraphDBRunner implements GlobalConst{
 					break;
 				}
 				case "batchnodedelete":
+				{
 					if(cmds.length < 3){
 						System.out.println("invalid arguements");
 						break;
 					}
 					if(curdb.compareTo(cmds[2]) != 0){
 						try{
-							if(dbset.size() > 0) SystemDefs.closeSystem();
+							if(dbset.size() > 0) db.closeDB();;
 							db.init(cmds[2]);
 						}catch(Exception e){
 							System.err.println ("failed to change to new db\n");
@@ -114,13 +113,38 @@ public class GraphDBRunner implements GlobalConst{
 						e.printStackTrace();
 					}
 					break;
+				}
 				case "batchedgedelete":
+				{
+					if(cmds.length < 3){
+						System.out.println("invalid arguements");
+						break;
+					}
+					if(curdb.compareTo(cmds[2]) != 0){
+						try{
+							if(dbset.size() > 0) db.closeDB();;
+							db.init(cmds[2]);
+						}catch(Exception e){
+							System.err.println ("failed to change to new db\n");
+							e.printStackTrace();
+						}
+						
+						if(!dbset.contains(cmds[2])) dbset.add(cmds[2]);
+						curdb = cmds[2];
+					}
+					try{
+						db.deleteEdge(cmds[1]);
+					}catch(Exception e){
+						System.err.println ("Error when inserting nodes");
+						e.printStackTrace();
+					}
 					break;
+				}
 				case "nodequery":
 				{
 					if(cmds.length < 5 ||
 						cmds[3] == "2" && cmds.length != 10 ||
-						cmds[3] == "3" && cmds.length != 10 ||
+						cmds[3] == "3" && cmds.length != 11 ||
 						cmds[3] == "4" && cmds.length != 6 ||
 						cmds[3] == "5" && cmds.length != 11
 						){
@@ -129,7 +153,7 @@ public class GraphDBRunner implements GlobalConst{
 					}
 					if(curdb.compareTo(cmds[1]) != 0){
 						try{
-							SystemDefs.closeSystem();
+							db.closeDB();;
 							db.init(cmds[1], Integer.valueOf(cmds[2]));
 						}catch(Exception e){
 							System.err.println ("failed to change to new db\n");
@@ -178,6 +202,7 @@ public class GraphDBRunner implements GlobalConst{
 							double dist = Double.valueOf(cmds[10]);
 							if(index == 1){
 								try{
+									//System.out.println(desc.toString() + " " + dist);
 									db.btmgr.NodeQueryIndex3(db, desc, (int)dist);
 								}catch(Exception e){
 									e.printStackTrace();
@@ -223,7 +248,7 @@ public class GraphDBRunner implements GlobalConst{
 					}
 					if(cmds[1].compareTo(curdb) != 0){
 						try{
-							SystemDefs.closeSystem();
+							db.closeDB();
 							db.init(cmds[1], Integer.valueOf(cmds[2]));
 						}catch(Exception e){
 							System.err.println ("failed to change to new db\n");
@@ -237,6 +262,7 @@ public class GraphDBRunner implements GlobalConst{
 					int index = Integer.valueOf(cmds[4]);
 					switch(qtype){
 						case 0:
+							db.hfmgr.EdgeQuery01234(qtype);
 						case 1:
 							if(index == 1){
 								try{
@@ -244,8 +270,8 @@ public class GraphDBRunner implements GlobalConst{
 								}catch(Exception e){
 									e.printStackTrace();
 								}
-								break;
-							}
+							}else db.hfmgr.EdgeQuery01234(qtype);
+							break;
 						case 2:
 							if(index == 1){
 								try{
@@ -253,8 +279,8 @@ public class GraphDBRunner implements GlobalConst{
 								}catch(Exception e){
 									e.printStackTrace();
 								}
-								break;
-							}
+							}else db.hfmgr.EdgeQuery01234(qtype);
+							break;
 						case 3:
 							if(index == 1){
 								try{
@@ -262,8 +288,8 @@ public class GraphDBRunner implements GlobalConst{
 								}catch(Exception e){
 									e.printStackTrace();
 								}
-								break;
-							}
+							}else db.hfmgr.EdgeQuery01234(qtype);
+							break;
 						case 4:
 							if(index == 1){
 								try{
@@ -296,7 +322,7 @@ public class GraphDBRunner implements GlobalConst{
 				case "quit":
 				{
 					try{
-						SystemDefs.closeSystem();
+						db.closeDB();;
 					}catch(Exception e){
 							System.err.println ("failed to close db\n");
 							e.printStackTrace();
@@ -307,10 +333,12 @@ public class GraphDBRunner implements GlobalConst{
 					System.out.println("Can't find command " + cmds[0]);
 					break;
 			}
-			System.out.println("Node Cnts = " + db.hfmgr.getNodeCnt());
-			System.out.println("Edge Cnts = " + db.hfmgr.getEdgeCnt());
-			System.out.println("Read Cnt = " + PCounter.rcounter);
-			System.out.println("Write Cnt = " + PCounter.wcounter);
+			if(cmd.compareTo("quit") != 0){
+				System.out.println("Node Cnts = " + db.hfmgr.getNodeCnt());
+				System.out.println("Edge Cnts = " + db.hfmgr.getEdgeCnt());
+				System.out.println("Read Cnt = " + PCounter.rcounter);
+				System.out.println("Write Cnt = " + PCounter.wcounter);
+			}
 		}while(cmd.compareTo("quit") != 0);
 	}
 }

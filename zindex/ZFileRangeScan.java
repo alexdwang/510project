@@ -20,19 +20,21 @@ public class ZFileRangeScan {
 
     private BTFileScan scan;
 
-    public ZFileRangeScan(ZTreeFile zFile, DescriptorKey key, int distance) {
+    public ZFileRangeScan(ZTreeFile zFile, Descriptor key, int distance) {
         this.zTreeFile = zFile;
         this.distance = distance;
 
-        String keyCode = key.getKey();
-        int[] target = ZEncoder.decodeAsArray(keyCode);
+        int[] target = new int[5];
+        for (int i = 0; i < 5; i++) {
+            target[i] = key.get(i);
+        }
         int[] hi = new int[5];
         int[] lo = new int[5];
         for (int i = 0; i < 5; i++) {
             hi[i] = target[i] + distance;
             lo[i] = target[i] - distance;
         }
-        this.origin.set(target);
+        this.origin = key;
         this.hiCode = ZEncoder.encodeArray(hi);
         this.loCode = ZEncoder.encodeArray(lo);
 

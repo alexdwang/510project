@@ -153,7 +153,7 @@ public class DB implements GlobalConst {
     catch (IOException e) {
       throw new FileIOException(e, "DB file I/O error");
     }
-    
+    PCounter.readIncrement();
   }
   
   /** Write the contents in a page object to the specified page.
@@ -183,7 +183,7 @@ public class DB implements GlobalConst {
     catch (IOException e) {
       throw new FileIOException(e, "DB file I/O error");
     }
-    
+    PCounter.writeIncrement();
   }
   
   /** Allocate a set of pages where the run size is taken to be 1 by default.
