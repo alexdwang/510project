@@ -421,8 +421,7 @@ public class BTManager {
 	}
 	
 	public boolean deleteedgeweight(KeyClass key, RID rid) throws Exception {
-		IntegerKey keyToDel = new IntegerKey(Integer.parseInt(((StringKey)key).toString()));
-		edgeweightbtree.Delete(keyToDel, rid);
+		edgeweightbtree.Delete(key, rid);
 		return true;
 	}
 	
