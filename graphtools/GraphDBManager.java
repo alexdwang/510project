@@ -155,6 +155,7 @@ class GraphDBManager implements GlobalConst {
 						Edge edge = new Edge(hfmgr.getEdgefile().getRecord(rid_esl.get(i)));
 						KeyClass ekey = new StringKey(edge.getLabel());
 						btmgr.deleteedge(ekey, rid_esl.get(i));
+						btmgr.deleteedgeweight(ekey, rid_esl.get(i));
 						hfmgr.deleteedge(rid_esl.get(i));
 					}
 					for (int j = 0; j < rid_edl.size(); j++) {
@@ -164,6 +165,7 @@ class GraphDBManager implements GlobalConst {
 								Edge edge = new Edge(hfmgr.getEdgefile().getRecord(rid_edl.get(j)));
 								KeyClass ekey = new StringKey(edge.getLabel());
 								btmgr.deleteedge(ekey, rid_edl.get(i));
+								btmgr.deleteedgeweight(ekey, rid_edl.get(i));
 							}
 									
 						}
@@ -173,6 +175,7 @@ class GraphDBManager implements GlobalConst {
 						Edge edge = new Edge(hfmgr.getEdgefile().getRecord(rid_esl.get(i)));
 						KeyClass ekey = new StringKey(edge.getLabel());
 						btmgr.deleteedge(ekey, rid_esl.get(i));
+						btmgr.deleteedgeweight(ekey, rid_esl.get(i));
 						btmgr.deleteedge_s(key, rid_esl.get(i));
 						hfmgr.deleteedge(rid_esl.get(i));
 					}
@@ -181,7 +184,8 @@ class GraphDBManager implements GlobalConst {
 				for (int i = 0; i < rid_edl.size(); i++) {
 					Edge edge = new Edge(hfmgr.getEdgefile().getRecord(rid_esl.get(i)));
 					KeyClass ekey = new StringKey(edge.getLabel());
-					btmgr.deleteedge(ekey, rid_esl.get(i));
+					btmgr.deleteedge(ekey, rid_edl.get(i));
+					btmgr.deleteedgeweight(ekey, rid_edl.get(i));
 					btmgr.deleteedge_d(key, rid_edl.get(i));
 					hfmgr.deleteedge(rid_esl.get(i));
 				}
@@ -259,23 +263,12 @@ class GraphDBManager implements GlobalConst {
 //		BT.printAllLeafPages(btmgr.getEdgelabelbtree().getHeaderPage());
 	}
 
-	public void closeDB(){
-		try{
-			btmgr.closeAllFile();
-			SystemDefs.closeSystem();
-		}catch(Exception e){
-			e.printStackTrace();
-			System.err.println("Error during close db\n");
-		}
-		
-	}
-
 	public static void main(String[] argvs) {
 		String dbname = argvs[1];
 		String nodefilename = argvs[0];
 		String edgefilename = argvs[2];
-		String insertdeletefilename = argvs[3];
-		String nodedeletefilename = argvs[4];
+//		String insertdeletefilename = argvs[3];
+//		String nodedeletefilename = argvs[4];
 
 		try {
 			GraphDBManager db = new GraphDBManager();
@@ -283,8 +276,7 @@ class GraphDBManager implements GlobalConst {
 			db.insertNodes(nodefilename);
 			db.insertEdges(edgefilename);
 			// db.insertNodes(insertdeletefilename);
-
-			db.deleteEdge(nodedeletefilename);
+//			db.deleteEdge(nodedeletefilename);
 
 			db.deleteDBFile();
 		} catch (Exception e) {

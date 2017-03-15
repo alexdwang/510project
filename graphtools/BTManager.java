@@ -420,6 +420,11 @@ public class BTManager {
 		return true;
 	}
 	
+	public boolean deleteedgeweight(KeyClass key, RID rid) throws Exception {
+		edgeweightbtree.Delete(key, rid);
+		return true;
+	}
+	
 	
 	
 	public void NodeQuery1(GraphDBManager db) throws InvalidSlotNumberException, InvalidTupleSizeException, HFException, HFDiskMgrException, HFBufMgrException, Exception{
