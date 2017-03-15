@@ -211,6 +211,33 @@ public class BTManager {
 		}
 	}
 
+	public void insertNodetoZT(HFManager hfm, String filename) throws Exception {
+		System.out.println("start inserting nodes to Z-Tree");
+		File file = new File(filename);
+		Scanner scan = new Scanner(file);
+		int cnt = 0;
+		while (scan.hasNextLine()) {
+			String line = scan.nextLine();
+			String[] data = line.split(" ");
+			String label = data[0];
+
+			RID rid = new RID();
+			Node node = new Node();
+			KeyClass key;
+			hfm.initScanNode();
+
+			while ((node = hfm.scanNextNode()) != null) {
+				if (node.getLabel().equals(label)) {
+					rid = hfm.getCurRID();
+					key = new StringKey(ZEncoder.encode(node.getDesc()));
+					nodeDescriptorTree.insert(key, rid);
+					hfm.closeScan();
+					break;
+				}
+			}
+		}
+	}
+
 	public void insertEdgetoEWBT(HFManager hfm, String fileName) throws Exception {
 
 		System.out.println("start inserting edges");
