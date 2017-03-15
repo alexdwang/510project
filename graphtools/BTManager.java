@@ -421,7 +421,8 @@ public class BTManager {
 	}
 	
 	public boolean deleteedgeweight(KeyClass key, RID rid) throws Exception {
-		edgeweightbtree.Delete(key, rid);
+		IntegerKey keyToDel = new IntegerKey(Integer.parseInt(((StringKey)key).toString()));
+		edgeweightbtree.Delete(keyToDel, rid);
 		return true;
 	}
 	
@@ -525,7 +526,8 @@ public class BTManager {
 	}
 
 	public void NodeQueryIndex3(GraphDBManager db, Descriptor target, int distance) throws Exception {
-		ZFileRangeScan rangeScan = new ZFileRangeScan(this.nodeDescriptorTree, target, distance);
+		DescriptorKey descKey = new DescriptorKey(ZEncoder.encode(target));
+		ZFileRangeScan rangeScan = new ZFileRangeScan(this.nodeDescriptorTree, descKey, distance);
 		KeyDataEntry itr = rangeScan.getNext();
 		while (itr != null) {
 			Node node = new Node(db.hfmgr.getNodefile().getRecord(((LeafData) itr.data).getData()));
@@ -536,7 +538,8 @@ public class BTManager {
 	}
 
 	public void NodeQueryIndex5(GraphDBManager db, Descriptor target, int distance) throws Exception {
-		ZFileRangeScan rangeScan = new ZFileRangeScan(this.nodeDescriptorTree, target, distance);
+		DescriptorKey descKey = new DescriptorKey(ZEncoder.encode(target));
+		ZFileRangeScan rangeScan = new ZFileRangeScan(this.nodeDescriptorTree, descKey, distance);
 		KeyDataEntry itr = rangeScan.getNext();
 		while (itr != null) {
 			Node node = new Node(db.hfmgr.getNodefile().getRecord(((LeafData) itr.data).getData()));
