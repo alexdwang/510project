@@ -525,8 +525,8 @@ public class BTManager {
 	}
 
 	public void NodeQueryIndex3(GraphDBManager db, Descriptor target, int distance) throws Exception {
-		DescriptorKey descKey = new DescriptorKey(ZEncoder.encode(target));
-		ZFileRangeScan rangeScan = new ZFileRangeScan(this.nodeDescriptorTree, descKey, distance);
+		//DescriptorKey descKey = new DescriptorKey(ZEncoder.encode(target));
+		ZFileRangeScan rangeScan = new ZFileRangeScan(this.nodeDescriptorTree, target, distance);
 		KeyDataEntry itr = rangeScan.getNext();
 		while (itr != null) {
 			Node node = new Node(db.hfmgr.getNodefile().getRecord(((LeafData) itr.data).getData()));
@@ -537,8 +537,8 @@ public class BTManager {
 	}
 
 	public void NodeQueryIndex5(GraphDBManager db, Descriptor target, int distance) throws Exception {
-		DescriptorKey descKey = new DescriptorKey(ZEncoder.encode(target));
-		ZFileRangeScan rangeScan = new ZFileRangeScan(this.nodeDescriptorTree, descKey, distance);
+		//DescriptorKey descKey = new DescriptorKey(ZEncoder.encode(target));
+		ZFileRangeScan rangeScan = new ZFileRangeScan(this.nodeDescriptorTree, target, distance);
 		KeyDataEntry itr = rangeScan.getNext();
 		while (itr != null) {
 			Node node = new Node(db.hfmgr.getNodefile().getRecord(((LeafData) itr.data).getData()));
