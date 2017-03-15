@@ -458,6 +458,7 @@ public class BTManager {
 			}
 			ss.DestroyBTreeFileScan();
 			System.out.println();
+			itr = s.get_next();
 		}
 		s.DestroyBTreeFileScan();
 		System.out.println();
