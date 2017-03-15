@@ -159,6 +159,14 @@ class GraphDBManager implements GlobalConst {
 					}
 					for (int j = 0; j < rid_edl.size(); j++) {
 						btmgr.deleteedge_d(key, rid_edl.get(j));
+						for(int i=0;i < rid_esl.size();i++){
+							if(!rid_esl.get(i).equals(rid_edl.get(j))){
+								Edge edge = new Edge(hfmgr.getEdgefile().getRecord(rid_edl.get(j)));
+								KeyClass ekey = new StringKey(edge.getLabel());
+								btmgr.deleteedge(ekey, rid_edl.get(i));
+							}
+									
+						}
 					}
 				} else {
 					for (int i = 0; i < rid_esl.size(); i++) {
