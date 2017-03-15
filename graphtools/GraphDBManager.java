@@ -263,6 +263,15 @@ class GraphDBManager implements GlobalConst {
 //		BT.printAllLeafPages(btmgr.getEdgelabelbtree().getHeaderPage());
 	}
 
+	public void closeDB(){
+		try{
+			btmgr.closeAllFile();
+			SystemDefs.closeSystem();
+		}catch (Exception e) {
+			e.printStackTrace();
+			System.err.println("Error encountered during closing db\n");
+		}
+	}
 	public static void main(String[] argvs) {
 		String dbname = argvs[1];
 		String nodefilename = argvs[0];
