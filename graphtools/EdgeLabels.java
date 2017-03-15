@@ -14,6 +14,8 @@ import graphtools.*;
 class EdgeLabelsDriver implements GlobalConst {
 	public int keyType = AttrType.attrString;
 	public BTreeFile file;
+	public BTreeFile file1;
+	public BTreeFile file2;
 	public HFManager hfm = null;
 	public BTManager btm = null;
 
@@ -54,11 +56,12 @@ class EdgeLabelsDriver implements GlobalConst {
 			file.insert(key, rid);
 		}
 		btm.setEdgelabelbtree(file);
+		
 	}
 	
 	public void ConstructBTEL_S() throws Exception {
 
-		file = new BTreeFile("EdgeLabelTree_Source", keyType, 20, 1);// full delete
+		file2 = new BTreeFile("EdgeLabelTree_Source", keyType, 20, 1);// full delete
 		Edge edge = new Edge();
 		KeyClass key;
 		RID rid = new RID();
@@ -67,14 +70,15 @@ class EdgeLabelsDriver implements GlobalConst {
 		while ((edge = hfm.scanNextEdge()) != null) {
 			key = new StringKey(edge.getSource());
 			rid = hfm.getCurRID();
-			file.insert(key, rid);
+			file2.insert(key, rid);
 		}
-		btm.setEdgelabelbtree_s(file);
+		BT.printAllLeafPages(file2.getHeaderPage());
+		btm.setEdgelabelbtree_s(file2);
 	}
 	
 	public void ConstructBTEL_D() throws Exception {
 
-		file = new BTreeFile("EdgeLabelTree_Destination", keyType, 20, 1);// full delete
+		file1 = new BTreeFile("EdgeLabelTree_Destination", keyType, 20, 1);// full delete
 		Edge edge = new Edge();
 		KeyClass key;
 		RID rid = new RID();
@@ -83,9 +87,9 @@ class EdgeLabelsDriver implements GlobalConst {
 		while ((edge = hfm.scanNextEdge()) != null) {
 			key = new StringKey(edge.getDestination());
 			rid = hfm.getCurRID();
-			file.insert(key, rid);
+			file1.insert(key, rid);
 		}
-		btm.setEdgelabelbtree_d(file);
+		btm.setEdgelabelbtree_d(file1);
 	}
 
 }
