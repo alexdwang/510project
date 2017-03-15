@@ -155,7 +155,8 @@ class GraphDBManager implements GlobalConst {
 						Edge edge = new Edge(hfmgr.getEdgefile().getRecord(rid_esl.get(i)));
 						KeyClass ekey = new StringKey(edge.getLabel());
 						btmgr.deleteedge(ekey, rid_esl.get(i));
-						btmgr.deleteedgeweight(ekey, rid_esl.get(i));
+						KeyClass mykey = new IntegerKey(edge.getWeight());
+						btmgr.deleteedgeweight(mykey, rid_esl.get(i));
 						hfmgr.deleteedge(rid_esl.get(i));
 					}
 					for (int j = 0; j < rid_edl.size(); j++) {
@@ -165,7 +166,8 @@ class GraphDBManager implements GlobalConst {
 								Edge edge = new Edge(hfmgr.getEdgefile().getRecord(rid_edl.get(j)));
 								KeyClass ekey = new StringKey(edge.getLabel());
 								btmgr.deleteedge(ekey, rid_edl.get(i));
-								btmgr.deleteedgeweight(ekey, rid_edl.get(i));
+								KeyClass mykey = new IntegerKey(edge.getWeight());
+								btmgr.deleteedgeweight(mykey, rid_edl.get(i));
 							}
 									
 						}
@@ -175,7 +177,8 @@ class GraphDBManager implements GlobalConst {
 						Edge edge = new Edge(hfmgr.getEdgefile().getRecord(rid_esl.get(i)));
 						KeyClass ekey = new StringKey(edge.getLabel());
 						btmgr.deleteedge(ekey, rid_esl.get(i));
-						btmgr.deleteedgeweight(ekey, rid_esl.get(i));
+						KeyClass mykey = new IntegerKey(edge.getWeight());
+						btmgr.deleteedgeweight(mykey, rid_esl.get(i));
 						btmgr.deleteedge_s(key, rid_esl.get(i));
 						hfmgr.deleteedge(rid_esl.get(i));
 					}
@@ -185,7 +188,8 @@ class GraphDBManager implements GlobalConst {
 					Edge edge = new Edge(hfmgr.getEdgefile().getRecord(rid_esl.get(i)));
 					KeyClass ekey = new StringKey(edge.getLabel());
 					btmgr.deleteedge(ekey, rid_edl.get(i));
-					btmgr.deleteedgeweight(ekey, rid_edl.get(i));
+					KeyClass mykey = new IntegerKey(edge.getWeight());
+					btmgr.deleteedgeweight(mykey, rid_edl.get(i));
 					btmgr.deleteedge_d(key, rid_edl.get(i));
 					hfmgr.deleteedge(rid_esl.get(i));
 				}
@@ -262,7 +266,6 @@ class GraphDBManager implements GlobalConst {
 		System.out.println("deleted "+cnt+" edges");
 //		BT.printAllLeafPages(btmgr.getEdgelabelbtree().getHeaderPage());
 	}
-
 	public void closeDB(){
 		try{
 			btmgr.closeAllFile();
@@ -272,6 +275,7 @@ class GraphDBManager implements GlobalConst {
 			System.err.println("Error encountered during closing db\n");
 		}
 	}
+	
 	public static void main(String[] argvs) {
 		String dbname = argvs[1];
 		String nodefilename = argvs[0];
