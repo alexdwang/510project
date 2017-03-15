@@ -54,7 +54,22 @@ public class BTManager {
 			e.printStackTrace();
 		}
 	}
-
+	
+	public void closeAllFile(){
+		try {
+			nodelabelbtree.close();
+			nodeDescriptorTree.close();
+			edgelabelbtree.close();
+			edgeweightbtree.close();
+			edgelabelbtree_s.close();
+			edgelabelbtree_d.close();
+			
+		} catch (PageUnpinnedException | InvalidFrameNumberException | HashEntryNotFoundException
+				| ReplacerException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+	}
 	public BTreeFile getNodelabelbtree() {
 		return nodelabelbtree;
 	}
@@ -457,7 +472,7 @@ public class BTManager {
 //			itr = s.get_next();
 //		}
 //		s.DestroyBTreeFileScan();
-		QueryPrint.printAllLeafPages(db.btmgr.edgelabelbtree_s.getHeaderPage(),db.hfmgr.getEdgefile());
+		BT.printAllLeafPages(db.btmgr.edgelabelbtree_s.getHeaderPage());
 	}
 	
 	public void EdgeQuery2(GraphDBManager db) throws InvalidSlotNumberException, InvalidTupleSizeException, HFException, HFDiskMgrException, HFBufMgrException, Exception{
