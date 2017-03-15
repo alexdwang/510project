@@ -19,12 +19,12 @@ import zindex.ZFileRangeScan;
 import zindex.ZTreeFile;
 
 public class BTManager {
-	private BTreeFile nodelabelbtree;
-	private ZTreeFile nodeDescriptorTree;
-	private BTreeFile edgelabelbtree;
-	private BTreeFile edgeweightbtree;
-	private BTreeFile edgelabelbtree_s;
-	private BTreeFile edgelabelbtree_d;
+	private BTreeFile nodelabelbtree=null;
+	private ZTreeFile nodeDescriptorTree=null;
+	private BTreeFile edgelabelbtree=null;
+	private BTreeFile edgeweightbtree=null;
+	private BTreeFile edgelabelbtree_s=null;
+	private BTreeFile edgelabelbtree_d=null;
 	
 	public BTManager(){
 		try {
@@ -57,12 +57,12 @@ public class BTManager {
 	
 	public void closeAllFile(){
 		try {
-			nodelabelbtree.close();
-			nodeDescriptorTree.close();
-			edgelabelbtree.close();
-			edgeweightbtree.close();
-			edgelabelbtree_s.close();
-			edgelabelbtree_d.close();
+			BTreeFile[] bts={nodelabelbtree, nodeDescriptorTree, edgelabelbtree, 
+					edgeweightbtree, edgelabelbtree_s, edgelabelbtree_d};
+			for(int i=0;i<bts.length;i++){
+				if(bts[i]!=null)
+					bts[i].close();
+			}
 			
 		} catch (PageUnpinnedException | InvalidFrameNumberException | HashEntryNotFoundException
 				| ReplacerException e) {
