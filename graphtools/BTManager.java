@@ -462,11 +462,9 @@ public class BTManager {
 				itrs = ss.get_next();
 			}
 			ss.DestroyBTreeFileScan();
-			System.out.println();
 			itr = s.get_next();
 		}
 		s.DestroyBTreeFileScan();
-		System.out.println();
 	}
 	
 	public void EdgeQuery1(GraphDBManager db) throws InvalidSlotNumberException, InvalidTupleSizeException, HFException, HFDiskMgrException, HFBufMgrException, Exception{
@@ -530,7 +528,9 @@ public class BTManager {
 		KeyDataEntry itr = rangeScan.getNext();
 		while (itr != null) {
 			Node node = new Node(db.hfmgr.getNodefile().getRecord(((LeafData) itr.data).getData()));
-			node.print();
+			if (node.getDesc().distance(target) == distance) {
+				System.out.println(node.getLabel());
+			}
 			itr = rangeScan.getNext();
 		}
 		rangeScan.endScan();

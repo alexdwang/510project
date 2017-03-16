@@ -153,12 +153,15 @@ class GraphDBManager implements GlobalConst {
 						hfmgr.deleteedge(rid_esl.get(i));
 					}
 					for (int j = 0; j < rid_edl.size(); j++) {
+						int count = 0;
 						for(int i=0;i < rid_esl.size();i++){
-							if(!rid_esl.get(i).equals(rid_edl.get(j))){
-								hfmgr.deleteedge(rid_edl.get(j));
+							if(rid_esl.get(i).equals(rid_edl.get(j))){
+								count++;
 							}
-									
+							
 						}
+						if (count==0)
+							hfmgr.deleteedge(rid_edl.get(j));	
 					}
 				} else {
 					for (int i = 0; i < rid_esl.size(); i++) {
@@ -216,7 +219,7 @@ class GraphDBManager implements GlobalConst {
 			mydfilescan.DestroyBTreeFileScan();
 			myefilescan.DestroyBTreeFileScan();
 			
-			System.out.println();
+//			System.out.println();
 			for(int i=0;i<rid_s.size();i++){
 				for (int j =0;j<rid_d.size();j++){
 					if(rid_s.get(i).pageNo.pid==rid_d.get(j).pageNo.pid&&rid_s.get(i).slotNo==rid_d.get(j).slotNo){

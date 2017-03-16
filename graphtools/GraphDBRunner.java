@@ -207,6 +207,7 @@ public class GraphDBRunner implements GlobalConst{
 								}catch(Exception e){
 									e.printStackTrace();
 								}
+								break;
 							}
 							db.hfmgr.NodeQuery3(desc, dist);
 							break;
@@ -263,6 +264,7 @@ public class GraphDBRunner implements GlobalConst{
 					switch(qtype){
 						case 0:
 							db.hfmgr.EdgeQuery01234(qtype);
+							break;
 						case 1:
 							if(index == 1){
 								try{
