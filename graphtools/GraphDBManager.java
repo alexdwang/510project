@@ -149,54 +149,31 @@ class GraphDBManager implements GlobalConst {
 			// delete edge whose source is this node
 			if (!rid_esl.isEmpty()) {
 				if (!rid_edl.isEmpty()) {
-
 					for (int i = 0; i < rid_esl.size(); i++) {
-						btmgr.deleteedge_s(key, rid_esl.get(i));
-						Edge edge = new Edge(hfmgr.getEdgefile().getRecord(rid_esl.get(i)));
-						KeyClass ekey = new StringKey(edge.getLabel());
-						btmgr.deleteedge(ekey, rid_esl.get(i));
-						KeyClass mykey = new IntegerKey(edge.getWeight());
-						btmgr.deleteedgeweight(mykey, rid_esl.get(i));
 						hfmgr.deleteedge(rid_esl.get(i));
 					}
 					for (int j = 0; j < rid_edl.size(); j++) {
-						btmgr.deleteedge_d(key, rid_edl.get(j));
 						for(int i=0;i < rid_esl.size();i++){
 							if(!rid_esl.get(i).equals(rid_edl.get(j))){
-								Edge edge = new Edge(hfmgr.getEdgefile().getRecord(rid_edl.get(j)));
-								KeyClass ekey = new StringKey(edge.getLabel());
-								btmgr.deleteedge(ekey, rid_edl.get(j));
-								KeyClass mykey = new IntegerKey(edge.getWeight());
-								btmgr.deleteedgeweight(mykey, rid_edl.get(j));
+								hfmgr.deleteedge(rid_edl.get(j));
 							}
 									
 						}
 					}
 				} else {
 					for (int i = 0; i < rid_esl.size(); i++) {
-						Edge edge = new Edge(hfmgr.getEdgefile().getRecord(rid_esl.get(i)));
-						KeyClass ekey = new StringKey(edge.getLabel());
-						btmgr.deleteedge(ekey, rid_esl.get(i));
-						KeyClass mykey = new IntegerKey(edge.getWeight());
-						btmgr.deleteedgeweight(mykey, rid_esl.get(i));
-						btmgr.deleteedge_s(key, rid_esl.get(i));
 						hfmgr.deleteedge(rid_esl.get(i));
 					}
 				}
 			} else if (!rid_edl.isEmpty()) {
 				for (int i = 0; i < rid_edl.size(); i++) {
-					Edge edge = new Edge(hfmgr.getEdgefile().getRecord(rid_esl.get(i)));
-					KeyClass ekey = new StringKey(edge.getLabel());
-					btmgr.deleteedge(ekey, rid_edl.get(i));
-					KeyClass mykey = new IntegerKey(edge.getWeight());
-					btmgr.deleteedgeweight(mykey, rid_edl.get(i));
-					btmgr.deleteedge_d(key, rid_edl.get(i));
 					hfmgr.deleteedge(rid_esl.get(i));
 				}
 			}
 			cnt++;
 		}
 		System.out.println(cnt + " nodes deleted");
+		rebuildtrees();
 	}
 	
 	public void deleteEdge(String fileName) throws Exception {
@@ -253,9 +230,6 @@ class GraphDBManager implements GlobalConst {
 			
 			if(!rid.isEmpty()){
 				for(int i=0;i<rid.size();i++){
-					btmgr.deleteedge_s(key[0], rid.get(i));
-					btmgr.deleteedge_d(key[1], rid.get(i));
-					btmgr.deleteedge(key[2], rid.get(i));
 					hfmgr.deleteedge(rid.get(i));
 				}
 				
@@ -264,8 +238,9 @@ class GraphDBManager implements GlobalConst {
 			
 		}
 		System.out.println("deleted "+cnt+" edges");
+		rebuildtrees();
 //		BT.printAllLeafPages(btmgr.getEdgelabelbtree().getHeaderPage());
-	}
+		}
 	public void closeDB(){
 		try{
 			btmgr.closeAllFile();
@@ -274,6 +249,26 @@ class GraphDBManager implements GlobalConst {
 			e.printStackTrace();
 			System.err.println("Error encountered during closing db\n");
 		}
+	}
+	
+	private void rebuildtrees(){
+		try {
+			btmgr.getEdgelabelbtree().destroyFile();
+			btmgr.getEdgelabelbtree_d().destroyFile();
+			btmgr.getEdgelabelbtree_s().destroyFile();
+			btmgr.getEdgeweightbtree().destroyFile();
+			EdgeLabelsDriver eld = new EdgeLabelsDriver(hfmgr, btmgr);
+			EdgeWeightDriver ewd = new EdgeWeightDriver(hfmgr, btmgr);
+			eld.ConstructBTEL();eld.ConstructBTEL_D();eld.ConstructBTEL_S();ewd.ConstructBTEW();
+		} catch (IteratorException | UnpinPageException | FreePageException | DeleteFileEntryException
+				| ConstructPageException | PinPageException | IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
 	}
 	
 	public static void main(String[] argvs) {

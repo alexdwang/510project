@@ -72,7 +72,7 @@ class EdgeLabelsDriver implements GlobalConst {
 			rid = hfm.getCurRID();
 			file2.insert(key, rid);
 		}
-		BT.printAllLeafPages(file2.getHeaderPage());
+//		BT.printAllLeafPages(file2.getHeaderPage());
 		btm.setEdgelabelbtree_s(file2);
 	}
 	
