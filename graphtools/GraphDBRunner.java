@@ -322,7 +322,8 @@ public class GraphDBRunner implements GlobalConst{
 				case "quit":
 				{
 					try{
-						db.closeDB();;
+						if(db.btmgr!=null)
+							db.closeDB();
 					}catch(Exception e){
 							System.err.println ("failed to close db\n");
 							e.printStackTrace();
@@ -333,7 +334,7 @@ public class GraphDBRunner implements GlobalConst{
 					System.out.println("Can't find command " + cmds[0]);
 					break;
 			}
-			if(cmd.compareTo("quit") != 0){
+			if(cmd.compareTo("quit") != 0 && db.hfmgr!=null){
 				System.out.println("Node Cnts = " + db.hfmgr.getNodeCnt());
 				System.out.println("Edge Cnts = " + db.hfmgr.getEdgeCnt());
 				System.out.println("Read Cnt = " + PCounter.rcounter);
