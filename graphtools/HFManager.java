@@ -479,7 +479,7 @@ class HFManager implements  GlobalConst{
 		while(node != null){
 			try{
 				Descriptor adesc = node.getDesc();
-				if(adesc.distance(desc) == distance){
+				if(adesc.distance(desc) <= distance){
 					String str = node.getLabel();
 					labels.add(str);
 				}
@@ -493,6 +493,7 @@ class HFManager implements  GlobalConst{
 		for(String s : labels){
 			System.out.println(s);
 		}
+		System.out.println(labels.size() + " results");
 	}
 
 	public void NodeQuery4(String label){
@@ -651,9 +652,12 @@ class HFManager implements  GlobalConst{
 	}
 
 	public boolean deleteedge(RID rid)
-			throws Exception
 	{
-		edgefile.deleteRecord(rid);
+		try{
+			edgefile.deleteRecord(rid);
+		}catch(Exception e){
+
+		}
 		
 		return true;
 		
