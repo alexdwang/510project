@@ -2,6 +2,12 @@ package graphtools;
 
 import java.io.File;
 import java.io.IOException;
+import java.math.BigInteger;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.PriorityQueue;
 import java.util.Scanner;
 
 import btree.*;
@@ -16,6 +22,7 @@ import nodeheap.*;
 import zindex.DescriptorKey;
 import zindex.ZEncoder;
 import zindex.ZFileRangeScan;
+import zindex.ZFileScan;
 import zindex.ZTreeFile;
 
 public class BTManager {
@@ -521,50 +528,113 @@ public class BTManager {
 		}
 		s.DestroyBTreeFileScan();
 	}
+	
+	static BigInteger targetInt;
+	
+	public void NodeQueryIndex2(GraphDBManager db, Descriptor target) {
+		String targetCode = ZEncoder.encode(target);
+		List<String> zlist = new LinkedList<>();
+		ZFileScan scan = new ZFileScan(this.nodeDescriptorTree);
+		KeyDataEntry itr = scan.getNext();
+		while (itr != null) {
+			zlist.add(((StringKey) itr.key).toString());
+			itr = scan.getNext();
+		}
+		// Sort the z-values
+		targetInt = new BigInteger(targetCode);
+		PriorityQueue<String> queue = new PriorityQueue<>(10, new Comparator<String>() {
+
+			@Override
+			public int compare(String o1, String o2) {
+				BigInteger int1 = new BigInteger(o1);
+				BigInteger int2 = new BigInteger(o2);
+				
+				return Math.abs(int1.subtract(targetInt).intValue()) - Math.abs(int2.subtract(targetInt).intValue());
+			}
+			
+		});
+		for (String zval: zlist) {
+			queue.offer(zval);
+		}
+
+		List<Node> nodes = new LinkedList<>();
+		for (String k : queue) {
+			BTFileScan zscan = this.nodeDescriptorTree.new_scan(new DescriptorKey(k), new DescriptorKey(k));
+			try {
+				KeyDataEntry data =  zscan.get_next();
+				RID nid = ((LeafData) data.data).getData();
+				Tuple n = db.hfmgr.getNodefile().getRecord(nid);
+				Node node = new Node(n);
+				node.print();
+			} catch (ScanIteratorException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			} catch (InvalidSlotNumberException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			} catch (InvalidTupleSizeException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			} catch (HFException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			} catch (HFDiskMgrException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			} catch (HFBufMgrException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			} catch (Exception e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+		}
+	}
 
 	public void NodeQueryIndex3(GraphDBManager db, Descriptor target, int distance) throws Exception {
-		//DescriptorKey descKey = new DescriptorKey(ZEncoder.encode(target));
 		ZFileRangeScan rangeScan = new ZFileRangeScan(this.nodeDescriptorTree, target, distance);
 		KeyDataEntry itr = rangeScan.getNext();
+		int nodeCnt = 0;
 		while (itr != null) {
 			Node node = new Node(db.hfmgr.getNodefile().getRecord(((LeafData) itr.data).getData()));
 			System.out.println(node.getLabel());
+			nodeCnt++;
 			itr = rangeScan.getNext();
 		}
+		System.out.println("Result set count: " + nodeCnt);
 		rangeScan.endScan();
 	}
 
 	public void NodeQueryIndex5(GraphDBManager db, Descriptor target, int distance) throws Exception {
-		//DescriptorKey descKey = new DescriptorKey(ZEncoder.encode(target));
 		ZFileRangeScan rangeScan = new ZFileRangeScan(this.nodeDescriptorTree, target, distance);
 		KeyDataEntry itr = rangeScan.getNext();
+		int nodeCnt = 0;
 		while (itr != null) {
 			Node node = new Node(db.hfmgr.getNodefile().getRecord(((LeafData) itr.data).getData()));
-			if (node.getDesc().distance(target) == distance) {
-				node.print();
+			node.print();
 
-				StringKey k = new StringKey(node.getLabel());
-
-				BTFileScan d = db.btmgr.edgelabelbtree_d.new_scan(k, k);
-				KeyDataEntry itrd = d.get_next();
-				while(itrd!=null){
-					Edge e = new Edge(db.hfmgr.getEdgefile().getRecord(((LeafData) itrd.data).getData()));
-					e.print();
-					itrd = d.get_next();
-				}
-				d.DestroyBTreeFileScan();
-				BTFileScan ss = db.btmgr.edgelabelbtree_s.new_scan(k, k);
-				KeyDataEntry itrs = ss.get_next();
-				while(itrs!=null){
-					Edge e = new Edge(db.hfmgr.getEdgefile().getRecord(((LeafData) itrs.data).getData()));
-					e.print();
-					itrs = ss.get_next();
-				}
-				ss.DestroyBTreeFileScan();
-				System.out.println();
+			StringKey k = new StringKey(node.getLabel());
+			BTFileScan d = db.btmgr.edgelabelbtree_d.new_scan(k, k);
+			KeyDataEntry itrd = d.get_next();
+			while(itrd!=null){
+				Edge e = new Edge(db.hfmgr.getEdgefile().getRecord(((LeafData) itrd.data).getData()));
+				e.print();
+				itrd = d.get_next();
 			}
+			d.DestroyBTreeFileScan();
+			BTFileScan ss = db.btmgr.edgelabelbtree_s.new_scan(k, k);
+			KeyDataEntry itrs = ss.get_next();
+			while(itrs!=null){
+				Edge e = new Edge(db.hfmgr.getEdgefile().getRecord(((LeafData) itrs.data).getData()));
+				e.print();
+				itrs = ss.get_next();
+			}
+			ss.DestroyBTreeFileScan();
+			System.out.println();
+			nodeCnt++;
 			itr = rangeScan.getNext();
 		}
+		System.out.println("Result set count: " + nodeCnt);
 		rangeScan.endScan();
 	}
 }

@@ -191,7 +191,13 @@ public class GraphDBRunner implements GlobalConst{
 								values[i-5] = Integer.valueOf(cmds[i]);
 							}
 							desc.set(values);
-							db.hfmgr.NodeQuery2(desc);
+							if(index == 1){
+								try{
+									db.btmgr.NodeQueryIndex2(db,desc);
+								}catch(Exception e){
+									e.printStackTrace();
+								}
+							}else db.hfmgr.NodeQuery2(desc);
 							break;
 						}
 						case 3:
