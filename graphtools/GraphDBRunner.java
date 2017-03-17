@@ -23,6 +23,7 @@ public class GraphDBRunner implements GlobalConst{
 	public static void main(String [] argvs) {
 		Set<String> dbset = new HashSet<String>();
 		String curdb = "";
+		int curbufnum = 5000;
 		System.out.println("=== DBGraph test program ===");
 		System.out.println("=== You can type 'help' to see valid comands ===");
 		Scanner scan = new Scanner(System.in);
@@ -122,7 +123,7 @@ public class GraphDBRunner implements GlobalConst{
 					}
 					if(curdb.compareTo(cmds[2]) != 0){
 						try{
-							if(dbset.size() > 0) db.closeDB();;
+							if(dbset.size() > 0) db.closeDB();
 							db.init(cmds[2]);
 						}catch(Exception e){
 							System.err.println ("failed to change to new db\n");
@@ -151,10 +152,12 @@ public class GraphDBRunner implements GlobalConst{
 						System.out.println("invalid arguements");
 						break;
 					}
-					if(curdb.compareTo(cmds[1]) != 0){
+					int bufnum = Integer.valueOf(cmds[2]);
+					if(curdb.compareTo(cmds[1]) != 0 || curbufnum != bufnum){
 						try{
 							db.closeDB();;
-							db.init(cmds[1], Integer.valueOf(cmds[2]));
+							db.init(cmds[1], bufnum);
+							curbufnum = bufnum;
 						}catch(Exception e){
 							System.err.println ("failed to change to new db\n");
 							e.printStackTrace();
