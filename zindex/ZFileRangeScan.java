@@ -8,6 +8,7 @@ import bufmgr.ReplacerException;
 import global.Descriptor;
 
 import java.io.IOException;
+import java.math.BigInteger;
 
 public class ZFileRangeScan {
 
@@ -32,11 +33,15 @@ public class ZFileRangeScan {
         int[] lo = new int[5];
         for (int i = 0; i < 5; i++) {
             hi[i] = target[i] + distance;
+            if (hi[i] < 0) hi[i] = 0;
             lo[i] = target[i] - distance;
+            if (lo[i] < 0) lo[i] = 0;
         }
         this.origin = key;
         this.hiCode = ZEncoder.encodeArray(hi);
         this.loCode = ZEncoder.encodeArray(lo);
+        BigInteger hiCodeInt = new BigInteger(hiCode, 2);
+        BigInteger loCodeInt = new BigInteger(loCode, 2);
 
         this.scan = zTreeFile.new_scan(new DescriptorKey(loCode), new DescriptorKey(hiCode));
     }

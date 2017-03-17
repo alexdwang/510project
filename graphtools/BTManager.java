@@ -528,9 +528,7 @@ public class BTManager {
 		KeyDataEntry itr = rangeScan.getNext();
 		while (itr != null) {
 			Node node = new Node(db.hfmgr.getNodefile().getRecord(((LeafData) itr.data).getData()));
-			if (node.getDesc().distance(target) == distance) {
-				System.out.println(node.getLabel());
-			}
+			System.out.println(node.getLabel());
 			itr = rangeScan.getNext();
 		}
 		rangeScan.endScan();

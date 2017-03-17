@@ -63,7 +63,7 @@ public class ZEncoder {
 
         int[] result = new int[5];
         for (int i = 4; i >= 0; i--) {
-            result[i] = Integer.parseInt(binVectors[4-i].toString(), 2);
+            result[i] = (short) Integer.parseInt(binVectors[4-i].toString(), 2);
         }
         return result;
     }

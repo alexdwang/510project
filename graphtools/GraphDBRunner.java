@@ -23,7 +23,7 @@ public class GraphDBRunner implements GlobalConst{
 	public static void main(String [] argvs) {
 		Set<String> dbset = new HashSet<String>();
 		String curdb = "";
-		int curbufnum = 5000;
+		int curbufnum = 500;
 		System.out.println("=== DBGraph test program ===");
 		System.out.println("=== You can type 'help' to see valid comands ===");
 		Scanner scan = new Scanner(System.in);

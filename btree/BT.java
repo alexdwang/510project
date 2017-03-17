@@ -12,6 +12,7 @@ import global.*;
 import diskmgr.*;
 import bufmgr.*;
 import heap.*;
+import zindex.DescriptorKey;
 
 /**  
  * This file contains, among some debug utilities, the interface to our
@@ -54,6 +55,9 @@ public class BT  implements GlobalConst{
 	
 	return  (((IntegerKey)key1).getKey()).intValue() 
 	  - (((IntegerKey)key2).getKey()).intValue();
+      }
+      else if ((key1 instanceof DescriptorKey) && (key2 instanceof DescriptorKey)) {
+    	  return (((DescriptorKey) key1)).compareTo((DescriptorKey) key2);
       }
       else if  ( (key1 instanceof StringKey) && (key2 instanceof StringKey)){
         return ((StringKey)key1).getKey().compareTo(((StringKey)key2).getKey());
