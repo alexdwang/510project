@@ -145,7 +145,7 @@ class GraphDBManager implements GlobalConst {
 			} else {
 				System.err.println("Delete failed: no such node");
 			}
-
+			boolean delete_destination=false;
 			// delete edge whose source is this node
 			if (!rid_esl.isEmpty()) {
 				if (!rid_edl.isEmpty()) {
@@ -156,31 +156,31 @@ class GraphDBManager implements GlobalConst {
 						int count = 0;
 						for(int i=0;i < rid_esl.size();i++){
 							if(rid_esl.get(i).equals(rid_edl.get(j))){
-								count++;
+								count=1;
 							}
-							
 						}
-						if (count==0)
-							hfmgr.deleteedge(rid_edl.get(j));	
+						if (count==0&&delete_destination){
+							hfmgr.deleteedge(rid_edl.get(j));
+						}
 					}
 				} else {
 					for (int i = 0; i < rid_esl.size(); i++) {
 						hfmgr.deleteedge(rid_esl.get(i));
 					}
 				}
-			} else if (!rid_edl.isEmpty()) {
+			} else if (!rid_edl.isEmpty()&&delete_destination) {
 				for (int i = 0; i < rid_edl.size(); i++) {
-					hfmgr.deleteedge(rid_esl.get(i));
+					hfmgr.deleteedge(rid_edl.get(i));
 				}
 			}
 			cnt++;
 		}
-		System.out.println(cnt + " nodes deleted");
 		rebuildtrees();
+		System.out.println(cnt + " nodes deleted");
 	}
 	
 	public void deleteEdge(String fileName) throws Exception {
-		System.out.println("start deleting nodes");
+		System.out.println("start deleting edges");
 		File file = new File(fileName);
 		Scanner scan = new Scanner(file);
 		int cnt = 0;
