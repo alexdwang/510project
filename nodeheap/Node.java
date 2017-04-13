@@ -14,10 +14,10 @@ public class Node extends Tuple{
     * Creat a new tuple with length = max_size,tuple offset = 0.
     */
 
-   public static int FldID_LL = 1;
-   public static int FldID_Desc = 2;
-   public static int FldID_Label = 3;
-   public static short Fld_CNT = 3;
+   public static int FldID_Desc = 1;
+   public static int FldID_Label = 2;
+   public static short FLD_CNT = 2;
+   public static short LABEL_MAX_LENGTH = 32;
 
    public  Node()
    {
@@ -40,17 +40,12 @@ public class Node extends Tuple{
   InvalidTupleSizeException
   {
     super(fromTuple.getTupleByteArray(),0, fromTuple.getLength());
-    int leftsize = fromTuple.getLength() - ( 4 + 4 * 5 );
-    short[] labelSize = {(short)leftsize};
+    short[] labelSize = {LABEL_MAX_LENGTH};
     AttrType[] types = {
-      new AttrType(AttrType.attrInteger), 
       new AttrType(AttrType.attrDesc),
       new AttrType(AttrType.attrString)
     };
-    setHdr(Fld_CNT, types, labelSize);
-    int truesize = getIntFld(FldID_LL);
-    labelSize[0] = (short)truesize;
-    setHdr(Fld_CNT, types, labelSize);
+    setHdr(FLD_CNT, types, labelSize);
   }
 
   public String getLabel() 
@@ -71,7 +66,6 @@ public class Node extends Tuple{
   throws IOException,
   FieldNumberOutOfBoundException
   {
-    setIntFld(FldID_LL, alabel.length());
     setStrFld(FldID_Label, alabel);
   }
 

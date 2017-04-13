@@ -345,6 +345,7 @@ public class GraphDBRunner implements GlobalConst{
 					System.out.println("Can't find command " + cmds[0]);
 					break;
 			}
+
 			if(cmd.compareTo("quit") != 0 && db.hfmgr!=null){
 				System.out.println("Node Cnts = " + db.hfmgr.getNodeCnt());
 				System.out.println("Edge Cnts = " + db.hfmgr.getEdgeCnt());

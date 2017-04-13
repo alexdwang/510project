@@ -16,14 +16,12 @@ public class Edge extends Tuple{
 	private int weight;
 
 
-	public static int EdgeFld_Wgt = 1;
-	public static int EdgeFld_Src_ll = 2;
-	public static int EdgeFld_Dst_ll = 3;
-	public static int EdgeFld_ll = 4;
-	public static int EdgeFld_src_Lbl = 5;
-	public static int EdgeFld_dst_lbl = 6;
-	public static int EdgeFld_Lbl = 7;
-	public static short Fld_CNT = 7;
+	public static int FLD_WGT = 1;
+	public static int FLD_SRC_LABEL = 2;
+	public static int FLD_DST_LABEL = 3;
+	public static int FLD_LABEL = 4;
+	public static short FLD_CNT = 4;
+	public static short LABEL_MAX_LENGTH = 32;
 
 	public Edge(){
 		super();
@@ -47,29 +45,21 @@ public class Edge extends Tuple{
 	FieldNumberOutOfBoundException
 	{
 		super(fromTuple.getTupleByteArray(),0, fromTuple.getLength());
-		int leftsize = fromTuple.getLength() -  4 * 4;
-		short[] labelSize = {10, 10, 10};
+		short[] labelSize = {LABEL_MAX_LENGTH, LABEL_MAX_LENGTH, LABEL_MAX_LENGTH};
 		AttrType[] types = {
-	      new AttrType(AttrType.attrInteger), 
-	      new AttrType(AttrType.attrInteger), 
-	      new AttrType(AttrType.attrInteger), 
 	      new AttrType(AttrType.attrInteger), 
 	      new AttrType(AttrType.attrString),
 	      new AttrType(AttrType.attrString),
 	      new AttrType(AttrType.attrString)
 	    };
-	    setHdr(Fld_CNT, types, labelSize);
-	    labelSize[0] = (short)getIntFld(EdgeFld_Src_ll);
-	    labelSize[1] = (short)getIntFld(EdgeFld_Dst_ll);
-	    labelSize[2] = (short)getIntFld(EdgeFld_ll);
-	    setHdr(Fld_CNT, types, labelSize);
+	    setHdr(FLD_CNT, types, labelSize);
 	}
 
 	public String getSource()
 	throws IOException,
 	FieldNumberOutOfBoundException
 	{
-		String slbl = getStrFld(EdgeFld_src_Lbl);
+		String slbl = getStrFld(FLD_SRC_LABEL);
 		return slbl;
 	}
 
@@ -77,7 +67,7 @@ public class Edge extends Tuple{
 	throws IOException,
 	FieldNumberOutOfBoundException
 	{
-		String slbl = getStrFld(EdgeFld_dst_lbl);
+		String slbl = getStrFld(FLD_DST_LABEL);
 		return slbl;
 	}
 
@@ -85,14 +75,14 @@ public class Edge extends Tuple{
 	throws IOException,
 	FieldNumberOutOfBoundException
 	{
-		String slbl = getStrFld(EdgeFld_Lbl);
+		String slbl = getStrFld(FLD_LABEL);
 		return slbl;
 	}
 
 	public int getWeight()
 	throws IOException,
 	FieldNumberOutOfBoundException{
-		int weight = getIntFld(EdgeFld_Wgt);
+		int weight = getIntFld(FLD_WGT);
 		return weight;
 	}
 
@@ -100,8 +90,7 @@ public class Edge extends Tuple{
 	throws IOException,
 	FieldNumberOutOfBoundException
 	{
-		setIntFld(EdgeFld_ll, alabel.length());
-		setStrFld(EdgeFld_Lbl, alabel);
+		setStrFld(FLD_LABEL, alabel);
 		return this;
 	}
 
@@ -109,7 +98,7 @@ public class Edge extends Tuple{
 	throws IOException,
 	FieldNumberOutOfBoundException
 	{
-		setIntFld(EdgeFld_Wgt, aweight);
+		setIntFld(FLD_WGT, aweight);
 		return this;
 	}
 
@@ -117,8 +106,7 @@ public class Edge extends Tuple{
 	throws IOException,
 	FieldNumberOutOfBoundException
 	{
-		setIntFld(EdgeFld_Src_ll, sourcelbl.length());
-		setStrFld(EdgeFld_src_Lbl, sourcelbl);
+		setStrFld(FLD_SRC_LABEL, sourcelbl);
 		return this;
 	}
 
@@ -126,8 +114,7 @@ public class Edge extends Tuple{
 	throws IOException,
 	FieldNumberOutOfBoundException
 	{
-		setIntFld(EdgeFld_Dst_ll, dstlbl.length());
-		setStrFld(EdgeFld_dst_lbl, dstlbl);
+		setStrFld(FLD_DST_LABEL, dstlbl);
 		return this;
 	}
 

@@ -126,7 +126,7 @@ class SORTDriver extends TestDriver
 
     AttrType[] attrType = new AttrType[2];
     attrType[0] = new AttrType(AttrType.attrString);
-    attrType[1] = new AttrType(AttrType.attrString);
+    attrType[1] = new AttrType(AttrType.attrDesc);
     short[] attrSize = new short[2];
     attrSize[0] = REC_LEN1;
     attrSize[1] = REC_LEN2;
@@ -165,10 +165,12 @@ class SORTDriver extends TestDriver
       status = FAIL;
       e.printStackTrace();
     }
-    
+    Descriptor desc = new Descriptor();
+    desc.set(0,0,0,0,0);
     for (int i=0; i<NUM_RECORDS; i++) {
       try {
 	t.setStrFld(1, data1[i]);
+  t.setDescFld(2, desc);
       }
       catch (Exception e) {
 	status = FAIL;

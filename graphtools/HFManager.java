@@ -83,9 +83,9 @@ class HFManager implements  GlobalConst{
 				Integer.parseInt(data[3]), 
 				Integer.parseInt(data[4]),
 				Integer.parseInt(data[5]));
-			short[] labelsize = {(short)(label.length()+1)};
-			AttrType[] types = {new AttrType(AttrType.attrInteger), new AttrType(AttrType.attrDesc), new AttrType(AttrType.attrString)};
-			anode.setHdr(Node.Fld_CNT, types ,labelsize);
+			short[] labelsize = {Node.LABEL_MAX_LENGTH};
+			AttrType[] types = {new AttrType(AttrType.attrDesc), new AttrType(AttrType.attrString)};
+			anode.setHdr(Node.FLD_CNT, types ,labelsize);
 			anode.setLabel(label);
 			anode.setDesc(adesc);
 			nodefile.insertRecord(anode.getNodeByteArray());
@@ -126,17 +126,14 @@ class HFManager implements  GlobalConst{
 			String[] data = line.split(" ");
 			Edge aedge = new Edge();
 			int weight = Integer.valueOf(data[3]);
-			short[] labelsize = {(short)data[0].length(), (short)data[1].length(), (short)data[2].length()};
+			short[] labelsize = {Edge.LABEL_MAX_LENGTH, Edge.LABEL_MAX_LENGTH, Edge.LABEL_MAX_LENGTH};
 			AttrType[] types = {
-		      new AttrType(AttrType.attrInteger), 
-		      new AttrType(AttrType.attrInteger), 
-		      new AttrType(AttrType.attrInteger), 
 		      new AttrType(AttrType.attrInteger), 
 		      new AttrType(AttrType.attrString),
 		      new AttrType(AttrType.attrString),
 		      new AttrType(AttrType.attrString)
 		    };
-			aedge.setHdr(Edge.Fld_CNT, types ,labelsize);
+			aedge.setHdr(Edge.FLD_CNT, types ,labelsize);
 
 			aedge.setWeight(weight);
 			aedge.setSource(data[0]);
