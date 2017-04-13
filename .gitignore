@@ -38,3 +38,6 @@ Makefile
 
 # macOS
 .DS_Store
+
+# IDEA
+out/
