@@ -9,6 +9,7 @@ import diskmgr.*;
 import edgeheap.Edge;
 import global.*;
 import btree.*;
+import iterator.IndexNLJ_NodeSourceEdge;
 
 class GraphDBManager implements GlobalConst {
 
@@ -100,6 +101,7 @@ class GraphDBManager implements GlobalConst {
 			btmgr.insertEdgetoELBT_S(hfmgr, edgefilename);
 			btmgr.insertEdgetoELBT_D(hfmgr, edgefilename);
 			btmgr.insertEdgetoEWBT(hfmgr, edgefilename);
+			btmgr.insertEdgetoEIDBT(hfmgr, edgefilename);
 		}
 //		BT.printAllLeafPages(btmgr.getEdgelabelbtree().getHeaderPage());
 
@@ -260,6 +262,7 @@ class GraphDBManager implements GlobalConst {
 			btmgr.getEdgelabelbtree_d().destroyFile();
 			btmgr.getEdgelabelbtree_s().destroyFile();
 			btmgr.getEdgeweightbtree().destroyFile();
+			btmgr.getEdgeidbtree().destroyFile();
 			EdgeLabelsDriver eld = new EdgeLabelsDriver(hfmgr, btmgr);
 			EdgeWeightDriver ewd = new EdgeWeightDriver(hfmgr, btmgr);
 			eld.ConstructBTEL();eld.ConstructBTEL_D();eld.ConstructBTEL_S();ewd.ConstructBTEW();
@@ -275,9 +278,9 @@ class GraphDBManager implements GlobalConst {
 	}
 	
 	public static void main(String[] argvs) {
-		String dbname = argvs[1];
-		String nodefilename = argvs[0];
-		String edgefilename = argvs[2];
+		String dbname = "testdb";
+		String nodefilename = "InsertNodeData.txt";
+		String edgefilename = "InsertEdgeData.txt";
 //		String insertdeletefilename = argvs[3];
 //		String nodedeletefilename = argvs[4];
 
@@ -286,6 +289,16 @@ class GraphDBManager implements GlobalConst {
 			db.init(dbname);
 			db.insertNodes(nodefilename);
 			db.insertEdges(edgefilename);
+			NLJHelper nljHelper = new NLJHelper();
+			IndexNLJ_NodeSourceEdge test = nljHelper.nodeSourceEdgeJoin(44);
+			AttrType [] Jtype = {
+					new AttrType(AttrType.attrString),
+					new AttrType(AttrType.attrInteger),
+			};
+			Tuple t = null;
+			while ((t = test.get_next()) != null) {
+				t.print(Jtype);
+			}
 			// db.insertNodes(insertdeletefilename);
 //			db.deleteEdge(nodedeletefilename);
 

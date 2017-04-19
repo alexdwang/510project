@@ -32,7 +32,9 @@ public class BTManager {
 	private BTreeFile edgeweightbtree=null;
 	private BTreeFile edgelabelbtree_s=null;
 	private BTreeFile edgelabelbtree_d=null;
+	private BTreeFile edgeidbtree=null;
 	
+
 	public BTManager(){
 		try {
 			nodelabelbtree = new BTreeFile("NodeLabelTree", AttrType.attrString, 20, 1);
@@ -46,6 +48,7 @@ public class BTManager {
 			edgeweightbtree = new BTreeFile("EdgeWeightTree", AttrType.attrInteger, 4, 1);
 			edgelabelbtree_s = new BTreeFile("EdgeLabelTree_Source", AttrType.attrString, 20, 1);
 			edgelabelbtree_d = new BTreeFile("EdgeLabelTree_Destination", AttrType.attrString, 20, 1);
+			edgeidbtree = new BTreeFile("EdgeIdTree", AttrType.attrInteger, 4, 1);
 			
 		} catch (GetFileEntryException e) {
 			// TODO Auto-generated catch block
@@ -125,6 +128,13 @@ public class BTManager {
 		this.edgelabelbtree_d = edgelabelbtree_d;
 	}
 
+	public BTreeFile getEdgeidbtree() {
+		return edgeidbtree;
+	}
+
+	public void setEdgeidbtree(BTreeFile edgeidbtree) {
+		this.edgeidbtree = edgeidbtree;
+	}
 	public void insertNodetoNLBT(HFManager hfm, String fileName) throws Exception {
 
 		System.out.println("start inserting nodes");
@@ -281,6 +291,33 @@ public class BTManager {
 					rid = hfm.getCurRID();
 					key = new IntegerKey(edge.getWeight());
 					edgeweightbtree.insert(key, rid);
+				}
+			}
+		}
+
+	}
+	
+	public void insertEdgetoEIDBT(HFManager hfm, String fileName) throws Exception {
+
+		System.out.println("start inserting edges");
+		File file = new File(fileName);
+		Scanner scan = new Scanner(file);
+		while (scan.hasNextLine()) {
+			String line = scan.nextLine();
+			String[] data = line.split(" ");
+			String label = data[2];
+			int weight = Integer.valueOf(data[3]);
+
+			RID rid = new RID();
+			Edge edge = new Edge();
+			KeyClass key;
+			hfm.initScanEdge();
+
+			while ((edge = hfm.scanNextEdge()) != null) {
+				if (edge.getWeight() == weight) {
+					rid = hfm.getCurRID();
+					key = new IntegerKey(edge.getID());
+					edgeidbtree.insert(key, rid);
 				}
 			}
 		}
