@@ -9,6 +9,7 @@ import diskmgr.*;
 import edgeheap.Edge;
 import global.*;
 import btree.*;
+import iterator.IndexNLJ_NodeDestEdge;
 import iterator.IndexNLJ_NodeSourceEdge;
 
 class GraphDBManager implements GlobalConst {
@@ -290,7 +291,7 @@ class GraphDBManager implements GlobalConst {
 			db.insertNodes(nodefilename);
 			db.insertEdges(edgefilename);
 			NLJHelper nljHelper = new NLJHelper();
-			IndexNLJ_NodeSourceEdge test = nljHelper.nodeSourceEdgeJoin(44);
+			IndexNLJ_NodeDestEdge test = nljHelper.nodeDestEdgeJoin(null);
 			AttrType [] Jtype = {
 					new AttrType(AttrType.attrString),
 					new AttrType(AttrType.attrInteger),
