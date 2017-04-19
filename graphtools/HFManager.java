@@ -9,6 +9,7 @@ import edgeheap.*;
 import bufmgr.*;
 import diskmgr.*;
 import global.*;
+import iterator.*;
 import chainexception.*;
 import java.util.Scanner;
 import btree.*;
@@ -92,7 +93,6 @@ class HFManager implements  GlobalConst{
 			cnt++;
 		}
 		System.out.println(cnt + " nodes inserted");
-
 		/*
 		//test scan
 		initScanNode();
@@ -103,6 +103,53 @@ class HFManager implements  GlobalConst{
 		}
 		*/
 		return true;
+	}
+
+	public Sort SortNodes(int fld_no, short SORTPGNUM){
+		FileScan node_scanner;
+		Sort sort;
+		AttrType[] attrType = {new AttrType(AttrType.attrDesc), new AttrType(AttrType.attrString)};
+		short[] attrSize = {Node.LABEL_MAX_LENGTH};
+		TupleOrder[] order = { new TupleOrder(TupleOrder.Ascending), new TupleOrder(TupleOrder.Descending) };
+    	RelSpec rel = new RelSpec(RelSpec.outer); 
+    	FldSpec[] projlist = { new FldSpec(rel, 1), new FldSpec(rel, 2)};
+		try {
+			node_scanner = new FileScan(nodefilename, attrType, attrSize, (short) 2, 2, projlist, null);
+			sort = new Sort(attrType, (short) 2, attrSize, node_scanner, fld_no, order[0], Node.LABEL_MAX_LENGTH, 10);
+			return sort;
+		}catch (Exception e) {
+			e.printStackTrace();
+		} 
+		return null;
+	}
+
+	public Sort SortEdges(int fld_no, short SORTPGNUM){
+		FileScan edge_scanner;
+		Sort sort;
+		AttrType[] attrType = {
+		 new AttrType(AttrType.attrInteger),
+		 new AttrType(AttrType.attrInteger),
+		 new AttrType(AttrType.attrString),
+		 new AttrType(AttrType.attrString),
+		 new AttrType(AttrType.attrString) };
+		short[] attrSize = {Edge.LABEL_MAX_LENGTH,Edge.LABEL_MAX_LENGTH,Edge.LABEL_MAX_LENGTH};
+		TupleOrder[] order = { new TupleOrder(TupleOrder.Ascending), new TupleOrder(TupleOrder.Descending) };
+    	RelSpec rel = new RelSpec(RelSpec.outer); 
+    	FldSpec[] projlist = { 
+    		new FldSpec(rel, 1),
+    		new FldSpec(rel, 2),
+    		new FldSpec(rel, 3),
+    		new FldSpec(rel, 4),
+    		new FldSpec(rel, 5)
+    	};
+		try {
+			edge_scanner = new FileScan(edgefilename, attrType, attrSize, (short) 5, 5, projlist, null);
+			sort = new Sort(attrType, (short) 5, attrSize, edge_scanner, fld_no, order[0], Node.LABEL_MAX_LENGTH, SORTPGNUM);
+			return sort;
+		}catch (Exception e) {
+			e.printStackTrace();
+		} 
+		return null;
 	}
 
 	public boolean insertEdgesFromFile(String fileName)
@@ -128,6 +175,7 @@ class HFManager implements  GlobalConst{
 			int weight = Integer.valueOf(data[3]);
 			short[] labelsize = {Edge.LABEL_MAX_LENGTH, Edge.LABEL_MAX_LENGTH, Edge.LABEL_MAX_LENGTH};
 			AttrType[] types = {
+			  new AttrType(AttrType.attrInteger),	
 		      new AttrType(AttrType.attrInteger), 
 		      new AttrType(AttrType.attrString),
 		      new AttrType(AttrType.attrString),
@@ -135,6 +183,7 @@ class HFManager implements  GlobalConst{
 		    };
 			aedge.setHdr(Edge.FLD_CNT, types ,labelsize);
 
+			aedge.setID(cnt);
 			aedge.setWeight(weight);
 			aedge.setSource(data[0]);
 			aedge.setDestination(data[1]);
@@ -143,8 +192,7 @@ class HFManager implements  GlobalConst{
 			cnt++;
 		}
 		System.out.println(cnt + " edges inserted");
-
-		System.out.println(getLabelCnt());
+		//System.out.println(getLabelCnt());
 		/*
 		//test scan
 		initScanEdge();
@@ -273,7 +321,7 @@ class HFManager implements  GlobalConst{
 		return dstSet.size();
 	}
 
-	public void NodeQuery(int qtype){
+	public void NodeQuery(int qtype, short bufnum){
 		switch(qtype){
 		case 0:
 		{
@@ -292,23 +340,26 @@ class HFManager implements  GlobalConst{
 		}
 		case 1:
 		{
-			List<Node> nodes = new ArrayList<Node>();
-			initScanNode();
-			Node node = scanNextNode();
-			while(node != null){
-				nodes.add(node);
-				node = scanNextNode();
+			
+			Sort sort = SortNodes(2,bufnum);
+			if(sort == null){
+				System.err.println ("failed when sort\n");
+			}else{
+				try {
+					Tuple t = sort.get_next();
+					Node n;
+					while(t != null){
+						n = new Node(t);
+						n.print();
+						t = sort.get_next();
+					}
+					sort.close();
+			    }
+			    catch (Exception e) {
+			    	e.printStackTrace(); 
+			    }
 			}
-			//sort
-			try{
-				Collections.sort(nodes, LabelComparator);
-				for(Node n : nodes){
-					n.print();
-				}
-			}catch(Exception e){
-				System.err.println ("failed when query by label\n");
-				e.printStackTrace();
-			}
+			
 			break;
 		}
 
@@ -316,7 +367,8 @@ class HFManager implements  GlobalConst{
 
 	}
 
-	public void EdgeQuery01234(int qtype){
+	public void EdgeQuery01234(int qtype, short bufnum){
+		/*
 		List<Edge> edges = new ArrayList<Edge>();
 		initScanEdge();
 		Edge edge = scanNextEdge();
@@ -328,8 +380,9 @@ class HFManager implements  GlobalConst{
 		}catch(Exception e){
 			System.err.println ("failed when query by label\n");
 			e.printStackTrace();
-		}
+		}*/
 		//sort
+		/*
 		try{
 			if(qtype == 1) Collections.sort(edges, SourceLabelComparator);
 			else if(qtype == 2) Collections.sort(edges, DstLabelComparator);
@@ -341,6 +394,53 @@ class HFManager implements  GlobalConst{
 		}catch(Exception e){
 			System.err.println ("failed when query by label\n");
 			e.printStackTrace();
+		}
+		*/
+		switch(qtype){
+		case 0:{// sort by label
+			try{
+				Sort sort = SortEdges(5, bufnum);
+				Tuple t = sort.get_next();
+				Edge e;
+				while(t != null){
+					e = new Edge(t);
+					e.print();
+					t = sort.get_next();
+				}
+				sort.close();
+			}catch(Exception e){
+				System.err.println ("failed when query by label\n");
+				e.printStackTrace();
+			}
+			break;
+		}
+		case 1:{
+			try{
+				Sort sort = SortEdges(3, bufnum);
+				Tuple t = sort.get_next();
+				Edge e;
+				while(t != null){
+					e = new Edge(t);
+					e.print();
+					t = sort.get_next();
+				}
+				sort.close();
+			}catch(Exception e){
+				System.err.println ("failed when query by label\n");
+				e.printStackTrace();
+			}
+			break;
+		}
+		case 2:{
+			break;
+		}
+		case 3:{
+			break;
+		}
+		case 4:{
+			break;
+		}
+
 		}
 	}
 
