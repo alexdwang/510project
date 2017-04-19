@@ -23,7 +23,7 @@ public class GraphDBRunner implements GlobalConst{
 	public static void main(String [] argvs) {
 		Set<String> dbset = new HashSet<String>();
 		String curdb = "";
-		int curbufnum = 500;
+		int curbufnum = 5000;
 		System.out.println("=== DBGraph test program ===");
 		System.out.println("=== You can type 'help' to see valid comands ===");
 		Scanner scan = new Scanner(System.in);
@@ -45,7 +45,7 @@ public class GraphDBRunner implements GlobalConst{
 					if(curdb.compareTo(cmds[2]) != 0){
 						try{
 							if(dbset.size() > 0) db.closeDB();;
-							db.init(cmds[2]);
+							db.init(cmds[2], curbufnum);
 						}catch(Exception e){
 							System.err.println ("failed to change to new db\n");
 							e.printStackTrace();
@@ -153,9 +153,9 @@ public class GraphDBRunner implements GlobalConst{
 						break;
 					}
 					int bufnum = Integer.valueOf(cmds[2]);
-					if(curdb.compareTo(cmds[1]) != 0 || curbufnum != bufnum){
+					if(curdb.compareTo(cmds[1]) != 0){
 						try{
-							db.closeDB();;
+							if(curdb != "") db.closeDB();
 							db.init(cmds[1], bufnum);
 							curbufnum = bufnum;
 						}catch(Exception e){
@@ -165,13 +165,13 @@ public class GraphDBRunner implements GlobalConst{
 					}
 					if(!dbset.contains(cmds[1])) dbset.add(cmds[1]);
 					curdb = cmds[1];
-					
+					int sortbufnum = Integer.valueOf(cmds[2]);
 					//SystemDefs.updateBM(Integer.valueOf(cmds[2]));
 					int qtype = Integer.valueOf(cmds[3]);
 					int index = Integer.valueOf(cmds[4]);
 					switch(qtype){
 						case 0:
-							db.hfmgr.NodeQuery(qtype);
+							db.hfmgr.NodeQuery(qtype, (short)sortbufnum);
 							break;
 						case 1:
 							if(index == 1){
@@ -181,7 +181,7 @@ public class GraphDBRunner implements GlobalConst{
 									e.printStackTrace();
 								}
 							}
-							else db.hfmgr.NodeQuery(qtype);
+							else db.hfmgr.NodeQuery(qtype,(short)sortbufnum);
 							break;
 						case 2:
 						{
@@ -258,8 +258,8 @@ public class GraphDBRunner implements GlobalConst{
 					}
 					if(cmds[1].compareTo(curdb) != 0){
 						try{
-							db.closeDB();
-							db.init(cmds[1], Integer.valueOf(cmds[2]));
+							if(curdb != "") db.closeDB();
+							db.init(cmds[1], curbufnum);
 						}catch(Exception e){
 							System.err.println ("failed to change to new db\n");
 							e.printStackTrace();
@@ -267,12 +267,12 @@ public class GraphDBRunner implements GlobalConst{
 					}
 					if(!dbset.contains(cmds[1])) dbset.add(cmds[1]);
 					curdb = cmds[1];
-					//SystemDefs.updateBM(Integer.valueOf(cmds[2]));
+					int sortbufnum = Integer.valueOf(cmds[2]);
 					int qtype = Integer.valueOf(cmds[3]);
 					int index = Integer.valueOf(cmds[4]);
 					switch(qtype){
 						case 0:
-							db.hfmgr.EdgeQuery01234(qtype);
+							db.hfmgr.EdgeQuery01234(qtype, (short)sortbufnum);
 							break;
 						case 1:
 							if(index == 1){
@@ -281,7 +281,7 @@ public class GraphDBRunner implements GlobalConst{
 								}catch(Exception e){
 									e.printStackTrace();
 								}
-							}else db.hfmgr.EdgeQuery01234(qtype);
+							}else db.hfmgr.EdgeQuery01234(qtype, (short)sortbufnum);
 							break;
 						case 2:
 							if(index == 1){
@@ -290,7 +290,7 @@ public class GraphDBRunner implements GlobalConst{
 								}catch(Exception e){
 									e.printStackTrace();
 								}
-							}else db.hfmgr.EdgeQuery01234(qtype);
+							}else db.hfmgr.EdgeQuery01234(qtype, (short)sortbufnum);
 							break;
 						case 3:
 							if(index == 1){
@@ -299,7 +299,7 @@ public class GraphDBRunner implements GlobalConst{
 								}catch(Exception e){
 									e.printStackTrace();
 								}
-							}else db.hfmgr.EdgeQuery01234(qtype);
+							}else db.hfmgr.EdgeQuery01234(qtype, (short)sortbufnum);
 							break;
 						case 4:
 							if(index == 1){
@@ -308,7 +308,7 @@ public class GraphDBRunner implements GlobalConst{
 								}catch(Exception e){
 									e.printStackTrace();
 								}
-							}else db.hfmgr.EdgeQuery01234(qtype);
+							}else db.hfmgr.EdgeQuery01234(qtype, (short)sortbufnum);
 							break;
 						case 5:
 						{
