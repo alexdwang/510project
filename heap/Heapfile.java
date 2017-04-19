@@ -895,7 +895,6 @@ public class Heapfile implements Filetype,  GlobalConst {
       if(_file_deleted ) 
    	throw new FileAlreadyDeletedException(null, "file alread deleted");
       
-      
       // Mark the deleted flag (even if it doesn't get all the way done).
       _file_deleted = true;
       
@@ -978,6 +977,14 @@ public class Heapfile implements Filetype,  GlobalConst {
   private void freePage(PageId pageno)
     throws HFBufMgrException {
 
+    if(SystemDefs.JavabaseBM.isPinned(pageno)){
+    	try {
+	      unpinPage(pageno, false);
+	    }
+	    catch (Exception e) {
+	      throw new HFBufMgrException(e,"Heapfile.java: unpinPage() failed");
+	    }
+    }
     try {
       SystemDefs.JavabaseBM.freePage(pageno);
     }
@@ -1042,6 +1049,10 @@ public class Heapfile implements Filetype,  GlobalConst {
     }
 
   } // end of delete_file_entry
+
+  public void unpin_all_page(){
+  	
+  }
 
 
   

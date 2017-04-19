@@ -75,6 +75,11 @@ abstract class Replacer implements GlobalConst
 
   }
 
+  public boolean isPinned(int frameNo){
+    if( (mgr.frameTable())[frameNo].pin_count() > 1 ) return true;
+    else return false;
+  }
+
 
   /** Frees and unpins a page in the buffer pool.
    *

@@ -98,8 +98,11 @@ public class SystemDefs {
       }
     }
 
-public static void updateBM(int bufNum){
-  JavabaseBM = new BufMgr(bufNum, "Clock");
+public static void flushBMPages()
+throws HashOperationException, IOException, PageUnpinnedException, PagePinnedException,
+  PageNotFoundException, BufMgrException
+{
+  JavabaseBM.flushAllPages();
 }
 
   public static void closeSystem()

@@ -45,6 +45,8 @@ public class Sort extends Iterator implements GlobalConst
   private PageId[]     bufs_pids;
   private boolean useBM = true; // flag for whether to use buffer manager
   private static Descriptor target;		   //to store target
+
+  private int temp_file_id;
   
   /**
    * Set up for merging the runs.
@@ -263,7 +265,7 @@ public class Sort extends Iterator implements GlobalConst
 	}
 	
 	try {
-	    temp_files[run_num] = new Heapfile(null);
+	    temp_files[run_num] = new Heapfile(String.valueOf(temp_file_id++));
 	}
 	catch (Exception e) {
 	  throw new SortException(e, "Sort.java: create Heapfile failed");
@@ -358,7 +360,7 @@ public class Sort extends Iterator implements GlobalConst
 	  }
 
 	  try {
-	    temp_files[run_num] = new Heapfile(null); 
+	    temp_files[run_num] = new Heapfile(String.valueOf(temp_file_id++)); 
 	  }
 	  catch (Exception e) {
 	    throw new SortException(e, "Sort.java: create Heapfile failed");
@@ -643,7 +645,7 @@ public class Sort extends Iterator implements GlobalConst
     n_runs = ARBIT_RUNS;
 
     try {
-      temp_files[0] = new Heapfile(null);
+      temp_files[0] = new Heapfile(String.valueOf(temp_file_id++));
     }
     catch (Exception e) {
       throw new SortException(e, "Sort.java: Heapfile error");
@@ -745,7 +747,7 @@ public class Sort extends Iterator implements GlobalConst
     n_runs = ARBIT_RUNS;
 
     try {
-      temp_files[0] = new Heapfile(null);
+      temp_files[0] = new Heapfile(String.valueOf(temp_file_id++));
     }
     catch (Exception e) {
       throw new SortException(e, "Sort.java: Heapfile error");
@@ -848,6 +850,7 @@ public class Sort extends Iterator implements GlobalConst
 	if (temp_files[i] != null) {
 	  try {
 	    temp_files[i].deleteFile();
+      temp_file_id--;
 	  }
 	  catch (Exception e) {
 	    throw new SortException(e, "Sort.java: Heapfile error");

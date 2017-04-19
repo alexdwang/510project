@@ -616,6 +616,11 @@ public class BufMgr implements GlobalConst{
 	frmeTable[frameNo].dirty = dirty;
       
     }
+
+public boolean isPinned(PageId pageno){
+  int frameNo = hashTable.lookup(pageno);
+  return replacer.isPinned(frameNo);
+}
   
   
   /** Call DB object to allocate a run of new pages and 
