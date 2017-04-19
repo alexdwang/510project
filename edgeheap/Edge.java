@@ -15,12 +15,12 @@ public class Edge extends Tuple{
 	private String label;
 	private int weight;
 
-
-	public static int FLD_WGT = 1;
-	public static int FLD_SRC_LABEL = 2;
-	public static int FLD_DST_LABEL = 3;
-	public static int FLD_LABEL = 4;
-	public static short FLD_CNT = 4;
+	public static int FLD_ID = 1;
+	public static int FLD_WGT = 2;
+	public static int FLD_SRC_LABEL = 3;
+	public static int FLD_DST_LABEL = 4;
+	public static int FLD_LABEL = 5;
+	public static short FLD_CNT = 5;
 	public static short LABEL_MAX_LENGTH = 32;
 
 	public Edge(){
@@ -47,6 +47,7 @@ public class Edge extends Tuple{
 		super(fromTuple.getTupleByteArray(),0, fromTuple.getLength());
 		short[] labelSize = {LABEL_MAX_LENGTH, LABEL_MAX_LENGTH, LABEL_MAX_LENGTH};
 		AttrType[] types = {
+		  new AttrType(AttrType.attrInteger),
 	      new AttrType(AttrType.attrInteger), 
 	      new AttrType(AttrType.attrString),
 	      new AttrType(AttrType.attrString),
@@ -86,11 +87,26 @@ public class Edge extends Tuple{
 		return weight;
 	}
 
+	public int getID()
+	throws IOException,
+	FieldNumberOutOfBoundException{
+		int id = getIntFld(FLD_ID);
+		return id;
+	}
+
 	public Edge setLabel(String alabel)
 	throws IOException,
 	FieldNumberOutOfBoundException
 	{
 		setStrFld(FLD_LABEL, alabel);
+		return this;
+	}
+
+	public Edge setID(int id)
+	throws IOException,
+	FieldNumberOutOfBoundException
+	{
+		setIntFld(FLD_ID, id);
 		return this;
 	}
 
