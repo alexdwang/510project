@@ -19,6 +19,13 @@ public class Node extends Tuple{
    public static short FLD_CNT = 2;
    public static short LABEL_MAX_LENGTH = 32;
 
+   public static AttrType[] FLD_TYPES = {
+      new AttrType(AttrType.attrDesc),
+      new AttrType(AttrType.attrString)
+   };
+
+   public static short[] STR_FLD_SIZE = {LABEL_MAX_LENGTH};
+
    public  Node()
    {
         // Creat a new tuple
@@ -40,12 +47,7 @@ public class Node extends Tuple{
   InvalidTupleSizeException
   {
     super(fromTuple.getTupleByteArray(),0, fromTuple.getLength());
-    short[] labelSize = {LABEL_MAX_LENGTH};
-    AttrType[] types = {
-      new AttrType(AttrType.attrDesc),
-      new AttrType(AttrType.attrString)
-    };
-    setHdr(FLD_CNT, types, labelSize);
+    setHdr(FLD_CNT, FLD_TYPES, STR_FLD_SIZE);
   }
 
   public String getLabel() 
