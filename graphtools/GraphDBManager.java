@@ -9,6 +9,7 @@ import diskmgr.*;
 import edgeheap.Edge;
 import global.*;
 import btree.*;
+import iterator.IndexNLJ_EdgeDestNode;
 import iterator.IndexNLJ_NodeDestEdge;
 import iterator.IndexNLJ_NodeSourceEdge;
 
@@ -291,15 +292,9 @@ public class GraphDBManager implements GlobalConst {
 			db.insertNodes(nodefilename);
 			db.insertEdges(edgefilename);
 			NLJHelper nljHelper = new NLJHelper();
-			IndexNLJ_NodeDestEdge test = nljHelper.nodeDestEdgeJoin(null);
-			AttrType [] Jtype = {
-					new AttrType(AttrType.attrString),
-					new AttrType(AttrType.attrInteger),
-			};
-			Tuple t = null;
-			while ((t = test.get_next()) != null) {
-				t.print(Jtype);
-			}
+			String[] test = nljHelper.nodeToNode("2","1");
+			if(test!=null)
+				System.out.println(test[0] + ","+test[1]);
 			// db.insertNodes(insertdeletefilename);
 //			db.deleteEdge(nodedeletefilename);
 
