@@ -12,6 +12,30 @@ import java.util.List;
 
 public class NLJHelper {
 
+	public IndexNLJ_EdgeDestNode edgeDestNodeJoin(String nodeLabelFilter) {
+		CondExpr cond = null;
+		if (nodeLabelFilter != null) {
+			cond = new CondExpr();
+			cond.next = null;
+			cond.op = new AttrOperator(AttrOperator.aopEQ);
+			cond.type1 = new AttrType(AttrType.attrSymbol);
+			cond.type2 = new AttrType(AttrType.attrString);
+			cond.operand1.symbol = new FldSpec(new RelSpec(RelSpec.innerRel), Node.FldID_Label);
+			cond.operand2.string = nodeLabelFilter;
+		}
+
+		FldSpec[] proj1 = { new FldSpec(new RelSpec(RelSpec.innerRel), Node.FldID_Label),
+				new FldSpec(new RelSpec(RelSpec.outer), Edge.FLD_ID) };
+		IndexNLJ_EdgeDestNode nlj = null;
+		try {
+			nlj = new IndexNLJ_EdgeDestNode(500, cond, proj1, 2);
+			return nlj;
+		} catch (Exception e) {
+			System.out.println("error:" + e);
+		}
+		return null;
+	}
+
 	public IndexNLJ_NodeSourceEdge nodeSourceEdgeJoin(String edgeLabelFilter) {
 		CondExpr cond = null;
 		if (edgeLabelFilter != null) {
@@ -24,16 +48,14 @@ public class NLJHelper {
 			cond.operand2.string = edgeLabelFilter;
 		}
 
-		FldSpec[]  proj1 = {
-				new FldSpec(new RelSpec(RelSpec.outer), Node.FldID_Label),
-				new FldSpec(new RelSpec(RelSpec.innerRel), Edge.FLD_ID)
-		};
+		FldSpec[] proj1 = { new FldSpec(new RelSpec(RelSpec.outer), Node.FldID_Label),
+				new FldSpec(new RelSpec(RelSpec.innerRel), Edge.FLD_ID) };
 		IndexNLJ_NodeSourceEdge nlj = null;
-		try{
+		try {
 			nlj = new IndexNLJ_NodeSourceEdge(500, cond, proj1, 2);
 			return nlj;
-		}catch(Exception e){
-			System.out.println("error:"+e);
+		} catch (Exception e) {
+			System.out.println("error:" + e);
 		}
 		return null;
 	}
@@ -47,16 +69,14 @@ public class NLJHelper {
 		cond.operand1.symbol = new FldSpec(new RelSpec(RelSpec.innerRel), Edge.FLD_WGT);
 		cond.operand2.integer = edgeWeightFilter;
 
-		FldSpec[]  proj1 = {
-				new FldSpec(new RelSpec(RelSpec.outer), Node.FldID_Label),
-				new FldSpec(new RelSpec(RelSpec.innerRel), Edge.FLD_ID)
-		};
+		FldSpec[] proj1 = { new FldSpec(new RelSpec(RelSpec.outer), Node.FldID_Label),
+				new FldSpec(new RelSpec(RelSpec.innerRel), Edge.FLD_ID) };
 		IndexNLJ_NodeSourceEdge nlj = null;
-		try{
+		try {
 			nlj = new IndexNLJ_NodeSourceEdge(500, cond, proj1, 2);
 			return nlj;
-		}catch(Exception e){
-			System.out.println("error:"+e);
+		} catch (Exception e) {
+			System.out.println("error:" + e);
 		}
 		return null;
 	}
@@ -73,16 +93,14 @@ public class NLJHelper {
 			cond.operand2.string = edgeLabelFilter;
 		}
 
-		FldSpec[]  proj1 = {
-				new FldSpec(new RelSpec(RelSpec.outer), Node.FldID_Label),
-				new FldSpec(new RelSpec(RelSpec.innerRel), Edge.FLD_ID)
-		};
+		FldSpec[] proj1 = { new FldSpec(new RelSpec(RelSpec.outer), Node.FldID_Label),
+				new FldSpec(new RelSpec(RelSpec.innerRel), Edge.FLD_ID) };
 		IndexNLJ_NodeDestEdge nlj = null;
-		try{
+		try {
 			nlj = new IndexNLJ_NodeDestEdge(500, cond, proj1, 2);
 			return nlj;
-		}catch(Exception e){
-			System.out.println("error:"+e);
+		} catch (Exception e) {
+			System.out.println("error:" + e);
 		}
 		return null;
 	}
@@ -96,16 +114,14 @@ public class NLJHelper {
 		cond.operand1.symbol = new FldSpec(new RelSpec(RelSpec.innerRel), Edge.FLD_WGT);
 		cond.operand2.integer = edgeWeightFilter;
 
-		FldSpec[]  proj1 = {
-				new FldSpec(new RelSpec(RelSpec.outer), Node.FldID_Label),
-				new FldSpec(new RelSpec(RelSpec.innerRel), Edge.FLD_ID)
-		};
+		FldSpec[] proj1 = { new FldSpec(new RelSpec(RelSpec.outer), Node.FldID_Label),
+				new FldSpec(new RelSpec(RelSpec.innerRel), Edge.FLD_ID) };
 		IndexNLJ_NodeDestEdge nlj = null;
-		try{
+		try {
 			nlj = new IndexNLJ_NodeDestEdge(500, cond, proj1, 2);
 			return nlj;
-		}catch(Exception e){
-			System.out.println("error:"+e);
+		} catch (Exception e) {
+			System.out.println("error:" + e);
 		}
 		return null;
 	}
