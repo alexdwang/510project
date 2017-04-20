@@ -3,22 +3,16 @@ package iterator;
 import edgeheap.Edge;
 import global.AttrOperator;
 import global.AttrType;
-import global.IndexType;
-import global.RID;
-import heap.Heapfile;
 import heap.InvalidTupleSizeException;
 import heap.InvalidTypeException;
-import heap.Scan;
 import heap.Tuple;
 import index.IndexException;
-import index.IndexScan;
 import index.UnknownIndexTypeException;
 import nodeheap.Node;
 
 import java.io.IOException;
 
 import bufmgr.PageNotReadException;
-import org.w3c.dom.Attr;
 
 public class IndexNLJ_NodeSourceEdge extends NestedLoopsJoins {
 
@@ -71,9 +65,7 @@ public class IndexNLJ_NodeSourceEdge extends NestedLoopsJoins {
 				"edgefile", new CondExpr[] { _buildJoinCond(), rightFilter, null }, null, proj_list, n_out_flds);
 	}
 
-	public Tuple get_next() throws IOException, JoinsException, IndexException, InvalidTupleSizeException,
-			InvalidTypeException, PageNotReadException, TupleUtilsException, PredEvalException, SortException,
-			LowMemException, UnknowAttrType, UnknownKeyTypeException, Exception {
+	public Tuple get_next() throws Exception {
 		return super.get_next();
 	}
 }

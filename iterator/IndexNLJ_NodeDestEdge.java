@@ -1,6 +1,5 @@
 package iterator;
 
-import bufmgr.PageNotReadException;
 import edgeheap.Edge;
 import global.AttrOperator;
 import global.AttrType;
@@ -64,9 +63,7 @@ public class IndexNLJ_NodeDestEdge extends NestedLoopsJoins {
                 "edgefile", new CondExpr[] { _buildJoinCond(), rightFilter, null }, null, proj_list, n_out_flds);
     }
 
-    public Tuple get_next() throws IOException, JoinsException, IndexException, InvalidTupleSizeException,
-            InvalidTypeException, PageNotReadException, TupleUtilsException, PredEvalException, SortException,
-            LowMemException, UnknowAttrType, UnknownKeyTypeException, Exception {
+    public Tuple get_next() throws Exception {
         return super.get_next();
     }
 }
