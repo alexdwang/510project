@@ -292,8 +292,9 @@ class GraphDBManager implements GlobalConst {
 			db.insertNodes(nodefilename);
 			db.insertEdges(edgefilename);
 			NLJHelper nljHelper = new NLJHelper();
-			String[] test = nljHelper.nodeToNode("1"
-					+ "",null);
+			String[] test = nljHelper.nodeToNode("2","1");
+			if(test!=null)
+				System.out.println(test[0] + ","+test[1]);
 			// db.insertNodes(insertdeletefilename);
 //			db.deleteEdge(nodedeletefilename);
 

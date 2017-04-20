@@ -14,16 +14,17 @@ import java.util.List;
 public class NLJHelper {
 
 	public String[] nodeToNode(String sourcelabel, String destlabel) {
-		String result[] = {};
+		String result[];
 		IndexNLJ_EdgeSourceNode edges = edgeSourceNodeJoin(sourcelabel);
 		Tuple t = null;
 		try {
 			while ((t = edges.get_next()) != null) {
 //				System.out.println(t.getIntFld(2));
-				IndexNLJ_NodeDestEdge findnodes = nodeDestEdgeJoin(t.getIntFld(2));
+				IndexNLJ_NodeDestEdge findnodes = nodeDestJoinByEdgeId(t.getIntFld(2));
 				Tuple n = null;
 				while((n = findnodes.get_next()) !=null ){
-					n.getStrFld(1);
+					if(n.getStrFld(1).equals(destlabel))
+						return new String[] {sourcelabel, destlabel};
 				}
 			}
 		} catch (IOException e) {
