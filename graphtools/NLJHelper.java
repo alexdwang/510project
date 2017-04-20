@@ -36,6 +36,30 @@ public class NLJHelper {
 		return null;
 	}
 
+	public IndexNLJ_EdgeSourceNode edgeSourceNodeJoin(String nodeLabelFilter) {
+		CondExpr cond = null;
+		if (nodeLabelFilter != null) {
+			cond = new CondExpr();
+			cond.next = null;
+			cond.op = new AttrOperator(AttrOperator.aopEQ);
+			cond.type1 = new AttrType(AttrType.attrSymbol);
+			cond.type2 = new AttrType(AttrType.attrString);
+			cond.operand1.symbol = new FldSpec(new RelSpec(RelSpec.innerRel), Node.FldID_Label);
+			cond.operand2.string = nodeLabelFilter;
+		}
+
+		FldSpec[] proj1 = { new FldSpec(new RelSpec(RelSpec.innerRel), Node.FldID_Label),
+				new FldSpec(new RelSpec(RelSpec.outer), Edge.FLD_ID) };
+		IndexNLJ_EdgeSourceNode nlj = null;
+		try {
+			nlj = new IndexNLJ_EdgeSourceNode(500, cond, proj1, 2);
+			return nlj;
+		} catch (Exception e) {
+			System.out.println("error:" + e);
+		}
+		return null;
+	}
+
 	public IndexNLJ_NodeSourceEdge nodeSourceEdgeJoin(String edgeLabelFilter) {
 		CondExpr cond = null;
 		if (edgeLabelFilter != null) {
