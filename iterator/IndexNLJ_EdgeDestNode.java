@@ -72,26 +72,9 @@ public class IndexNLJ_EdgeDestNode extends NestedLoopsJoins {
 								new FldSpec(new RelSpec((RelSpec.outer)), Edge.FLD_LABEL)								
 						}, null),
 				"nodefile", new CondExpr[]{_buildJoinCond(), rightFilter, null}, null, proj_list, n_out_flds);
-//		new AttrType[] { new AttrType(AttrType.attrDesc), new AttrType(AttrType.attrString) }, Node.FLD_CNT,
-//				new short[] { Node.LABEL_MAX_LENGTH },
-//				new AttrType[] { new AttrType(AttrType.attrInteger), new AttrType(AttrType.attrInteger), new AttrType(AttrType.attrString),
-//						new AttrType(AttrType.attrString), new AttrType(AttrType.attrString) },
-//				Edge.FLD_CNT, new short[] { Node.LABEL_MAX_LENGTH, Node.LABEL_MAX_LENGTH, Edge.LABEL_MAX_LENGTH },
-//				amt_of_mem,
-//				new FileScan("nodefile",
-//						new AttrType[] { new AttrType(AttrType.attrDesc), new AttrType(AttrType.attrString) },
-//						new short[] { Node.LABEL_MAX_LENGTH },
-//						Node.FLD_CNT,
-//						2,
-//						new FldSpec[] {
-//								new FldSpec(new RelSpec((RelSpec.outer)), Node.FldID_Desc),
-//								new FldSpec(new RelSpec((RelSpec.outer)), Node.FldID_Label) }, null),
-//				"edgefile", new CondExpr[] { _buildJoinCond(), rightFilter, null }, null, proj_list, n_out_flds);
 	}
 
-	public Tuple get_next() throws IOException, JoinsException, IndexException, InvalidTupleSizeException,
-			InvalidTypeException, PageNotReadException, TupleUtilsException, PredEvalException, SortException,
-			LowMemException, UnknowAttrType, UnknownKeyTypeException, Exception {
+	public Tuple get_next() throws Exception {
 		return super.get_next();
 	}
 }
