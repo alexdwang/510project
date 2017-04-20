@@ -12,7 +12,7 @@ import btree.*;
 import iterator.IndexNLJ_NodeDestEdge;
 import iterator.IndexNLJ_NodeSourceEdge;
 
-class GraphDBManager implements GlobalConst {
+public class GraphDBManager implements GlobalConst {
 
 	public int deleteFashion;
 	private String dbpath;

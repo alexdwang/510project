@@ -1,4 +1,5 @@
 package global;
+import graphtools.GraphDBManager;
 
 public interface GlobalConst {
 
@@ -30,4 +31,6 @@ public interface GlobalConst {
   public static final int MAX_NAME = 50;
 
   public static final int INVALID_PAGE = -1;
+
+  public static GraphDBManager db = new GraphDBManager();
 }
