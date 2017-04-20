@@ -7,10 +7,35 @@ import heap.Tuple;
 import iterator.*;
 import nodeheap.Node;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
 public class NLJHelper {
+
+	public String[] nodeToNode(String sourcelabel, String destlabel) {
+		String result[] = {};
+		IndexNLJ_EdgeSourceNode edges = edgeSourceNodeJoin(sourcelabel);
+		Tuple t = null;
+		try {
+			while ((t = edges.get_next()) != null) {
+//				System.out.println(t.getIntFld(2));
+				IndexNLJ_NodeDestEdge findnodes = nodeDestEdgeJoin(t.getIntFld(2));
+				Tuple n = null;
+				while((n = findnodes.get_next()) !=null ){
+					n.getStrFld(1);
+				}
+			}
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+
+		return null;
+	}
 
 	public IndexNLJ_EdgeDestNode edgeDestNodeJoin(String nodeLabelFilter) {
 		CondExpr cond = null;
