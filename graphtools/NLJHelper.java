@@ -1,17 +1,24 @@
 package graphtools;
 
+import btree.BTFileScan;
+import btree.KeyDataEntry;
+import btree.LeafData;
+import btree.ScanIteratorException;
 import edgeheap.Edge;
-import global.AttrOperator;
-import global.AttrType;
+import global.*;
+import heap.Heapfile;
 import heap.Tuple;
 import iterator.*;
 import nodeheap.Node;
+import zindex.DescriptorKey;
+import zindex.ZEncoder;
+import zindex.ZTreeFile;
 
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
-public class NLJHelper {
+public class NLJHelper implements GlobalConst {
 
 	public String[] nodeToNode(String sourcelabel, String destlabel) {
 		String result[];
@@ -193,6 +200,22 @@ public class NLJHelper {
 			return nlj;
 		} catch (Exception e) {
 			System.out.println("error:" + e);
+		}
+		return null;
+	}
+
+	public String nodeDescToLabel(Descriptor desc) {
+		ZTreeFile nodeDescTree = db.btmgr.getNodeDescriptorTree();
+		DescriptorKey searchKey = new DescriptorKey(ZEncoder.encode(desc));
+		BTFileScan scan = nodeDescTree.new_scan(searchKey, searchKey);
+		try {
+			KeyDataEntry data = scan.get_next();
+			RID rid = ((LeafData) data.data).getData();
+			Heapfile nodeHeap = db.hfmgr.getNodefile();
+			Node node = new Node(nodeHeap.getRecord(rid));
+			return node.getLabel();
+		} catch (Exception e) {
+			e.printStackTrace();
 		}
 		return null;
 	}
