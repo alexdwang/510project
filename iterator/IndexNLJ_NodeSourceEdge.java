@@ -1,71 +1,134 @@
 package iterator;
 
+import bufmgr.PageNotReadException;
 import edgeheap.Edge;
-import global.AttrOperator;
 import global.AttrType;
+import global.IndexType;
+import heap.FieldNumberOutOfBoundException;
 import heap.InvalidTupleSizeException;
 import heap.InvalidTypeException;
 import heap.Tuple;
 import index.IndexException;
+import index.IndexScan;
 import index.UnknownIndexTypeException;
 import nodeheap.Node;
 
 import java.io.IOException;
 
-import bufmgr.PageNotReadException;
+public class IndexNLJ_NodeSourceEdge extends IndexedNestedLoopJoin {
 
-public class IndexNLJ_NodeSourceEdge extends NestedLoopsJoins {
+	public static final int OUT_FLD_NODE_LABEL = 1;
+	public static final int OUT_FLD_EDGE_ID = 2;
 
-	private static CondExpr _buildJoinCond() {
-		CondExpr cond = new CondExpr();
-		cond.next = null;
-		cond.op = new AttrOperator(AttrOperator.aopEQ);
-		cond.type1 = new AttrType(AttrType.attrSymbol);
-		cond.type2 = new AttrType(AttrType.attrSymbol);
-		cond.operand1.symbol = new FldSpec(new RelSpec(RelSpec.outer), Node.FldID_Label);
-		cond.operand2.symbol = new FldSpec(new RelSpec(RelSpec.innerRel), Edge.FLD_SRC_LABEL);
+	public static final AttrType[] OUT_ATTRTYPES = new AttrType[] {
+			new AttrType(AttrType.attrString),
+			new AttrType(AttrType.attrInteger)
+	};
 
-		return cond;
+	public IndexNLJ_NodeSourceEdge(CondExpr innerFilter)
+			throws IOException, InvalidTypeException, PageNotReadException, JoinsException, PredEvalException, UnknowAttrType, WrongPermat, InvalidTupleSizeException, FieldNumberOutOfBoundException, TupleUtilsException, InvalidRelation, FileScanException, IndexException, UnknownIndexTypeException {
+		super(innerFilter, "nodefile");
 	}
 
-	/**
-	 * constructor Initialize the two relations which are joined, including
-	 * relation type,
-	 *
-	 * @param amt_of_mem
-	 *            IN PAGES
-	 * @param rightFilter
-	 *            reference to filter applied on right i/p
-	 * @param proj_list
-	 *            shows what input fields go where in the output tuple
-	 * @param n_out_flds
-	 *            number of outer relation fileds
-	 * @throws IOException
-	 *             some I/O fault
-	 * @throws NestedLoopException
-	 *             exception from this class
-	 */
-	public IndexNLJ_NodeSourceEdge(int amt_of_mem, CondExpr rightFilter, FldSpec[] proj_list, int n_out_flds)
-			throws IOException, NestedLoopException, UnknownIndexTypeException, InvalidTypeException, IndexException,
-			InvalidTupleSizeException, FileScanException, TupleUtilsException, InvalidRelation {
-		super(new AttrType[] { new AttrType(AttrType.attrDesc), new AttrType(AttrType.attrString) }, Node.FLD_CNT,
-				new short[] { Node.LABEL_MAX_LENGTH },
-				new AttrType[] { new AttrType(AttrType.attrInteger), new AttrType(AttrType.attrInteger), new AttrType(AttrType.attrString),
-						new AttrType(AttrType.attrString), new AttrType(AttrType.attrString) },
-				Edge.FLD_CNT, new short[] { Node.LABEL_MAX_LENGTH, Node.LABEL_MAX_LENGTH, Edge.LABEL_MAX_LENGTH },
-				amt_of_mem,
-				new FileScan("nodefile",
-						new AttrType[] { new AttrType(AttrType.attrDesc), new AttrType(AttrType.attrString) },
-						new short[] { Node.LABEL_MAX_LENGTH },
-						Node.FLD_CNT,
-						2,
-						new FldSpec[] {
-								new FldSpec(new RelSpec((RelSpec.outer)), Node.FldID_Desc),
-								new FldSpec(new RelSpec((RelSpec.outer)), Node.FldID_Label) }, null),
-				"edgefile", new CondExpr[] { _buildJoinCond(), rightFilter, null }, null, proj_list, n_out_flds);
+	public IndexNLJ_NodeSourceEdge(String outerRel, CondExpr innerFilter)
+			throws IOException, InvalidTypeException, PageNotReadException, JoinsException, PredEvalException, UnknowAttrType, WrongPermat, InvalidTupleSizeException, FieldNumberOutOfBoundException, TupleUtilsException, InvalidRelation, FileScanException, IndexException, UnknownIndexTypeException {
+		super(innerFilter, outerRel);
 	}
 
-	public Tuple get_next() throws Exception {
-		return super.get_next();
+	@Override
+	protected IndexScan startIndexScan() throws UnknownIndexTypeException, InvalidTypeException, IndexException, IOException, InvalidTupleSizeException {
+		CondExpr cond = this.innerFilter[0];
+		String indName = "";
+		int indFldNum = 0;
+		switch (cond.operand1.symbol.offset) {
+			case 1: // Edge.FLD_ID
+				indName = "EdgeIdTree";
+				indFldNum = Edge.FLD_ID;
+				break;
+			case 2: // Edge.FLD_WGT
+				indName = "EdgeWeightTree";
+				indFldNum = Edge.FLD_WGT;
+				break;
+			case 3: // Edge.FLD_SRC_LABEL
+				indName = "EdgeLabelTree_Source";
+				indFldNum = Edge.FLD_SRC_LABEL;
+				break;
+			case 4: // Edge.FLD_DST_LABEL
+				indName = "EdgeLabelTree_Destination";
+				indFldNum = Edge.FLD_DST_LABEL;
+				break;
+			case 5: // Edge.FLD_LABEL
+				indName = "EdgeLabelTree";
+				indFldNum = Edge.FLD_LABEL;
+				break;
+		}
+
+		return new IndexScan(
+				new IndexType(IndexType.B_Index),
+				"edgefile",
+				indName,	  // indName
+				Edge.FLD_TYPES,
+				Edge.STR_FLD_SIZE,
+				Edge.FLD_CNT, // noInFlds
+				Edge.FLD_CNT, // noOutFlds
+				new FldSpec[]{
+						new FldSpec(new RelSpec(RelSpec.outer), Edge.FLD_ID),
+						new FldSpec(new RelSpec(RelSpec.outer), Edge.FLD_WGT),
+						new FldSpec(new RelSpec(RelSpec.outer), Edge.FLD_SRC_LABEL),
+						new FldSpec(new RelSpec(RelSpec.outer), Edge.FLD_DST_LABEL),
+						new FldSpec(new RelSpec(RelSpec.outer), Edge.FLD_LABEL)
+				}, // outFlds
+				innerFilter,
+				indFldNum,
+				false
+		);
+	}
+
+	@Override
+	protected FileScan startFileScan(String relName) throws InvalidRelation, TupleUtilsException, FileScanException, IOException {
+		return new FileScan(
+				relName,
+				Node.FLD_TYPES,
+				Node.STR_FLD_SIZE,
+				Node.FLD_CNT,
+				Node.FLD_CNT,
+				new FldSpec[] {
+						new FldSpec(new RelSpec(RelSpec.outer), Node.FldID_Desc),
+						new FldSpec(new RelSpec(RelSpec.outer), Node.FldID_Label)
+				},
+				null
+		);
+	}
+
+	@Override
+	public Tuple get_next() throws UnknownKeyTypeException, IndexException, IOException, JoinsException, FieldNumberOutOfBoundException, PageNotReadException, WrongPermat, InvalidTypeException, InvalidTupleSizeException, PredEvalException, UnknowAttrType, UnknownIndexTypeException {
+		while (true) {
+			curInner = innerItr.get_next();
+			// Current round (inner) done
+			if (curInner == null) {
+				// End of inner relation, move to next outer tuple
+				curOuter = outerItr.get_next();
+				// End of outer relation
+				if (curOuter == null) {
+					return null;
+				}
+				// Start inner scan again
+				this.innerItr.close();
+				this.innerItr = startIndexScan();
+				this.curInner = innerItr.get_next();
+			}
+
+			String outerLabel = curOuter.getStrFld(Node.FldID_Label);
+			String innerLabel = curInner.getStrFld(Edge.FLD_SRC_LABEL);
+			int outEdgeId = curInner.getIntFld(Edge.FLD_ID);
+
+			if (outerLabel.equals(innerLabel)) {
+				joinedTuple.setStrFld(OUT_FLD_NODE_LABEL, outerLabel);
+				joinedTuple.setIntFld(OUT_FLD_EDGE_ID, outEdgeId);
+				break;
+			}
+		}
+
+		return joinedTuple;
 	}
 }
