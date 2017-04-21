@@ -15,35 +15,100 @@ import zindex.ZEncoder;
 import zindex.ZTreeFile;
 
 import java.io.IOException;
-import java.util.ArrayList;
+import java.util.LinkedList;
 import java.util.List;
 
 public class NLJHelper implements GlobalConst {
 
-	public String[] nodeToNode(String sourcelabel, String destlabel) {
-		String result[];
-		IndexNLJ_EdgeSourceNode edges = edgeSourceNodeJoin(sourcelabel);
-		Tuple t = null;
-		try {
-			while ((t = edges.get_next()) != null) {
-//				System.out.println(t.getIntFld(2));
-				IndexNLJ_NodeDestEdge findnodes = nodeDestJoinByEdgeId(t.getIntFld(2));
-				Tuple n = null;
-				while((n = findnodes.get_next()) !=null ){
-					if(n.getStrFld(1).equals(destlabel))
-						return new String[] {sourcelabel, destlabel};
-				}
-			}
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} catch (Exception e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
+	public String[] getLabelFromDescriptor(Descriptor desc) {
 
 		return null;
 	}
+
+	public List<String[]> nodeToNode(List<String[]> sourcelabel, List<String[]> destlabel) {
+		List<String[]> result = new LinkedList();
+		for (String[] source : sourcelabel) {
+			IndexNLJ_EdgeSourceNode edges = edgeSourceNodeJoin(source[1]);
+			Tuple t = null;
+			try {
+				while ((t = edges.get_next()) != null) {
+					// System.out.println(t.getIntFld(2));
+					IndexNLJ_NodeDestEdge findnodes = nodeDestJoinByEdgeId(t.getIntFld(2));
+					Tuple n = null;
+					while ((n = findnodes.get_next()) != null) {
+						for (String[] dest : destlabel) {
+							if (dest[1].equals(n.getStrFld(1)))
+								result.add(new String[] {source[0],dest[1]});
+						}
+					}
+				}
+			} catch (IOException e) {
+				// TODO Auto-generated catch block
+				System.out.println(e);
+			} catch (Exception e) {
+				// TODO Auto-generated catch block
+				System.out.println(e);
+			}
+		}
+		if (result != null)
+			return result;
+		return null;
+	}
+	
+	public List<String> nodeToNodeold(List<String> sourcelabel, List<String> destlabel) {
+		List<String> result = new LinkedList();
+		for (String source : sourcelabel) {
+			IndexNLJ_EdgeSourceNode edges = edgeSourceNodeJoin(source);
+			Tuple t = null;
+			try {
+				while ((t = edges.get_next()) != null) {
+					// System.out.println(t.getIntFld(2));
+					IndexNLJ_NodeDestEdge findnodes = nodeDestJoinByEdgeId(t.getIntFld(2));
+					Tuple n = null;
+					while ((n = findnodes.get_next()) != null) {
+						for (String label : destlabel) {
+							if (label.equals(n.getStrFld(1)))
+								result.add(label);
+						}
+					}
+				}
+			} catch (IOException e) {
+				// TODO Auto-generated catch block
+				System.out.println(e);
+			} catch (Exception e) {
+				// TODO Auto-generated catch block
+				System.out.println(e);
+			}
+		}
+		if (result != null)
+			return result;
+		return null;
+	}
+
+//	public String[] nodeToNode(String sourcelabel, String destlabel) {
+//		String result[];
+//		IndexNLJ_EdgeSourceNode edges = edgeSourceNodeJoin(sourcelabel);
+//		Tuple t = null;
+//		try {
+//			while ((t = edges.get_next()) != null) {
+//				// System.out.println(t.getIntFld(2));
+//				IndexNLJ_NodeDestEdge findnodes = nodeDestJoinByEdgeId(t.getIntFld(2));
+//				Tuple n = null;
+//				while ((n = findnodes.get_next()) != null) {
+//					if (n.getStrFld(1).equals(destlabel))
+//						return new String[] { sourcelabel, destlabel };
+//				}
+//			}
+//		} catch (IOException e) {
+//			// TODO Auto-generated catch block
+//			e.printStackTrace();
+//		} catch (Exception e) {
+//			// TODO Auto-generated catch block
+//			e.printStackTrace();
+//		}
+//
+//		return null;
+//	}
 
 	public IndexNLJ_EdgeDestNode edgeDestNodeJoin(String nodeLabelFilter) {
 		CondExpr cond = null;
