@@ -25,6 +25,33 @@ public class NLJHelper implements GlobalConst {
 		return null;
 	}
 
+	public List<String[]> nodeToAll(List<String[]> sourcelabel) {
+		List<String[]> result = new LinkedList();
+		for (String[] source : sourcelabel) {
+			IndexNLJ_EdgeSourceNode edges = edgeSourceNodeJoin(source[1]);
+			Tuple t = null;
+			try {
+				while ((t = edges.get_next()) != null) {
+					// System.out.println(t.getIntFld(2));
+					IndexNLJ_NodeDestEdge findnodes = nodeDestJoinByEdgeId(t.getIntFld(2));
+					Tuple n = null;
+					while ((n = findnodes.get_next()) != null) {
+							result.add(new String[] {source[0],n.getStrFld(1)});
+					}
+				}
+			} catch (IOException e) {
+				// TODO Auto-generated catch block
+				System.out.println(e);
+			} catch (Exception e) {
+				// TODO Auto-generated catch block
+				System.out.println(e);
+			}
+		}
+		if (result != null)
+			return result;
+		return null;
+	}
+	
 	public List<String[]> nodeToNode(List<String[]> sourcelabel, List<String[]> destlabel) {
 		List<String[]> result = new LinkedList();
 		for (String[] source : sourcelabel) {

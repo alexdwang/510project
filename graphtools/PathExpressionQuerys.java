@@ -27,7 +27,7 @@ public class PathExpressionQuerys {
 	public List<String[]> PQ1b(String[][] NNs) {
 		List<String[]> result = PQ1(NNs);
 		Collections.sort(result, new DoubleStringSort());
-		printResult(result);
+		// printResult(result);
 		return result;
 	}
 
@@ -46,7 +46,58 @@ public class PathExpressionQuerys {
 			if (distinct)
 				result.add(new String[] { l[0], l[1] });
 		}
-		printResult(result);
+		// printResult(result);
+		return result;
+	}
+
+	public List<String[]> PQ3_max_num_edge(String[] NNs, int max_num_edge) {
+		String[][] extendNNs = { NNs, };
+		List<List<String[]>> nodelabellist = buildlistdoublestr(extendNNs);
+		NLJHelper njlhelper = new NLJHelper();
+		for (int i = 0; i < max_num_edge; i++) {
+			List<String[]> result = njlhelper.nodeToAll(nodelabellist.get(i));
+			if (result != null) {
+				nodelabellist.add(i + 1, result);
+			}
+		}
+		List<String[]> result = new LinkedList();
+		boolean firstline = true;
+		for (List<String[]> sas : nodelabellist) {
+			if (firstline)
+				firstline = false;
+			else {
+				for (String[] sa : sas) {
+					result.add(new String[] { sa[0], sa[1] });
+				}
+			}
+		}
+//		printResult(result);
+		return result;
+	}
+	
+	public List<String[]> PQ3b_max_num_edge(String[] NNs, int max_num_edge) {
+		List<String[]> result = PQ3_max_num_edge(NNs, max_num_edge);
+		Collections.sort(result, new DoubleStringSort());
+//		 printResult(result);
+		return result;
+	}
+	
+	public List<String[]> PQ3c_max_num_edge(String[] NNs, int max_num_edge) {
+		List<String[]> ls = PQ3_max_num_edge(NNs,max_num_edge);
+		List<String[]> result = new LinkedList();
+		result.add(new String[] { ls.get(0)[0], ls.get(0)[1] });
+		for (String[] l : ls) {
+			boolean distinct = true;
+			for (String[] r : result) {
+				if (l[0].equals(r[0]) && l[1].equals(r[1])) {
+					distinct = false;
+					break;
+				}
+			}
+			if (distinct)
+				result.add(new String[] { l[0], l[1] });
+		}
+//		 printResult(result);
 		return result;
 	}
 

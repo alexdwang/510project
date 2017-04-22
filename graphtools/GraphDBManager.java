@@ -308,7 +308,11 @@ public class GraphDBManager implements GlobalConst {
 					{"6"}
 			};
 			
-			pathquery.PQ1b(NNs);
+			String[] NN = {
+					"1","2"
+			};
+			
+			pathquery.PQ3b_max_num_edge(NN,2);
 			// db.insertNodes(insertdeletefilename);
 //			db.deleteEdge(nodedeletefilename);
 			
