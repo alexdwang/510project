@@ -23,7 +23,66 @@ class NLJHelper implements GlobalConst {
 	private static final int PROJ_NODE_LABEL = 1;
 	private static final int PROJ_EDGE_ID = 2;
 	private static final int PROJ_EDGE_WEIGHT = 3;
+	private static final int PROJ_EDGE_Laebl = 4;
 
+	public List<Path> nodeToAllwithEdgeWeight(List<Path> sourcelabel, int maxweight) {
+		List<Path> result = new LinkedList();
+		for (Path source : sourcelabel) {
+			IndexNLJ_EdgeSourceNode edges = edgeSourceNodeJoin(source.tail);
+			Tuple t = null;
+			try {
+				while ((t = edges.get_next()) != null) {
+					// System.out.println(t.getIntFld(2));
+					int weight=t.getIntFld(NLJHelper.PROJ_EDGE_WEIGHT);
+					if (weight<= maxweight) {
+						IndexNLJ_NodeDestEdge findnodes = nodeDestJoinByEdgeId(t.getIntFld(NLJHelper.PROJ_EDGE_ID));
+						Tuple n = null;
+						while ((n = findnodes.get_next()) != null) {
+							result.add(new Path(source.head, n.getStrFld(NLJHelper.PROJ_NODE_LABEL), weight+source.totalWeight));
+						}
+					}
+				}
+			} catch (IOException e) {
+				// TODO Auto-generated catch block
+				System.out.println(e);
+			} catch (Exception e) {
+				// TODO Auto-generated catch block
+				System.out.println(e);
+			}
+		}
+		return result;
+
+	}
+	
+	public List<Path> nodeToAllwithEdgeLabel(List<Path> sourcelabel, String edgelabel) {
+		List<Path> result = new LinkedList();
+		for (Path source : sourcelabel) {
+			IndexNLJ_EdgeSourceNode edges = edgeSourceNodeJoin(source.tail);
+			Tuple t = null;
+			try {
+				while ((t = edges.get_next()) != null) {
+					// System.out.println(t.getIntFld(2));
+					String label=t.getStrFld(NLJHelper.PROJ_EDGE_Laebl);
+					if (label.equals(edgelabel)) {
+						IndexNLJ_NodeDestEdge findnodes = nodeDestJoinByEdgeId(t.getIntFld(NLJHelper.PROJ_EDGE_ID));
+						Tuple n = null;
+						while ((n = findnodes.get_next()) != null) {
+							result.add(new Path(source.head, n.getStrFld(NLJHelper.PROJ_NODE_LABEL), t.getIntFld(NLJHelper.PROJ_EDGE_WEIGHT)+source.totalWeight));
+						}
+					}
+				}
+			} catch (IOException e) {
+				// TODO Auto-generated catch block
+				System.out.println(e);
+			} catch (Exception e) {
+				// TODO Auto-generated catch block
+				System.out.println(e);
+			}
+		}
+		return result;
+
+	}
+	
 	public List<Path> nodeToAllwithMaxWeight(List<Path> sourcelabel, int maxweight) {
 		List<Path> result = new LinkedList();
 		for (Path source : sourcelabel) {
@@ -146,10 +205,11 @@ class NLJHelper implements GlobalConst {
 
 		FldSpec[] proj1 = { new FldSpec(new RelSpec(RelSpec.innerRel), Node.FldID_Label),
 				new FldSpec(new RelSpec(RelSpec.outer), Edge.FLD_ID),
-				new FldSpec(new RelSpec(RelSpec.outer), Edge.FLD_WGT) };
+				new FldSpec(new RelSpec(RelSpec.outer), Edge.FLD_WGT),
+				new FldSpec(new RelSpec(RelSpec.outer), Edge.FLD_LABEL)};
 		IndexNLJ_EdgeSourceNode nlj = null;
 		try {
-			nlj = new IndexNLJ_EdgeSourceNode(500, cond, proj1, 3);
+			nlj = new IndexNLJ_EdgeSourceNode(500, cond, proj1, 4);
 			return nlj;
 		} catch (Exception e) {
 			System.out.println("error:" + e);

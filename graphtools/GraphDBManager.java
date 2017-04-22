@@ -312,7 +312,12 @@ public class GraphDBManager implements GlobalConst {
 					"1","2"
 			};
 			
-			pathquery.printResult(pathquery.PQ3c_max_weight(NN,95));
+			List edgecondition = new LinkedList();
+			edgecondition.add("1_2");
+			edgecondition.add("2_5");
+			edgecondition.add(89);
+			
+			pathquery.printResult(pathquery.PQ2a(NN,edgecondition));
 			// db.insertNodes(insertdeletefilename);
 //			db.deleteEdge(nodedeletefilename);
 //			queryExpr qe = new queryExpr();

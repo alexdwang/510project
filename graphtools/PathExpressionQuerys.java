@@ -59,6 +59,63 @@ public class PathExpressionQuerys {
 		return result;
 	}
 	
+	/*	 NN/EN(/EN)* 			*/
+	public List<Path> PQ2(List<List<Path>> nodelabellist, List edgecondition){
+		NLJHelper njlhelper = new NLJHelper();
+		for (int i = 0; i<edgecondition.size(); i++) {
+			List<Path> result = new LinkedList();
+			if(edgecondition.get(i) instanceof String){
+				result= njlhelper.nodeToAllwithEdgeLabel(nodelabellist.get(i),(String)edgecondition.get(i));
+			}else if(edgecondition.get(i) instanceof Integer){
+				result= njlhelper.nodeToAllwithEdgeWeight(nodelabellist.get(i), (int)edgecondition.get(i));
+			}else{
+				System.err.println("Wrong edgecondition type!");
+			}
+			if (result != null) {
+				nodelabellist.add(i + 1, result);
+			}
+		}
+		List<Path> result = new LinkedList();
+		for (Path sa : nodelabellist.get(nodelabellist.size() - 1)) {
+			result.add(new Path(sa.head, sa.tail));
+		}
+		return result;
+	}
+	
+	public List<Path> PQ2a(List<String> NN, List edgecondition){
+		List<List<Path>> nodelabellist = buildlistdoublestr_singlelist(NN);
+		return PQ2(nodelabellist, edgecondition);
+	}
+	
+	public List<Path> PQ2b(List<String> NN, List edgecondition) {
+		List<Path> result = PQ2a(NN, edgecondition);
+		Collections.sort(result, new DoubleStringSort());
+		return result;
+	}
+	
+	public List<Path> PQ2c(List<String> NN,List edgecondition) {
+		List<Path> ls = PQ2a(NN,edgecondition);
+		List<Path> result = new LinkedList<Path>(new LinkedHashSet<Path>(ls));
+		return result;
+	}
+	
+	public List<Path> PQ2a(String[] NN, List edgecondition){
+		List<List<Path>> nodelabellist = buildlistdoublestr(new String[][] { NN, });
+		return PQ2(nodelabellist, edgecondition);
+	}
+	
+	public List<Path> PQ2b(String[] NN, List edgecondition) {
+		List<Path> result = PQ2a(NN, edgecondition);
+		Collections.sort(result, new DoubleStringSort());
+		return result;
+	}
+	
+	public List<Path> PQ2c(String[] NN,List edgecondition) {
+		List<Path> ls = PQ2a(NN,edgecondition);
+		List<Path> result = new LinkedList<Path>(new LinkedHashSet<Path>(ls));
+		return result;
+	}
+	
 	/*	NN//Bound_max_num_edge	*/
 	public List<Path> PQ3_max_num_edge(List<List<Path>> nodelabellist, int max_num_edge) {
 		NLJHelper njlhelper = new NLJHelper();
@@ -166,6 +223,16 @@ public class PathExpressionQuerys {
 				NN.add(new Path(NNs.get(i).get(j), NNs.get(i).get(j)));
 			list.add(NN);
 		}
+		return list;
+	}
+	
+	private List<List<Path>> buildlistdoublestr_singlelist(List<String> NN) {
+		List<List<Path>> list = new LinkedList();
+			List<Path> NNp = new LinkedList();
+			NNp.clear();
+			for (int i = 0; i < NN.size(); i++)
+				NNp.add(new Path(NN.get(i), NN.get(i)));
+			list.add(NNp);
 		return list;
 	}
 
