@@ -309,13 +309,14 @@ public class GraphDBManager implements GlobalConst {
 			};
 			
 			String[] NN = {
-					"1",
+					"1","2"
 			};
 			
-			pathquery.printResultwithWeight(pathquery.PQ3c_max_weight(NN,95));
+			pathquery.printResult(pathquery.PQ3c_max_weight(NN,95));
 			// db.insertNodes(insertdeletefilename);
 //			db.deleteEdge(nodedeletefilename);
-			
+//			queryExpr qe = new queryExpr();
+//			qe.queryExprUI();
 
 			db.deleteDBFile();
 		} catch (Exception e) {

@@ -8,8 +8,8 @@ import java.util.List;
 
 public class PathExpressionQuerys {
 
-	public List<Path> PQ1a(String[][] NNs) {
-		List<List<Path>> nodelabellist = buildlistdoublestr(NNs);
+	/*	NN/NN/NN* query		*/
+	private List<Path> PQ1(List<List<Path>> nodelabellist) {
 		NLJHelper njlhelper = new NLJHelper();
 		for (int i = 0; i < nodelabellist.size() - 1; i++) {
 			List<Path> result = njlhelper.nodeToNode(nodelabellist.get(i), nodelabellist.get(i + 1));
@@ -25,10 +25,31 @@ public class PathExpressionQuerys {
 		return result;
 	}
 
+	public List<Path> PQ1a(List<List<String>> NNs) {
+		List<List<Path>> nodelabellist = buildlistdoublestr(NNs);
+		return PQ1(nodelabellist);
+	}
+
+	public List<Path> PQ1b(List<List<String>> NNs) {
+		List<Path> result = PQ1a(NNs);
+		Collections.sort(result, new DoubleStringSort());
+		return result;
+	}
+
+	public List<Path> PQ1c(List<List<String>> NNs) {
+		List<Path> ls = PQ1a(NNs);
+		List<Path> result = new LinkedList<Path>(new LinkedHashSet<Path>(ls));
+		return result;
+	}
+	
+	public List<Path> PQ1a(String[][] NNs) {
+		List<List<Path>> nodelabellist = buildlistdoublestr(NNs);
+		return PQ1(nodelabellist);
+	}
+
 	public List<Path> PQ1b(String[][] NNs) {
 		List<Path> result = PQ1a(NNs);
 		Collections.sort(result, new DoubleStringSort());
-		// printResult(result);
 		return result;
 	}
 
@@ -37,9 +58,9 @@ public class PathExpressionQuerys {
 		List<Path> result = new LinkedList<Path>(new LinkedHashSet<Path>(ls));
 		return result;
 	}
-
-	public List<Path> PQ3a_max_num_edge(String[] NNs, int max_num_edge) {
-		List<List<Path>> nodelabellist = buildlistdoublestr(new String[][] { NNs, });
+	
+	/*	NN//Bound_max_num_edge	*/
+	public List<Path> PQ3_max_num_edge(List<List<Path>> nodelabellist, int max_num_edge) {
 		NLJHelper njlhelper = new NLJHelper();
 		for (int i = 0; i < max_num_edge; i++) {
 			List<Path> result = njlhelper.nodeToAll(nodelabellist.get(i));
@@ -58,12 +79,11 @@ public class PathExpressionQuerys {
 				}
 			}
 		}
-//		printResult(result);
 		return result;
-	}
+	}	
 	
-	public List<Path> PQ3a_max_weight(String[] NNs, int max_weight){
-		List<List<Path>> nodelabellist = buildlistdoublestr(new String[][] { NNs, });
+	/*	NN//Bound_max_weight	*/
+	public List<Path> PQ3_max_weight(List<List<Path>> nodelabellist, int max_weight){
 		NLJHelper njlhelper = new NLJHelper();
 		boolean done=false;
 		for(int i=0;!done;i++){
@@ -89,18 +109,27 @@ public class PathExpressionQuerys {
 //		printResult(result);
 		return result;
 	}
+
+	public List<Path> PQ3a_max_num_edge(String[] NNs, int max_num_edge) {
+		List<List<Path>> nodelabellist = buildlistdoublestr(new String[][] { NNs, });
+		
+		return PQ3_max_num_edge(nodelabellist, max_num_edge);
+	}
+	
+	public List<Path> PQ3a_max_weight(String[] NNs, int max_weight){
+		List<List<Path>> nodelabellist = buildlistdoublestr(new String[][] { NNs, });
+		return PQ3_max_weight(nodelabellist, max_weight);
+	}
 	
 	public List<Path> PQ3b_max_num_edge(String[] NNs, int max_num_edge) {
 		List<Path> result = PQ3a_max_num_edge(NNs, max_num_edge);
 		Collections.sort(result, new DoubleStringSort());
-//		 printResult(result);
 		return result;
 	}
 	
 	public List<Path> PQ3b_max_weight(String[] NNs, int max_weight) {
 		List<Path> result = PQ3a_max_weight(NNs, max_weight);
 		Collections.sort(result, new DoubleStringSort());
-//		 printResult(result);
 		return result;
 	}
 	
@@ -123,6 +152,18 @@ public class PathExpressionQuerys {
 			NN.clear();
 			for (int j = 0; j < NNs[i].length; j++)
 				NN.add(new Path(NNs[i][j], NNs[i][j]));
+			list.add(NN);
+		}
+		return list;
+	}
+	
+	private List<List<Path>> buildlistdoublestr(List<List<String>> NNs) {
+		List<List<Path>> list = new LinkedList();
+		for (int i = 0; i < NNs.size(); i++) {
+			List<Path> NN = new LinkedList();
+			NN.clear();
+			for (int j = 0; j < NNs.get(i).size(); j++)
+				NN.add(new Path(NNs.get(i).get(j), NNs.get(i).get(j)));
 			list.add(NN);
 		}
 		return list;
