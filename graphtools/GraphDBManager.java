@@ -309,10 +309,10 @@ public class GraphDBManager implements GlobalConst {
 			};
 			
 			String[] NN = {
-					"1","2"
+					"1",
 			};
 			
-			pathquery.PQ3b_max_num_edge(NN,2);
+			pathquery.printResultwithWeight(pathquery.PQ3c_max_weight(NN,95));
 			// db.insertNodes(insertdeletefilename);
 //			db.deleteEdge(nodedeletefilename);
 			
