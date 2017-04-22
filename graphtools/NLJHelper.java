@@ -18,16 +18,11 @@ import java.io.IOException;
 import java.util.LinkedList;
 import java.util.List;
 
-public class NLJHelper implements GlobalConst {
+class NLJHelper implements GlobalConst {
 
-	public static final int PROJ_NODE_LABEL = 1;
-	public static final int PROJ_EDGE_ID = 2;
-	public static final int PROJ_EDGE_WEIGHT = 3;
-
-	public String[] getLabelFromDescriptor(Descriptor desc) {
-
-		return null;
-	}
+	private static final int PROJ_NODE_LABEL = 1;
+	private static final int PROJ_EDGE_ID = 2;
+	private static final int PROJ_EDGE_WEIGHT = 3;
 
 	public List<Path> nodeToAllwithMaxWeight(List<Path> sourcelabel, int maxweight) {
 		List<Path> result = new LinkedList();
@@ -37,13 +32,12 @@ public class NLJHelper implements GlobalConst {
 			try {
 				while ((t = edges.get_next()) != null) {
 					// System.out.println(t.getIntFld(2));
-					IndexNLJ_NodeDestEdge findnodes = nodeDestJoinByEdgeId(t.getIntFld(NLJHelper.PROJ_EDGE_ID));
-					int edgeweight = t.getIntFld(NLJHelper.PROJ_EDGE_WEIGHT);
-					int weight=edgeweight + source.totalWeight;
-					if (weight <= maxweight) {
+					int weight=t.getIntFld(NLJHelper.PROJ_EDGE_WEIGHT)+source.totalWeight;
+					if (weight<= maxweight) {
+						IndexNLJ_NodeDestEdge findnodes = nodeDestJoinByEdgeId(t.getIntFld(NLJHelper.PROJ_EDGE_ID));
 						Tuple n = null;
 						while ((n = findnodes.get_next()) != null) {
-							result.add(new Path(source.head, n.getStrFld(NLJHelper.PROJ_NODE_LABEL),weight));
+							result.add(new Path(source.head, n.getStrFld(NLJHelper.PROJ_NODE_LABEL), weight));
 						}
 					}
 				}
@@ -111,62 +105,8 @@ public class NLJHelper implements GlobalConst {
 		}
 		return result;
 	}
-
-	// public List<String> nodeToNodeold(List<String> sourcelabel, List<String>
-	// destlabel) {
-	// List<String> result = new LinkedList();
-	// for (String source : sourcelabel) {
-	// IndexNLJ_EdgeSourceNode edges = edgeSourceNodeJoin(source);
-	// Tuple t = null;
-	// try {
-	// while ((t = edges.get_next()) != null) {
-	// // System.out.println(t.getIntFld(2));
-	// IndexNLJ_NodeDestEdge findnodes = nodeDestJoinByEdgeId(t.getIntFld(2));
-	// Tuple n = null;
-	// while ((n = findnodes.get_next()) != null) {
-	// for (String label : destlabel) {
-	// if (label.equals(n.getStrFld(1)))
-	// result.add(label);
-	// }
-	// }
-	// }
-	// } catch (IOException e) {
-	// // TODO Auto-generated catch block
-	// System.out.println(e);
-	// } catch (Exception e) {
-	// // TODO Auto-generated catch block
-	// System.out.println(e);
-	// }
-	// }
-	// if (result != null)
-	// return result;
-	// return null;
-	// }
-
-	// public String[] nodeToNode(String sourcelabel, String destlabel) {
-	// String result[];
-	// IndexNLJ_EdgeSourceNode edges = edgeSourceNodeJoin(sourcelabel);
-	// Tuple t = null;
-	// try {
-	// while ((t = edges.get_next()) != null) {
-	// // System.out.println(t.getIntFld(2));
-	// IndexNLJ_NodeDestEdge findnodes = nodeDestJoinByEdgeId(t.getIntFld(2));
-	// Tuple n = null;
-	// while ((n = findnodes.get_next()) != null) {
-	// if (n.getStrFld(1).equals(destlabel))
-	// return new String[] { sourcelabel, destlabel };
-	// }
-	// }
-	// } catch (IOException e) {
-	// // TODO Auto-generated catch block
-	// e.printStackTrace();
-	// } catch (Exception e) {
-	// // TODO Auto-generated catch block
-	// e.printStackTrace();
-	// }
-	//
-	// return null;
-	// }
+	
+	
 
 	public IndexNLJ_EdgeDestNode edgeDestNodeJoin(String nodeLabelFilter) {
 		CondExpr cond = null;
