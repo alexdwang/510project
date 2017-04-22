@@ -3,7 +3,6 @@ package graphtools;
 import btree.BTFileScan;
 import btree.KeyDataEntry;
 import btree.LeafData;
-import btree.ScanIteratorException;
 import edgeheap.Edge;
 import global.*;
 import heap.Heapfile;
@@ -231,7 +230,7 @@ class NLJHelper implements GlobalConst {
 
 		IndexNLJ_NodeSourceEdge nlj = null;
 		try {
-			nlj = new IndexNLJ_NodeSourceEdge("nodefile", cond);
+			nlj = new IndexNLJ_NodeSourceEdge(cond);
 			return nlj;
 		} catch (Exception e) {
 			System.out.println("error:" + e);
@@ -250,7 +249,7 @@ class NLJHelper implements GlobalConst {
 
 		IndexNLJ_NodeSourceEdge nlj = null;
 		try {
-			nlj = new IndexNLJ_NodeSourceEdge("nodefile", cond);
+			nlj = new IndexNLJ_NodeSourceEdge(cond);
 			return nlj;
 		} catch (Exception e) {
 			System.out.println("error:" + e);
@@ -266,15 +265,13 @@ class NLJHelper implements GlobalConst {
 			cond.op = new AttrOperator(AttrOperator.aopEQ);
 			cond.type1 = new AttrType(AttrType.attrSymbol);
 			cond.type2 = new AttrType(AttrType.attrString);
-			cond.operand1.symbol = new FldSpec(new RelSpec(RelSpec.innerRel), Edge.FLD_LABEL);
+			cond.operand1.symbol = new FldSpec(new RelSpec(RelSpec.outer), Edge.FLD_LABEL);
 			cond.operand2.string = edgeLabelFilter;
 		}
 
-		FldSpec[] proj1 = { new FldSpec(new RelSpec(RelSpec.outer), Node.FldID_Label),
-				new FldSpec(new RelSpec(RelSpec.innerRel), Edge.FLD_ID) };
 		IndexNLJ_NodeDestEdge nlj = null;
 		try {
-			nlj = new IndexNLJ_NodeDestEdge(500, cond, proj1, 2);
+			nlj = new IndexNLJ_NodeDestEdge(cond);
 			return nlj;
 		} catch (Exception e) {
 			System.out.println("error:" + e);
@@ -288,14 +285,12 @@ class NLJHelper implements GlobalConst {
 		cond.op = new AttrOperator(AttrOperator.aopLE);
 		cond.type1 = new AttrType(AttrType.attrSymbol);
 		cond.type2 = new AttrType(AttrType.attrInteger);
-		cond.operand1.symbol = new FldSpec(new RelSpec(RelSpec.innerRel), Edge.FLD_WGT);
+		cond.operand1.symbol = new FldSpec(new RelSpec(RelSpec.outer), Edge.FLD_WGT);
 		cond.operand2.integer = edgeWeightFilter;
 
-		FldSpec[] proj1 = { new FldSpec(new RelSpec(RelSpec.outer), Node.FldID_Label),
-				new FldSpec(new RelSpec(RelSpec.innerRel), Edge.FLD_ID) };
 		IndexNLJ_NodeDestEdge nlj = null;
 		try {
-			nlj = new IndexNLJ_NodeDestEdge(500, cond, proj1, 2);
+			nlj = new IndexNLJ_NodeDestEdge(cond);
 			return nlj;
 		} catch (Exception e) {
 			System.out.println("error:" + e);
@@ -309,14 +304,12 @@ class NLJHelper implements GlobalConst {
 		cond.op = new AttrOperator(AttrOperator.aopEQ);
 		cond.type1 = new AttrType(AttrType.attrSymbol);
 		cond.type2 = new AttrType(AttrType.attrInteger);
-		cond.operand1.symbol = new FldSpec(new RelSpec(RelSpec.innerRel), Edge.FLD_ID);
+		cond.operand1.symbol = new FldSpec(new RelSpec(RelSpec.outer), Edge.FLD_ID);
 		cond.operand2.integer = edgeIdFilter;
 
-		FldSpec[] proj1 = { new FldSpec(new RelSpec(RelSpec.outer), Node.FldID_Label),
-				new FldSpec(new RelSpec(RelSpec.innerRel), Edge.FLD_ID) };
 		IndexNLJ_NodeDestEdge nlj = null;
 		try {
-			nlj = new IndexNLJ_NodeDestEdge(500, cond, proj1, 2);
+			nlj = new IndexNLJ_NodeDestEdge(cond);
 			return nlj;
 		} catch (Exception e) {
 			System.out.println("error:" + e);
