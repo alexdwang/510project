@@ -31,7 +31,7 @@ public class parser {
 		
 		if(token.substring(0, 2).equalsIgnoreCase(delims[1]))
 			return res[1];
-		else if(token.substring(0, 2).equalsIgnoreCase(delims[2]))
+		else if(token.substring(0, 2).equalsIgnoreCase(delims[0]))
 			return res[0];
 		else return null;
 	}

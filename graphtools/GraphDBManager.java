@@ -249,8 +249,8 @@ public class GraphDBManager implements GlobalConst {
 	
 	public static void main(String[] argvs) {
 		String dbname = "testdb";
-		String nodefilename = "NodeInsertData.txt";
-		String edgefilename = "EdgeInsertData.txt";
+		String nodefilename = "Node.txt";
+		String edgefilename = "Edge.txt";
 //		String insertdeletefilename = argvs[3];
 //		String nodedeletefilename = argvs[4];
 
