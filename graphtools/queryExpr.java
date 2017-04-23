@@ -210,8 +210,9 @@ public class queryExpr implements GlobalConst {
 				tokens1 = cmds[1];
 				tokens2 = tokens1.split(delimt4);
 				res1 = parser.discrmN(tokens2[0]);
-				if (tokens2.length > 2) {
+				if (tokens2.length !=2) {
 					System.err.println("Invalid query condition");
+					return;
 				}
 				if (res1 == "descriptor") {
 					Descriptor desc = parser.convDesc(tokens2[0]);

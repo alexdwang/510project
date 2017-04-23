@@ -157,7 +157,7 @@ public class BTManager {
 				// System.out.println("string2: '"+label+"'");
 				if (node.getLabel().equals(label)) {
 					rid = hfm.getCurRID();
-					key = new StringKey(node.getLabel());
+					key = new StringKey(label);
 					nodelabelbtree.insert(key, rid);
 					hfm.closeScan();
 					break;
@@ -174,6 +174,13 @@ public class BTManager {
 		hfm.initScanEdge();
 		while ((edge = hfm.scanNextEdge()) != null) {
 			rid = hfm.getCurRID();
+			key = new IntegerKey(edge.getID());
+			BTFileScan s = edgeidbtree.new_scan(key, key);
+			KeyDataEntry itr;
+			if((itr = s.get_next())!=null)
+				continue;
+			s.DestroyBTreeFileScan();
+			edgeidbtree.insert(key, rid);
 			key = new StringKey(edge.getLabel());
 			edgelabelbtree.insert(key, rid);
 			key = new StringKey(edge.getSource());
@@ -182,8 +189,6 @@ public class BTManager {
 			edgelabelbtree_d.insert(key, rid);
 			key = new IntegerKey(edge.getWeight());
 			edgeweightbtree.insert(key, rid);
-			key = new IntegerKey(edge.getID());
-			edgeidbtree.insert(key, rid);
 		}
 	}
 

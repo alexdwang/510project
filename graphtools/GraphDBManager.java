@@ -233,9 +233,7 @@ public class GraphDBManager implements GlobalConst {
 			btmgr.getEdgelabelbtree_s().destroyFile();
 			btmgr.getEdgeweightbtree().destroyFile();
 			btmgr.getEdgeidbtree().destroyFile();
-			EdgeLabelsDriver eld = new EdgeLabelsDriver(hfmgr, btmgr);
-			EdgeWeightDriver ewd = new EdgeWeightDriver(hfmgr, btmgr);
-			eld.ConstructBTEL();eld.ConstructBTEL_D();eld.ConstructBTEL_S();ewd.ConstructBTEW();
+			btmgr.insertEdgeBtress(hfmgr);
 		} catch (IteratorException | UnpinPageException | FreePageException | DeleteFileEntryException
 				| ConstructPageException | PinPageException | IOException e) {
 			// TODO Auto-generated catch block
@@ -249,8 +247,8 @@ public class GraphDBManager implements GlobalConst {
 	
 	public static void main(String[] argvs) {
 		String dbname = "testdb";
-		String nodefilename = "Node.txt";
-		String edgefilename = "Edge.txt";
+		String nodefilename = "NodeInsertData.txt";
+		String edgefilename = "EdgeInsertData.txt";
 //		String insertdeletefilename = argvs[3];
 //		String nodedeletefilename = argvs[4];
 
