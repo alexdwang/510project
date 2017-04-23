@@ -359,7 +359,14 @@ public class BufMgr implements GlobalConst{
       
       for (i=0; i < numBuffers; i++)   // write all valid dirty pages to disk
 	if ( (all_pages !=0) || (frmeTable[i].pageNo.pid == pageid.pid)) {
-	  
+/*
+    if(isPinned(frmeTable[i].pageNo)){
+      try{
+        unpinPage(frmeTable[i].pageNo, true);
+      }catch(Exception e2){
+        e2.printStackTrace();
+      }
+    }*/
 	  if ( frmeTable[i].pin_count() != 0 )
 	    unpinned++;
 	  
@@ -572,6 +579,7 @@ public class BufMgr implements GlobalConst{
 	replacer.pin(frameNo);
 	
       }
+    //System.out.println(pin_pgid.pid + " unpinned");
     }
   
   /** 
@@ -614,7 +622,7 @@ public class BufMgr implements GlobalConst{
       
       if (dirty == true)
 	frmeTable[frameNo].dirty = dirty;
-      
+      //System.out.println(PageId_in_a_DB.pid + " unpinned");
     }
 
 public boolean isPinned(PageId pageno){
