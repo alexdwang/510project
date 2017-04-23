@@ -41,3 +41,7 @@ Makefile
 
 # IDEA
 out/
+
+# Minibase file
+*.minibase-db
+
