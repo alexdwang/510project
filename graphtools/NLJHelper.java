@@ -174,15 +174,13 @@ class NLJHelper implements GlobalConst {
 			cond.op = new AttrOperator(AttrOperator.aopEQ);
 			cond.type1 = new AttrType(AttrType.attrSymbol);
 			cond.type2 = new AttrType(AttrType.attrString);
-			cond.operand1.symbol = new FldSpec(new RelSpec(RelSpec.innerRel), Node.FldID_Label);
+			cond.operand1.symbol = new FldSpec(new RelSpec(RelSpec.outer), Node.FldID_Label);
 			cond.operand2.string = nodeLabelFilter;
 		}
 
-		FldSpec[] proj1 = { new FldSpec(new RelSpec(RelSpec.innerRel), Node.FldID_Label),
-				new FldSpec(new RelSpec(RelSpec.outer), Edge.FLD_ID) };
 		IndexNLJ_EdgeDestNode nlj = null;
 		try {
-			nlj = new IndexNLJ_EdgeDestNode(500, cond, proj1, 2);
+			nlj = new IndexNLJ_EdgeDestNode(cond);
 			return nlj;
 		} catch (Exception e) {
 			System.out.println("error:" + e);
