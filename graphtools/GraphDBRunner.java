@@ -28,7 +28,6 @@ public class GraphDBRunner implements GlobalConst{
 		System.out.println("=== You can type 'help' to see valid comands ===");
 		Scanner scan = new Scanner(System.in);
 		String cmd = null;
-		GraphDBManager db = new GraphDBManager();
 		PCounter.initialize();
 		do{
 			System.out.print("###");
@@ -330,6 +329,15 @@ public class GraphDBRunner implements GlobalConst{
 				case "help":
 					GraphDBRunner.help();
 					break;
+				case "freetest":
+				{
+					if(curdb == ""){
+						db.init("g9", 5000);
+						curdb = "g9";
+					}
+					db.hfmgr.mergeEdges();
+					break;
+				}
 				case "quit":
 				{
 					try{

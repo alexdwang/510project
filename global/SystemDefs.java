@@ -76,6 +76,7 @@ public class SystemDefs {
       
       // create or open the DB
       if ((MINIBASE_RESTART_FLAG)||(num_pgs == 0)){//open an existing database
+        //System.out.println("open exsiting one");
 	try {
 	  JavabaseDB.openDB(dbname);
 	}

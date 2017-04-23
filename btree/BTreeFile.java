@@ -209,7 +209,7 @@ public class BTreeFile extends IndexFile
 	   AddFileEntryException
     {
       
-      
+      //System.out.println("start new btree");
       headerPageId=get_file_entry(filename);
       if( headerPageId==null) //file not exist
 	{
@@ -228,7 +228,7 @@ public class BTreeFile extends IndexFile
       }
       
       dbname=new String(filename);
-      
+      //System.out.println("end new btree");
     }
   
   /** Close the B+ tree file.  Unpin header page.
@@ -243,10 +243,12 @@ public class BTreeFile extends IndexFile
 	   HashEntryNotFoundException,
            ReplacerException
     {
+      //System.out.println("close bt start");
       if ( headerPage!=null) {
 	SystemDefs.JavabaseBM.unpinPage(headerPageId, true);
 	headerPage=null;
       }  
+      //System.out.println("close bt end");
     }
   
   /** Destroy entire B+ tree file.

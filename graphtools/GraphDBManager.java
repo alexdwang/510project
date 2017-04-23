@@ -66,45 +66,17 @@ public class GraphDBManager implements GlobalConst {
 
 	public void insertNodes(String nodefilename) throws Exception {
 		hfmgr.insertNodesFromFile(nodefilename);
-		if (firsttime) {
-			NodeLabelsDriver nld = new NodeLabelsDriver(hfmgr, btmgr);
-			NodeDescriptorDriver ndd = new NodeDescriptorDriver(hfmgr, btmgr);
-			try {
-				nld.ConstructBTNL();
-				ndd.ConstructZT();
-			} catch (Exception e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
-			firsttime = false;
-		} else {
-			btmgr.insertNodetoNLBT(hfmgr, nodefilename);
-			btmgr.insertNodetoZT(hfmgr, nodefilename);
-		}
+		btmgr.insertNodetoNLBT(hfmgr, nodefilename);
+		btmgr.insertNodetoZT(hfmgr, nodefilename);
 	}
 
 	public void insertEdges(String edgefilename) throws Exception {
 		hfmgr.insertEdgesFromFile(edgefilename);
-		if (firsttime_e) {
-			EdgeLabelsDriver eld = new EdgeLabelsDriver(hfmgr, btmgr);
-			EdgeWeightDriver ewd = new EdgeWeightDriver(hfmgr, btmgr);
-			try {
-				eld.ConstructBTEL();
-				eld.ConstructBTEL_D();
-				eld.ConstructBTEL_S();
-				ewd.ConstructBTEW();
-			} catch (Exception e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
-			firsttime_e = false;
-		} else {
-			btmgr.insertEdgetoELBT(hfmgr, edgefilename);
-			btmgr.insertEdgetoELBT_S(hfmgr, edgefilename);
-			btmgr.insertEdgetoELBT_D(hfmgr, edgefilename);
-			btmgr.insertEdgetoEWBT(hfmgr, edgefilename);
-			btmgr.insertEdgetoEIDBT(hfmgr, edgefilename);
-		}
+		btmgr.insertEdgetoELBT(hfmgr, edgefilename);
+		btmgr.insertEdgetoELBT_S(hfmgr, edgefilename);
+		btmgr.insertEdgetoELBT_D(hfmgr, edgefilename);
+		btmgr.insertEdgetoEWBT(hfmgr, edgefilename);
+		btmgr.insertEdgetoEIDBT(hfmgr, edgefilename);
 //		BT.printAllLeafPages(btmgr.getEdgelabelbtree().getHeaderPage());
 
 	}

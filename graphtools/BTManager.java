@@ -68,11 +68,12 @@ public class BTManager {
 	public void closeAllFile(){
 		try {
 			BTreeFile[] bts={nodelabelbtree, nodeDescriptorTree, edgelabelbtree, 
-					edgeweightbtree, edgelabelbtree_s, edgelabelbtree_d};
+					edgeweightbtree, edgelabelbtree_s, edgelabelbtree_d, edgeidbtree};
 			for(int i=0;i<bts.length;i++){
 				if(bts[i]!=null)
 					bts[i].close();
 			}
+
 			
 		} catch (PageUnpinnedException | InvalidFrameNumberException | HashEntryNotFoundException
 				| ReplacerException e) {
@@ -142,10 +143,10 @@ public class BTManager {
 		Scanner scan = new Scanner(file);
 		int cnt = 0;
 		while (scan.hasNextLine()) {
+
 			String line = scan.nextLine();
 			String[] data = line.split(" ");
 			String label = data[0];
-
 			RID rid = new RID();
 			Node node = new Node();
 			KeyClass key;

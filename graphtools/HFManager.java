@@ -248,6 +248,8 @@ class HFManager implements  GlobalConst{
 
 	}
 
+
+
 	public Edge scanNextEdge(){
 		try{
 			tuple = nscan.getNext(rid);
@@ -321,6 +323,86 @@ class HFManager implements  GlobalConst{
 		return dstSet.size();
 	}
 
+
+	public void mergeEdges(){
+
+		TupleOrder ascending = new TupleOrder(TupleOrder.Ascending);
+
+		FldSpec [] Sprojection = {
+			new FldSpec(new RelSpec(RelSpec.outer), 1),
+			new FldSpec(new RelSpec(RelSpec.outer), 2),
+			new FldSpec(new RelSpec(RelSpec.outer), 3),
+			new FldSpec(new RelSpec(RelSpec.outer), 4),
+			new FldSpec(new RelSpec(RelSpec.outer), 5)
+		};
+
+		FileScan am = null;
+		FileScan am2 = null;
+		try {
+			am  = new FileScan(edgefilename, Edge.FLD_TYPES, Edge.STR_FLD_SIZE, 
+					  Edge.FLD_CNT, Edge.FLD_CNT,
+					  Sprojection, null);
+		}
+		catch (Exception e) {
+			e.printStackTrace();
+		}
+
+		try {
+			am2  = new FileScan(edgefilename, Edge.FLD_TYPES, Edge.STR_FLD_SIZE, 
+					  Edge.FLD_CNT, Edge.FLD_CNT,
+					  Sprojection, null);
+		}
+		catch (Exception e) {
+			e.printStackTrace();
+		}
+
+		FldSpec [] proj_list = { 
+			new FldSpec(new RelSpec(RelSpec.outer), Edge.FLD_DST_LABEL), 
+			new FldSpec(new RelSpec(RelSpec.innerRel), Edge.FLD_SRC_LABEL)
+		};
+
+		CondExpr [] expr = {
+			new CondExpr(),
+			new CondExpr()
+		};
+		expr[0].next  = null;
+		expr[0].op    = new AttrOperator(AttrOperator.aopEQ);
+		expr[0].type1 = new AttrType(AttrType.attrSymbol);
+    	expr[0].operand1.symbol = new FldSpec (new RelSpec(RelSpec.outer),Edge.FLD_DST_LABEL);
+	    expr[0].type2 = new AttrType(AttrType.attrSymbol);
+    	expr[0].operand2.symbol = new FldSpec (new RelSpec(RelSpec.innerRel),Edge.FLD_SRC_LABEL);
+    	expr[1] = null;
+
+    	SortMerge sm = null;
+		try {
+			sm = new SortMerge(Edge.FLD_TYPES, Edge.FLD_CNT, Edge.STR_FLD_SIZE,
+				Edge.FLD_TYPES, Edge.FLD_CNT, Edge.STR_FLD_SIZE,
+				Edge.FLD_DST_LABEL, Edge.LABEL_MAX_LENGTH, 
+				Edge.FLD_SRC_LABEL, Edge.LABEL_MAX_LENGTH, 
+				300,
+				am, am2, 
+				false, false, ascending,
+				expr, proj_list, 2);
+		}
+		catch (Exception e) {
+			e.printStackTrace();
+		}
+
+		AttrType [] jtype = new AttrType[2];
+   		jtype[0] = new AttrType (AttrType.attrString);
+    	jtype[1] = new AttrType (AttrType.attrString);
+		Tuple t;
+		try {
+			while ((t = sm.get_next()) != null) {
+       			t.print(jtype);
+      		}
+		}
+		catch (Exception e) {
+			e.printStackTrace();
+		}
+
+	}
+
 	public void NodeQuery(int qtype, short bufnum){
 		switch(qtype){
 		case 0:
@@ -368,34 +450,6 @@ class HFManager implements  GlobalConst{
 	}
 
 	public void EdgeQuery01234(int qtype, short bufnum){
-		/*
-		List<Edge> edges = new ArrayList<Edge>();
-		initScanEdge();
-		Edge edge = scanNextEdge();
-		try{
-			while(edge != null){
-				edges.add(edge);
-				edge = scanNextEdge();
-			}
-		}catch(Exception e){
-			System.err.println ("failed when query by label\n");
-			e.printStackTrace();
-		}*/
-		//sort
-		/*
-		try{
-			if(qtype == 1) Collections.sort(edges, SourceLabelComparator);
-			else if(qtype == 2) Collections.sort(edges, DstLabelComparator);
-			else if(qtype == 3) Collections.sort(edges, EdgeLabelComparator);
-			else if(qtype == 4) Collections.sort(edges, WeightComparator);
-			for(Edge e : edges){
-				e.print();
-			}
-		}catch(Exception e){
-			System.err.println ("failed when query by label\n");
-			e.printStackTrace();
-		}
-		*/
 		switch(qtype){
 		case 0:{// sort by label
 			try{
