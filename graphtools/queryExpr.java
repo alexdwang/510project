@@ -17,7 +17,7 @@ public class queryExpr implements GlobalConst {
 		List einput = new LinkedList();
 		
 		while (true) {
-			System.out.printf("Please input the query expression: ");
+			System.out.println("Please input the query expression: ");
 			Scanner scan = new Scanner(System.in);
 			String cmd = null;
 			cmd = scan.nextLine();

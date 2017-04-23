@@ -138,7 +138,7 @@ public class BTManager {
 	}
 	public void insertNodetoNLBT(HFManager hfm, String fileName) throws Exception {
 
-		System.out.println("start inserting nodes");
+		System.out.println("start inserting nodes to B-Tree");
 		File file = new File(fileName);
 		Scanner scan = new Scanner(file);
 		int cnt = 0;
@@ -168,7 +168,7 @@ public class BTManager {
 
 	public void insertEdgetoELBT(HFManager hfm, String fileName) throws Exception {
 
-		System.out.println("start inserting edges");
+		System.out.println("start inserting edge label B-Tree");
 		File file = new File(fileName);
 		Scanner scan = new Scanner(file);
 		while (scan.hasNextLine()) {
@@ -194,7 +194,7 @@ public class BTManager {
 
 	public void insertEdgetoELBT_S(HFManager hfm, String fileName) throws Exception {
 
-		System.out.println("start inserting edges");
+		System.out.println("start inserting edge source label B-Tree");
 		File file = new File(fileName);
 		Scanner scan = new Scanner(file);
 		while (scan.hasNextLine()) {
@@ -220,7 +220,7 @@ public class BTManager {
 
 	public void insertEdgetoELBT_D(HFManager hfm, String fileName) throws Exception {
 
-		System.out.println("start inserting edges");
+		System.out.println("start inserting edge dest label B-Tree");
 		File file = new File(fileName);
 		Scanner scan = new Scanner(file);
 		while (scan.hasNextLine()) {
@@ -273,7 +273,7 @@ public class BTManager {
 
 	public void insertEdgetoEWBT(HFManager hfm, String fileName) throws Exception {
 
-		System.out.println("start inserting edges");
+		System.out.println("start inserting edge weight B-Tree");
 		File file = new File(fileName);
 		Scanner scan = new Scanner(file);
 		while (scan.hasNextLine()) {
@@ -300,7 +300,7 @@ public class BTManager {
 	
 	public void insertEdgetoEIDBT(HFManager hfm, String fileName) throws Exception {
 
-		System.out.println("start inserting edges");
+		System.out.println("start inserting edge id B-Tree");
 		File file = new File(fileName);
 		Scanner scan = new Scanner(file);
 		while (scan.hasNextLine()) {

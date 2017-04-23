@@ -29,7 +29,7 @@ public class GraphDBManager implements GlobalConst {
 	public void init(String dbname) {
 		dbpath = dbname + ".minibase-db";
 		logpath = dbname + ".minibase-log";
-		SystemDefs sysdef = new SystemDefs(dbpath, 5000, 500, "Clock");
+		SystemDefs sysdef = new SystemDefs(dbpath, 50000, 500, "Clock");
 		System.out.println("\n" + "DB initializing" + "\n");
 		hfmgr = new HFManager();
 		btmgr = new BTManager();
@@ -38,7 +38,7 @@ public class GraphDBManager implements GlobalConst {
 	public void init(String dbname, int bufNum) {
 		dbpath = dbname + ".minibase-db";
 		logpath = dbname + ".minibase-log";
-		SystemDefs sysdef = new SystemDefs(dbpath, 5000, bufNum, "Clock");
+		SystemDefs sysdef = new SystemDefs(dbpath, 50000, bufNum, "Clock");
 		System.out.println("\n" + "DB initializing" + "\n");
 		hfmgr = new HFManager();
 		btmgr = new BTManager();
