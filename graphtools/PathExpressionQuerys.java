@@ -167,6 +167,41 @@ public class PathExpressionQuerys {
 		return result;
 	}
 
+	public List<Path> PQ3a_max_num_edge(List<String> NN, int max_num_edge) {
+		List<List<Path>> nodelabellist = buildlistdoublestr_singlelist(NN);
+		
+		return PQ3_max_num_edge(nodelabellist, max_num_edge);
+	}
+	
+	public List<Path> PQ3a_max_weight(List<String> NN, int max_weight){
+		List<List<Path>> nodelabellist = buildlistdoublestr_singlelist(NN);
+		return PQ3_max_weight(nodelabellist, max_weight);
+	}
+	
+	public List<Path> PQ3b_max_num_edge(List<String> NNs, int max_num_edge) {
+		List<Path> result = PQ3a_max_num_edge(NNs, max_num_edge);
+		Collections.sort(result, new DoubleStringSort());
+		return result;
+	}
+	
+	public List<Path> PQ3b_max_weight(List<String> NNs, int max_weight) {
+		List<Path> result = PQ3a_max_weight(NNs, max_weight);
+		Collections.sort(result, new DoubleStringSort());
+		return result;
+	}
+	
+	public List<Path> PQ3c_max_num_edge(List<String> NNs, int max_num_edge) {
+		List<Path> ls = PQ3a_max_num_edge(NNs,max_num_edge);
+		List<Path> result = new LinkedList<Path>(new LinkedHashSet<Path>(ls));
+		return result;
+	}
+	
+	public List<Path> PQ3c_max_weight(List<String> NNs, int max_weight) {
+		List<Path> ls = PQ3a_max_weight(NNs,max_weight);
+		List<Path> result = new LinkedList<Path>(new LinkedHashSet<Path>(ls));
+		return result;
+	}
+	
 	public List<Path> PQ3a_max_num_edge(String[] NNs, int max_num_edge) {
 		List<List<Path>> nodelabellist = buildlistdoublestr(new String[][] { NNs, });
 		
@@ -237,6 +272,9 @@ public class PathExpressionQuerys {
 	}
 
 	public void printResult(List<Path> result) {
+		if (result.isEmpty()){
+			System.out.println("No valid result!");
+		}
 		for (Path r : result) {
 			System.out.println("head:" + r.head + " tail:" + r.tail);
 		}

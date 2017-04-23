@@ -33,12 +33,13 @@ class NLJHelper implements GlobalConst {
 			try {
 				while ((t = edges.get_next()) != null) {
 					// System.out.println(t.getIntFld(2));
-					int weight=t.getIntFld(NLJHelper.PROJ_EDGE_WEIGHT);
-					if (weight<= maxweight) {
+					int weight = t.getIntFld(NLJHelper.PROJ_EDGE_WEIGHT);
+					if (weight <= maxweight) {
 						IndexNLJ_NodeDestEdge findnodes = nodeDestJoinByEdgeId(t.getIntFld(NLJHelper.PROJ_EDGE_ID));
 						Tuple n = null;
 						while ((n = findnodes.get_next()) != null) {
-							result.add(new Path(source.head, n.getStrFld(NLJHelper.PROJ_NODE_LABEL), weight+source.totalWeight));
+							result.add(new Path(source.head, n.getStrFld(NLJHelper.PROJ_NODE_LABEL),
+									weight + source.totalWeight));
 						}
 					}
 				}
@@ -53,7 +54,7 @@ class NLJHelper implements GlobalConst {
 		return result;
 
 	}
-	
+
 	public List<Path> nodeToAllwithEdgeLabel(List<Path> sourcelabel, String edgelabel) {
 		List<Path> result = new LinkedList();
 		for (Path source : sourcelabel) {
@@ -62,12 +63,13 @@ class NLJHelper implements GlobalConst {
 			try {
 				while ((t = edges.get_next()) != null) {
 					// System.out.println(t.getIntFld(2));
-					String label=t.getStrFld(NLJHelper.PROJ_EDGE_Laebl);
+					String label = t.getStrFld(NLJHelper.PROJ_EDGE_Laebl);
 					if (label.equals(edgelabel)) {
 						IndexNLJ_NodeDestEdge findnodes = nodeDestJoinByEdgeId(t.getIntFld(NLJHelper.PROJ_EDGE_ID));
 						Tuple n = null;
 						while ((n = findnodes.get_next()) != null) {
-							result.add(new Path(source.head, n.getStrFld(NLJHelper.PROJ_NODE_LABEL), t.getIntFld(NLJHelper.PROJ_EDGE_WEIGHT)+source.totalWeight));
+							result.add(new Path(source.head, n.getStrFld(NLJHelper.PROJ_NODE_LABEL),
+									t.getIntFld(NLJHelper.PROJ_EDGE_WEIGHT) + source.totalWeight));
 						}
 					}
 				}
@@ -82,7 +84,7 @@ class NLJHelper implements GlobalConst {
 		return result;
 
 	}
-	
+
 	public List<Path> nodeToAllwithMaxWeight(List<Path> sourcelabel, int maxweight) {
 		List<Path> result = new LinkedList();
 		for (Path source : sourcelabel) {
@@ -91,8 +93,8 @@ class NLJHelper implements GlobalConst {
 			try {
 				while ((t = edges.get_next()) != null) {
 					// System.out.println(t.getIntFld(2));
-					int weight=t.getIntFld(NLJHelper.PROJ_EDGE_WEIGHT)+source.totalWeight;
-					if (weight<= maxweight) {
+					int weight = t.getIntFld(NLJHelper.PROJ_EDGE_WEIGHT) + source.totalWeight;
+					if (weight <= maxweight) {
 						IndexNLJ_NodeDestEdge findnodes = nodeDestJoinByEdgeId(t.getIntFld(NLJHelper.PROJ_EDGE_ID));
 						Tuple n = null;
 						while ((n = findnodes.get_next()) != null) {
@@ -164,8 +166,6 @@ class NLJHelper implements GlobalConst {
 		}
 		return result;
 	}
-	
-	
 
 	public IndexNLJ_EdgeDestNode edgeDestNodeJoin(String nodeLabelFilter) {
 		CondExpr cond = null;
@@ -206,7 +206,7 @@ class NLJHelper implements GlobalConst {
 		FldSpec[] proj1 = { new FldSpec(new RelSpec(RelSpec.innerRel), Node.FldID_Label),
 				new FldSpec(new RelSpec(RelSpec.outer), Edge.FLD_ID),
 				new FldSpec(new RelSpec(RelSpec.outer), Edge.FLD_WGT),
-				new FldSpec(new RelSpec(RelSpec.outer), Edge.FLD_LABEL)};
+				new FldSpec(new RelSpec(RelSpec.outer), Edge.FLD_LABEL) };
 		IndexNLJ_EdgeSourceNode nlj = null;
 		try {
 			nlj = new IndexNLJ_EdgeSourceNode(500, cond, proj1, 4);
@@ -328,16 +328,21 @@ class NLJHelper implements GlobalConst {
 		return null;
 	}
 
-	public String nodeDescToLabel(Descriptor desc) {
+	public List<String> nodeDescToLabel(Descriptor desc) {
 		ZTreeFile nodeDescTree = db.btmgr.getNodeDescriptorTree();
+		List<String> result = new LinkedList();
 		DescriptorKey searchKey = new DescriptorKey(ZEncoder.encode(desc));
 		BTFileScan scan = nodeDescTree.new_scan(searchKey, searchKey);
 		try {
 			KeyDataEntry data = scan.get_next();
-			RID rid = ((LeafData) data.data).getData();
-			Heapfile nodeHeap = db.hfmgr.getNodefile();
-			Node node = new Node(nodeHeap.getRecord(rid));
-			return node.getLabel();
+			while (data != null) {
+				RID rid = ((LeafData) data.data).getData();
+				Heapfile nodeHeap = db.hfmgr.getNodefile();
+				Node node = new Node(nodeHeap.getRecord(rid));
+				result.add(node.getLabel());
+				data = scan.get_next();
+			}
+			return result;
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
