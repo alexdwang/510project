@@ -139,31 +139,21 @@ public class BTManager {
 	public void insertNodetoNLBT(HFManager hfm, String fileName) throws Exception {
 
 		System.out.println("start inserting nodes to B-Tree");
-		File file = new File(fileName);
-		Scanner scan = new Scanner(file);
-		int cnt = 0;
-		while (scan.hasNextLine()) {
+		RID rid = new RID();
+		Node node = new Node();
+		KeyClass key;
+		hfm.initScanNode();
 
-			String line = scan.nextLine();
-			String[] data = line.split(" ");
-			String label = data[0];
-			RID rid = new RID();
-			Node node = new Node();
-			KeyClass key;
-			hfm.initScanNode();
-
-			while ((node = hfm.scanNextNode()) != null) {
-				// System.out.println("string1: '"+node.getLabel()+"'");
-				// System.out.println("string2: '"+label+"'");
-				if (node.getLabel().equals(label)) {
-					rid = hfm.getCurRID();
-					key = new StringKey(label);
-					nodelabelbtree.insert(key, rid);
-					hfm.closeScan();
-					break;
-				}
-			}
+		while ((node = hfm.scanNextNode()) != null) {
+			rid = hfm.getCurRID();
+			key = new StringKey(node.getLabel());
+			BTFileScan s = nodelabelbtree.new_scan(key, key);
+			if (s.get_next() != null)
+				continue;
+			s.DestroyBTreeFileScan();
+			nodelabelbtree.insert(key, rid);
 		}
+		hfm.closeScan();
 	}
 
 	public void insertEdgeBtress(HFManager hfm) throws Exception {
@@ -176,8 +166,7 @@ public class BTManager {
 			rid = hfm.getCurRID();
 			key = new IntegerKey(edge.getID());
 			BTFileScan s = edgeidbtree.new_scan(key, key);
-			KeyDataEntry itr;
-			if((itr = s.get_next())!=null)
+			if (s.get_next() != null)
 				continue;
 			s.DestroyBTreeFileScan();
 			edgeidbtree.insert(key, rid);
@@ -190,95 +179,12 @@ public class BTManager {
 			key = new IntegerKey(edge.getWeight());
 			edgeweightbtree.insert(key, rid);
 		}
+		hfm.closeScan();
 	}
 
-	public void insertEdgetoELBT(HFManager hfm, String fileName) throws Exception {
-
-		System.out.println("start inserting edge label B-Tree");
-		File file = new File(fileName);
-		Scanner scan = new Scanner(file);
-		while (scan.hasNextLine()) {
-			String line = scan.nextLine();
-			String[] data = line.split(" ");
-			String label = data[2];
-			int weight = Integer.valueOf(data[3]);
-
-			RID rid = new RID();
-			Edge edge = new Edge();
-			KeyClass key;
-			hfm.initScanEdge();
-
-			while ((edge = hfm.scanNextEdge()) != null) {
-				if (edge.getLabel().equals(label)) {
-					rid = hfm.getCurRID();
-					key = new StringKey(edge.getLabel());
-					edgelabelbtree.insert(key, rid);
-				}
-			}
-		}
-	}
-
-	public void insertEdgetoELBT_S(HFManager hfm, String fileName) throws Exception {
-
-		System.out.println("start inserting edge source label B-Tree");
-		File file = new File(fileName);
-		Scanner scan = new Scanner(file);
-		while (scan.hasNextLine()) {
-			String line = scan.nextLine();
-			String[] data = line.split(" ");
-			String label = data[0];
-			int weight = Integer.valueOf(data[3]);
-
-			RID rid = new RID();
-			Edge edge = new Edge();
-			KeyClass key;
-			hfm.initScanEdge();
-
-			while ((edge = hfm.scanNextEdge()) != null) {
-				if (edge.getSource().equals(label)) {
-					rid = hfm.getCurRID();
-					key = new StringKey(edge.getSource());
-					edgelabelbtree_s.insert(key, rid);
-				}
-			}
-		}
-	}
-
-	public void insertEdgetoELBT_D(HFManager hfm, String fileName) throws Exception {
-
-		System.out.println("start inserting edge dest label B-Tree");
-		File file = new File(fileName);
-		Scanner scan = new Scanner(file);
-		while (scan.hasNextLine()) {
-			String line = scan.nextLine();
-			String[] data = line.split(" ");
-			String label = data[1];
-			int weight = Integer.valueOf(data[3]);
-
-			RID rid = new RID();
-			Edge edge = new Edge();
-			KeyClass key;
-			hfm.initScanEdge();
-
-			while ((edge = hfm.scanNextEdge()) != null) {
-				if (edge.getDestination().equals(label)) {
-					rid = hfm.getCurRID();
-					key = new StringKey(edge.getDestination());
-					edgelabelbtree_d.insert(key, rid);
-				}
-			}
-		}
-	}
-
+	
 	public void insertNodetoZT(HFManager hfm, String filename) throws Exception {
 		System.out.println("start inserting nodes to Z-Tree");
-		File file = new File(filename);
-		Scanner scan = new Scanner(file);
-		int cnt = 0;
-		while (scan.hasNextLine()) {
-			String line = scan.nextLine();
-			String[] data = line.split(" ");
-			String label = data[0];
 
 			RID rid = new RID();
 			Node node = new Node();
@@ -286,69 +192,15 @@ public class BTManager {
 			hfm.initScanNode();
 
 			while ((node = hfm.scanNextNode()) != null) {
-				if (node.getLabel().equals(label)) {
-					rid = hfm.getCurRID();
-					key = new StringKey(ZEncoder.encode(node.getDesc()));
-					nodeDescriptorTree.insert(key, rid);
-					hfm.closeScan();
-					break;
-				}
+				rid = hfm.getCurRID();
+				key = new StringKey(ZEncoder.encode(node.getDesc()));
+				BTFileScan s = nodeDescriptorTree.new_scan(key, key);
+				if (s.get_next() != null)
+					continue;
+				nodeDescriptorTree.insert(key, rid);
+				s.DestroyBTreeFileScan();
 			}
-		}
-	}
-
-	public void insertEdgetoEWBT(HFManager hfm, String fileName) throws Exception {
-
-		System.out.println("start inserting edge weight B-Tree");
-		File file = new File(fileName);
-		Scanner scan = new Scanner(file);
-		while (scan.hasNextLine()) {
-			String line = scan.nextLine();
-			String[] data = line.split(" ");
-			String label = data[2];
-			int weight = Integer.valueOf(data[3]);
-
-			RID rid = new RID();
-			Edge edge = new Edge();
-			KeyClass key;
-			hfm.initScanEdge();
-
-			while ((edge = hfm.scanNextEdge()) != null) {
-				if (edge.getWeight() == weight) {
-					rid = hfm.getCurRID();
-					key = new IntegerKey(edge.getWeight());
-					edgeweightbtree.insert(key, rid);
-				}
-			}
-		}
-
-	}
-
-	public void insertEdgetoEIDBT(HFManager hfm, String fileName) throws Exception {
-
-		System.out.println("start inserting edge id B-Tree");
-		File file = new File(fileName);
-		Scanner scan = new Scanner(file);
-		while (scan.hasNextLine()) {
-			String line = scan.nextLine();
-			String[] data = line.split(" ");
-			String label = data[2];
-			int weight = Integer.valueOf(data[3]);
-
-			RID rid = new RID();
-			Edge edge = new Edge();
-			KeyClass key;
-			hfm.initScanEdge();
-
-			while ((edge = hfm.scanNextEdge()) != null) {
-				if (edge.getWeight() == weight) {
-					rid = hfm.getCurRID();
-					key = new IntegerKey(edge.getID());
-					edgeidbtree.insert(key, rid);
-				}
-			}
-		}
-
+			hfm.closeScan();
 	}
 
 	public RID getRIDFromLabel_Node(String label) throws ScanIteratorException, IteratorException,
