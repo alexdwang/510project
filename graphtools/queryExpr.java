@@ -133,9 +133,13 @@ public class queryExpr implements GlobalConst {
 				for (int i = 1; i < tokens2.length; i++) {
 					String res = parser.discrmE(tokens2[i]);
 					if (res == "label") {
-						einput.add(tokens2[i]);
+						einput.add(tokens2[i].substring(2));
 					} else if (res == "weight") {
-						einput.add(Integer.parseInt(tokens2[i]));
+						einput.add(Integer.parseInt(tokens2[i].substring(2)));
+					} else if(res.isEmpty()){
+						System.out.println("Invalid input");
+						System.out.println("Should be like: PQ1a<-NN/E:5_2/W:20/...");
+						return;
 					}
 
 				}
@@ -160,11 +164,14 @@ public class queryExpr implements GlobalConst {
 				for (int i = 1; i < tokens2.length; i++) {
 					String res = parser.discrmE(tokens2[i]);
 					if (res == "label") {
-						einput.add(tokens2[i]);
+						einput.add(tokens2[i].substring(2));
 					} else if (res == "weight") {
-						einput.add(Integer.parseInt(tokens2[i]));
+						einput.add(Integer.parseInt(tokens2[i].substring(2)));
+					} else if(res.isEmpty()){
+						System.out.println("Invalid input");
+						System.out.println("Should be like: PQ1a<-NN/E:5_2/W:20/...");
+						return;
 					}
-
 				}
 				pathquery.printResult(pathquery.PQ2b(ninput, einput));
 				break;
@@ -187,11 +194,14 @@ public class queryExpr implements GlobalConst {
 				for (int i = 1; i < tokens2.length; i++) {
 					String res = parser.discrmE(tokens2[i]);
 					if (res == "label") {
-						einput.add(tokens2[i]);
+						einput.add(tokens2[i].substring(2));
 					} else if (res == "weight") {
-						einput.add(Integer.parseInt(tokens2[i]));
+						einput.add(Integer.parseInt(tokens2[i].substring(2)));
+					} else if(res.isEmpty()){
+						System.out.println("Invalid input");
+						System.out.println("Should be like: PQ1a<-NN/E:5_2/W:20/...");
+						return;
 					}
-
 				}
 				pathquery.printResult(pathquery.PQ2c(ninput, einput));
 				break;

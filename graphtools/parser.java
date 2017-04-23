@@ -26,15 +26,14 @@ public class parser {
     public String discrmE(String token){
 		
 		String[] res = {"weight", "label"};
-		char delims = '_';
+		String[] delims = {"W:","E:"};
 		int len = token.length();
 		
-		for (int i = 0; i < len; i++){
-			if (token.charAt(i) == delims)
-				return res[1]; 
-		}
-		
-		return res[0];
+		if(token.substring(0, 2).equalsIgnoreCase(delims[1]))
+			return res[1];
+		else if(token.substring(0, 2).equalsIgnoreCase(delims[2]))
+			return res[0];
+		else return null;
 	}
     
     public Descriptor convDesc(String token){
