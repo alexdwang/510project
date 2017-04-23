@@ -38,6 +38,28 @@ public class IndexNLJ_NodeDestEdge extends IndexedNestedLoopJoin {
     @Override
     protected IndexScan startIndexScan() throws UnknownIndexTypeException, InvalidTypeException, IndexException, IOException, InvalidTupleSizeException {
         CondExpr cond = this.innerFilter[0];
+        if (cond == null) {
+            return new IndexScan(
+                    new IndexType(IndexType.B_Index),
+                    "edgefile",
+                    "EdgeLabelTree_Destination",
+                    Edge.FLD_TYPES,
+                    Edge.STR_FLD_SIZE,
+                    Edge.FLD_CNT, // noInFlds
+                    Edge.FLD_CNT, // noOutFlds
+                    new FldSpec[]{
+                            new FldSpec(new RelSpec(RelSpec.outer), Edge.FLD_ID),
+                            new FldSpec(new RelSpec(RelSpec.outer), Edge.FLD_WGT),
+                            new FldSpec(new RelSpec(RelSpec.outer), Edge.FLD_SRC_LABEL),
+                            new FldSpec(new RelSpec(RelSpec.outer), Edge.FLD_DST_LABEL),
+                            new FldSpec(new RelSpec(RelSpec.outer), Edge.FLD_LABEL)
+                    }, // outFlds
+                    innerFilter,
+                    Edge.FLD_DST_LABEL,
+                    false
+            );
+        }
+
         String indName = "";
         int indFldNum = 0;
         switch (cond.operand1.symbol.offset) {
