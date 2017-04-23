@@ -26,16 +26,15 @@ import zindex.ZFileScan;
 import zindex.ZTreeFile;
 
 public class BTManager {
-	private BTreeFile nodelabelbtree=null;
-	private ZTreeFile nodeDescriptorTree=null;
-	private BTreeFile edgelabelbtree=null;
-	private BTreeFile edgeweightbtree=null;
-	private BTreeFile edgelabelbtree_s=null;
-	private BTreeFile edgelabelbtree_d=null;
-	private BTreeFile edgeidbtree=null;
-	
+	private BTreeFile nodelabelbtree = null;
+	private ZTreeFile nodeDescriptorTree = null;
+	private BTreeFile edgelabelbtree = null;
+	private BTreeFile edgeweightbtree = null;
+	private BTreeFile edgelabelbtree_s = null;
+	private BTreeFile edgelabelbtree_d = null;
+	private BTreeFile edgeidbtree = null;
 
-	public BTManager(){
+	public BTManager() {
 		try {
 			nodelabelbtree = new BTreeFile("NodeLabelTree", AttrType.attrString, 20, 1);
 			try {
@@ -49,7 +48,7 @@ public class BTManager {
 			edgelabelbtree_s = new BTreeFile("EdgeLabelTree_Source", AttrType.attrString, 20, 1);
 			edgelabelbtree_d = new BTreeFile("EdgeLabelTree_Destination", AttrType.attrString, 20, 1);
 			edgeidbtree = new BTreeFile("EdgeIdTree", AttrType.attrInteger, 4, 1);
-			
+
 		} catch (GetFileEntryException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -64,23 +63,23 @@ public class BTManager {
 			e.printStackTrace();
 		}
 	}
-	
-	public void closeAllFile(){
+
+	public void closeAllFile() {
 		try {
-			BTreeFile[] bts={nodelabelbtree, nodeDescriptorTree, edgelabelbtree, 
-					edgeweightbtree, edgelabelbtree_s, edgelabelbtree_d, edgeidbtree};
-			for(int i=0;i<bts.length;i++){
-				if(bts[i]!=null)
+			BTreeFile[] bts = { nodelabelbtree, nodeDescriptorTree, edgelabelbtree, edgeweightbtree, edgelabelbtree_s,
+					edgelabelbtree_d, edgeidbtree };
+			for (int i = 0; i < bts.length; i++) {
+				if (bts[i] != null)
 					bts[i].close();
 			}
 
-			
 		} catch (PageUnpinnedException | InvalidFrameNumberException | HashEntryNotFoundException
 				| ReplacerException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 	}
+
 	public BTreeFile getNodelabelbtree() {
 		return nodelabelbtree;
 	}
@@ -136,6 +135,7 @@ public class BTManager {
 	public void setEdgeidbtree(BTreeFile edgeidbtree) {
 		this.edgeidbtree = edgeidbtree;
 	}
+
 	public void insertNodetoNLBT(HFManager hfm, String fileName) throws Exception {
 
 		System.out.println("start inserting nodes to B-Tree");
@@ -153,8 +153,8 @@ public class BTManager {
 			hfm.initScanNode();
 
 			while ((node = hfm.scanNextNode()) != null) {
-//				System.out.println("string1: '"+node.getLabel()+"'");
-//				System.out.println("string2: '"+label+"'");
+				// System.out.println("string1: '"+node.getLabel()+"'");
+				// System.out.println("string2: '"+label+"'");
 				if (node.getLabel().equals(label)) {
 					rid = hfm.getCurRID();
 					key = new StringKey(node.getLabel());
@@ -163,6 +163,27 @@ public class BTManager {
 					break;
 				}
 			}
+		}
+	}
+
+	public void insertEdgeBtress(HFManager hfm) throws Exception {
+		System.out.println("Building edge trees");
+		RID rid = new RID();
+		Edge edge = new Edge();
+		KeyClass key;
+		hfm.initScanEdge();
+		while ((edge = hfm.scanNextEdge()) != null) {
+			rid = hfm.getCurRID();
+			key = new StringKey(edge.getLabel());
+			edgelabelbtree.insert(key, rid);
+			key = new StringKey(edge.getSource());
+			edgelabelbtree_s.insert(key, rid);
+			key = new StringKey(edge.getDestination());
+			edgelabelbtree_d.insert(key, rid);
+			key = new IntegerKey(edge.getWeight());
+			edgeweightbtree.insert(key, rid);
+			key = new IntegerKey(edge.getID());
+			edgeidbtree.insert(key, rid);
 		}
 	}
 
@@ -297,7 +318,7 @@ public class BTManager {
 		}
 
 	}
-	
+
 	public void insertEdgetoEIDBT(HFManager hfm, String fileName) throws Exception {
 
 		System.out.println("start inserting edge id B-Tree");
@@ -464,15 +485,14 @@ public class BTManager {
 		edgelabelbtree_s.Delete(key, rid);
 		return true;
 	}
-	
+
 	public boolean deleteedgeweight(KeyClass key, RID rid) throws Exception {
 		edgeweightbtree.Delete(key, rid);
 		return true;
 	}
-	
-	
-	
-	public void NodeQuery1(GraphDBManager db) throws InvalidSlotNumberException, InvalidTupleSizeException, HFException, HFDiskMgrException, HFBufMgrException, Exception{
+
+	public void NodeQuery1(GraphDBManager db) throws InvalidSlotNumberException, InvalidTupleSizeException, HFException,
+			HFDiskMgrException, HFBufMgrException, Exception {
 		BTFileScan s = nodelabelbtree.new_scan(null, null);
 		KeyDataEntry itr = s.get_next();
 		while (itr != null) {
@@ -482,18 +502,20 @@ public class BTManager {
 		}
 		s.DestroyBTreeFileScan();
 	}
-	
-	public void NodeQuery4(GraphDBManager db, String label) throws FieldNumberOutOfBoundException, InvalidTypeException, InvalidTupleSizeException, InvalidSlotNumberException, HFException, HFDiskMgrException, HFBufMgrException, Exception{
+
+	public void NodeQuery4(GraphDBManager db, String label)
+			throws FieldNumberOutOfBoundException, InvalidTypeException, InvalidTupleSizeException,
+			InvalidSlotNumberException, HFException, HFDiskMgrException, HFBufMgrException, Exception {
 		KeyClass k = new StringKey(label);
 		BTFileScan s = db.btmgr.nodelabelbtree.new_scan(k, k);
 		KeyDataEntry itr = s.get_next();
 		while (itr != null) {
 			Node n = new Node(db.hfmgr.getNodefile().getRecord(((LeafData) itr.data).getData()));
 			n.print();
-			
+
 			BTFileScan d = db.btmgr.edgelabelbtree_d.new_scan(k, k);
 			KeyDataEntry itrd = d.get_next();
-			while(itrd!=null){
+			while (itrd != null) {
 				Edge e = new Edge(db.hfmgr.getEdgefile().getRecord(((LeafData) itrd.data).getData()));
 				e.print();
 				itrd = d.get_next();
@@ -501,7 +523,7 @@ public class BTManager {
 			d.DestroyBTreeFileScan();
 			BTFileScan ss = db.btmgr.edgelabelbtree_s.new_scan(k, k);
 			KeyDataEntry itrs = ss.get_next();
-			while(itrs!=null){
+			while (itrs != null) {
 				Edge e = new Edge(db.hfmgr.getEdgefile().getRecord(((LeafData) itrs.data).getData()));
 				e.print();
 				itrs = ss.get_next();
@@ -511,8 +533,9 @@ public class BTManager {
 		}
 		s.DestroyBTreeFileScan();
 	}
-	
-	public void EdgeQuery1(GraphDBManager db) throws InvalidSlotNumberException, InvalidTupleSizeException, HFException, HFDiskMgrException, HFBufMgrException, Exception{
+
+	public void EdgeQuery1(GraphDBManager db) throws InvalidSlotNumberException, InvalidTupleSizeException, HFException,
+			HFDiskMgrException, HFBufMgrException, Exception {
 		BTFileScan s = db.btmgr.edgelabelbtree_s.new_scan(null, null);
 		KeyDataEntry itr = s.get_next();
 		while (itr != null) {
@@ -522,8 +545,9 @@ public class BTManager {
 		}
 		s.DestroyBTreeFileScan();
 	}
-	
-	public void EdgeQuery2(GraphDBManager db) throws InvalidSlotNumberException, InvalidTupleSizeException, HFException, HFDiskMgrException, HFBufMgrException, Exception{
+
+	public void EdgeQuery2(GraphDBManager db) throws InvalidSlotNumberException, InvalidTupleSizeException, HFException,
+			HFDiskMgrException, HFBufMgrException, Exception {
 		BTFileScan s = db.btmgr.edgelabelbtree_d.new_scan(null, null);
 		KeyDataEntry itr = s.get_next();
 		while (itr != null) {
@@ -534,7 +558,8 @@ public class BTManager {
 		s.DestroyBTreeFileScan();
 	}
 
-	public void EdgeQuery3(GraphDBManager db) throws InvalidSlotNumberException, InvalidTupleSizeException, HFException, HFDiskMgrException, HFBufMgrException, Exception{
+	public void EdgeQuery3(GraphDBManager db) throws InvalidSlotNumberException, InvalidTupleSizeException, HFException,
+			HFDiskMgrException, HFBufMgrException, Exception {
 		BTFileScan s = db.btmgr.edgelabelbtree.new_scan(null, null);
 		KeyDataEntry itr = s.get_next();
 		while (itr != null) {
@@ -544,8 +569,9 @@ public class BTManager {
 		}
 		s.DestroyBTreeFileScan();
 	}
-	
-	public void EdgeQuery4(GraphDBManager db) throws InvalidSlotNumberException, InvalidTupleSizeException, HFException, HFDiskMgrException, HFBufMgrException, Exception{
+
+	public void EdgeQuery4(GraphDBManager db) throws InvalidSlotNumberException, InvalidTupleSizeException, HFException,
+			HFDiskMgrException, HFBufMgrException, Exception {
 		BTFileScan s = db.btmgr.edgeweightbtree.new_scan(null, null);
 		KeyDataEntry itr = s.get_next();
 		while (itr != null) {
@@ -555,8 +581,9 @@ public class BTManager {
 		}
 		s.DestroyBTreeFileScan();
 	}
-	
-	public void EdgeQuery5(GraphDBManager db, int lowerb, int upperb) throws InvalidSlotNumberException, InvalidTupleSizeException, HFException, HFDiskMgrException, HFBufMgrException, Exception{
+
+	public void EdgeQuery5(GraphDBManager db, int lowerb, int upperb) throws InvalidSlotNumberException,
+			InvalidTupleSizeException, HFException, HFDiskMgrException, HFBufMgrException, Exception {
 		BTFileScan s = db.btmgr.edgeweightbtree.new_scan(new IntegerKey(lowerb), new IntegerKey(upperb));
 		KeyDataEntry itr = s.get_next();
 		while (itr != null) {
@@ -566,9 +593,9 @@ public class BTManager {
 		}
 		s.DestroyBTreeFileScan();
 	}
-	
+
 	static BigInteger targetInt;
-	
+
 	public void NodeQueryIndex2(GraphDBManager db, Descriptor target) {
 		String targetCode = ZEncoder.encode(target);
 		List<String> zlist = new LinkedList<>();
@@ -586,12 +613,12 @@ public class BTManager {
 			public int compare(String o1, String o2) {
 				BigInteger int1 = new BigInteger(o1);
 				BigInteger int2 = new BigInteger(o2);
-				
+
 				return Math.abs(int1.subtract(targetInt).intValue()) - Math.abs(int2.subtract(targetInt).intValue());
 			}
-			
+
 		});
-		for (String zval: zlist) {
+		for (String zval : zlist) {
 			queue.offer(zval);
 		}
 
@@ -599,7 +626,7 @@ public class BTManager {
 		for (String k : queue) {
 			BTFileScan zscan = this.nodeDescriptorTree.new_scan(new DescriptorKey(k), new DescriptorKey(k));
 			try {
-				KeyDataEntry data =  zscan.get_next();
+				KeyDataEntry data = zscan.get_next();
 				RID nid = ((LeafData) data.data).getData();
 				Tuple n = db.hfmgr.getNodefile().getRecord(nid);
 				Node node = new Node(n);
@@ -654,7 +681,7 @@ public class BTManager {
 			StringKey k = new StringKey(node.getLabel());
 			BTFileScan d = db.btmgr.edgelabelbtree_d.new_scan(k, k);
 			KeyDataEntry itrd = d.get_next();
-			while(itrd!=null){
+			while (itrd != null) {
 				Edge e = new Edge(db.hfmgr.getEdgefile().getRecord(((LeafData) itrd.data).getData()));
 				e.print();
 				itrd = d.get_next();
@@ -662,7 +689,7 @@ public class BTManager {
 			d.DestroyBTreeFileScan();
 			BTFileScan ss = db.btmgr.edgelabelbtree_s.new_scan(k, k);
 			KeyDataEntry itrs = ss.get_next();
-			while(itrs!=null){
+			while (itrs != null) {
 				Edge e = new Edge(db.hfmgr.getEdgefile().getRecord(((LeafData) itrs.data).getData()));
 				e.print();
 				itrs = ss.get_next();

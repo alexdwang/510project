@@ -145,7 +145,6 @@ class NLJHelper implements GlobalConst {
 			Tuple t = null;
 			try {
 				while ((t = edges.get_next()) != null) {
-					// System.out.println(t.getIntFld(2));
 					IndexNLJ_NodeDestEdge findnodes = nodeDestJoinByEdgeId(t.getIntFld(NLJHelper.PROJ_EDGE_ID));
 					Tuple n = null;
 					while ((n = findnodes.get_next()) != null) {

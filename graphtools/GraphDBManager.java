@@ -72,14 +72,10 @@ public class GraphDBManager implements GlobalConst {
 
 	public void insertEdges(String edgefilename) throws Exception {
 		hfmgr.insertEdgesFromFile(edgefilename);
-		btmgr.insertEdgetoELBT(hfmgr, edgefilename);
-		btmgr.insertEdgetoELBT_S(hfmgr, edgefilename);
-		btmgr.insertEdgetoELBT_D(hfmgr, edgefilename);
-		btmgr.insertEdgetoEWBT(hfmgr, edgefilename);
-		btmgr.insertEdgetoEIDBT(hfmgr, edgefilename);
+		btmgr.insertEdgeBtress(hfmgr);
 //		BT.printAllLeafPages(btmgr.getEdgelabelbtree().getHeaderPage());
 
-	}
+	} 
 
 	public void deleteNode(String fileName) throws Exception {
 
@@ -253,14 +249,15 @@ public class GraphDBManager implements GlobalConst {
 	
 	public static void main(String[] argvs) {
 		String dbname = "testdb";
-		String nodefilename = "Node.txt";
-		String edgefilename = "Edge.txt";
+		String nodefilename = "NodeInsertData.txt";
+		String edgefilename = "EdgeInsertData.txt";
 //		String insertdeletefilename = argvs[3];
 //		String nodedeletefilename = argvs[4];
 
 		try {
 //			GraphDBManager db = new GraphDBManager();
 			db.init(dbname);
+			
 			db.insertNodes(nodefilename);
 			db.insertEdges(edgefilename);
 //			NLJHelper nljHelper = new NLJHelper();
