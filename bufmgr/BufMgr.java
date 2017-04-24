@@ -359,14 +359,7 @@ public class BufMgr implements GlobalConst{
       
       for (i=0; i < numBuffers; i++)   // write all valid dirty pages to disk
 	if ( (all_pages !=0) || (frmeTable[i].pageNo.pid == pageid.pid)) {
-/*
-    if(isPinned(frmeTable[i].pageNo)){
-      try{
-        unpinPage(frmeTable[i].pageNo, true);
-      }catch(Exception e2){
-        e2.printStackTrace();
-      }
-    }*/
+
 	  if ( frmeTable[i].pin_count() != 0 )
 	    unpinned++;
 	  

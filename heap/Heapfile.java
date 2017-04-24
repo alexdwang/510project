@@ -927,7 +927,6 @@ public class Heapfile implements Filetype,  GlobalConst {
 	  // ASSERTIONS:
 	  // - we have freePage()'d all data pages referenced by
 	  // the current directory page.
-	  
 	  nextDirPageId = currentDirPage.getNextPage();
 	  freePage(currentDirPageId);
 	  

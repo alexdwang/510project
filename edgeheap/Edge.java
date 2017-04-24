@@ -21,7 +21,7 @@ public class Edge extends Tuple{
 	public static int FLD_DST_LABEL = 4;
 	public static int FLD_LABEL = 5;
 	public static short FLD_CNT = 5;
-	public static short LABEL_MAX_LENGTH = 32;
+	public static short LABEL_MAX_LENGTH = 20;
 
 	public static AttrType[] FLD_TYPES = {
 		new AttrType(AttrType.attrInteger),

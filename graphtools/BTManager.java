@@ -26,15 +26,29 @@ import zindex.ZFileScan;
 import zindex.ZTreeFile;
 
 public class BTManager {
-	private BTreeFile nodelabelbtree = null;
-	private ZTreeFile nodeDescriptorTree = null;
-	private BTreeFile edgelabelbtree = null;
-	private BTreeFile edgeweightbtree = null;
-	private BTreeFile edgelabelbtree_s = null;
-	private BTreeFile edgelabelbtree_d = null;
-	private BTreeFile edgeidbtree = null;
 
-	public BTManager() {
+	private BTreeFile nodelabelbtree=null;
+	private ZTreeFile nodeDescriptorTree=null;
+	private BTreeFile edgelabelbtree=null;
+	private BTreeFile edgeweightbtree=null;
+	private BTreeFile edgelabelbtree_s=null;
+	private BTreeFile edgelabelbtree_d=null;
+	private BTreeFile edgeidbtree=null;
+
+	public static String nodelabelbtree_filename = "NodeLabelTree";
+	public static String nodeDescriptorTree_filename = "NodeDescriptorTree";
+	public static String edgelabelbtree_filename = "EdgeLabelTree";
+	public static String edgeweightbtree_filename = "EdgeWeightTree";
+	public static String edgelabelbtree_s_filename = "EdgeLabelTree_Source";
+	public static String edgelabelbtree_d_filename = "EdgeLabelTree_Destination";
+	public static String edgeidbtree_filename = "EdgeIdTree";
+	
+
+	public BTManager(){
+
+	}
+
+	public void openAllFile(){
 		try {
 			nodelabelbtree = new BTreeFile("NodeLabelTree", AttrType.attrString, 20, 1);
 			try {
@@ -64,7 +78,30 @@ public class BTManager {
 		}
 	}
 
-	public void closeAllFile() {
+	public void openIndexFile(String filename){
+		try{
+			if(filename ==nodelabelbtree_filename){
+				nodelabelbtree = new BTreeFile("NodeLabelTree", AttrType.attrString, 20, 1);
+			}else if(filename ==nodeDescriptorTree_filename){
+				nodeDescriptorTree = new ZTreeFile("NodeDescriptorTree");
+			}else if(filename ==edgelabelbtree_filename ){
+				edgelabelbtree = new BTreeFile("EdgeLabelTree", AttrType.attrString, 20, 1);
+			}else if(filename ==edgeweightbtree_filename ){
+				edgeweightbtree = new BTreeFile("EdgeWeightTree", AttrType.attrInteger, 4, 1);
+			}else if(filename ==edgelabelbtree_s_filename ){
+				edgelabelbtree_s = new BTreeFile("EdgeLabelTree_Source", AttrType.attrString, 20, 1);
+			}else if(filename ==edgelabelbtree_d_filename ){
+				edgelabelbtree_d = new BTreeFile("EdgeLabelTree_Destination", AttrType.attrString, 20, 1);
+			}else if(filename ==edgeidbtree_filename ){
+				edgeidbtree = new BTreeFile("EdgeIdTree", AttrType.attrInteger, 4, 1);
+			}
+		}catch(Exception e){
+			e.printStackTrace();
+		}
+		
+	}
+	
+	public void closeAllFile(){
 		try {
 			BTreeFile[] bts = { nodelabelbtree, nodeDescriptorTree, edgelabelbtree, edgeweightbtree, edgelabelbtree_s,
 					edgelabelbtree_d, edgeidbtree };

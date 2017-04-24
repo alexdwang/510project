@@ -17,7 +17,7 @@ public class Node extends Tuple{
    public static int FldID_Desc = 1;
    public static int FldID_Label = 2;
    public static short FLD_CNT = 2;
-   public static short LABEL_MAX_LENGTH = 32;
+   public static short LABEL_MAX_LENGTH = 20;
 
    public static AttrType[] FLD_TYPES = {
       new AttrType(AttrType.attrDesc),

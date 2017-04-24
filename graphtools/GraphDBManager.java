@@ -9,9 +9,7 @@ import diskmgr.*;
 import edgeheap.Edge;
 import global.*;
 import btree.*;
-import iterator.IndexNLJ_EdgeDestNode;
-import iterator.IndexNLJ_NodeDestEdge;
-import iterator.IndexNLJ_NodeSourceEdge;
+import iterator.*;
 
 public class GraphDBManager implements GlobalConst {
 
@@ -240,6 +238,16 @@ public class GraphDBManager implements GlobalConst {
 			e.printStackTrace();
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
+	}
+
+	public void clearPerTask(){
+		try{
+			btmgr.closeAllFile();
+			SystemDefs.flushBMPages();
+		}catch(Exception e){
 			e.printStackTrace();
 		}
 		
