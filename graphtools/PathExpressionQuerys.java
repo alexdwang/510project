@@ -18,6 +18,7 @@ public class PathExpressionQuerys implements GlobalConst {
 		NLJHelper njlhelper = new NLJHelper();
 		for (int i = 0; i < nodelabellist.size() - 1; i++) {
 			List<Path> result = njlhelper.nodeToNode(nodelabellist.get(i), nodelabellist.get(i + 1));
+		
 			if (result != null) {
 				nodelabellist.remove(i + 1);
 				nodelabellist.add(i + 1, result);

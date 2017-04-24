@@ -323,6 +323,7 @@ class NLJHelper implements GlobalConst {
 				Node node = new Node(nodeHeap.getRecord(rid));
 				result.add(node.getLabel());
 				data = scan.get_next();
+				scan.DestroyBTreeFileScan();
 			}
 			return result;
 		} catch (Exception e) {
