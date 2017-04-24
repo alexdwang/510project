@@ -132,6 +132,8 @@ public class IndexNLJ_NodeSourceEdge extends IndexedNestedLoopJoin {
 				curOuter = outerItr.get_next();
 				// End of outer relation
 				if (curOuter == null) {
+					innerItr.close();
+					outerItr.close();
 					return null;
 				}
 				// Start inner scan again
