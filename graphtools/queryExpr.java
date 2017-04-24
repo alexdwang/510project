@@ -9,7 +9,25 @@ import global.*;
 
 public class queryExpr implements GlobalConst {
 
-	public void queryExprUI() {
+	public static void main(String[] argvs){
+		//initiate database
+		String dbname = "testdb";
+		String nodefilename = "NodeInsertData.txt";
+		String edgefilename = "EdgeInsertData.txt";
+		db.init(dbname);
+		
+		try {
+			db.btmgr.openAllFile();
+			db.insertNodes(nodefilename);
+			db.clearPerTask();
+			db.btmgr.openAllFile();
+			db.insertEdges(edgefilename);
+			db.clearPerTask();
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
 		PathExpressionQuerys pathquery = new PathExpressionQuerys();
 		NLJHelper njlhelper = new NLJHelper();
 		List<List<String>> input = new LinkedList();
@@ -62,7 +80,7 @@ public class queryExpr implements GlobalConst {
 					}
 				}
 				pathquery.printResult(pathquery.PQ1a(input));
-
+				db.clearPerTask();
 				break;
 
 			case "PQ1b":

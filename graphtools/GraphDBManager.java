@@ -295,8 +295,8 @@ public class GraphDBManager implements GlobalConst {
 //			pathquery.printResult(pathquery.PQ2a(NN,edgecondition));
 			// db.insertNodes(insertdeletefilename);
 //			db.deleteEdge(nodedeletefilename);
-			queryExpr qe = new queryExpr();
-			qe.queryExprUI();
+//			queryExpr qe = new queryExpr();
+//			qe.queryExprUI();
 
 			db.deleteDBFile();
 		} catch (Exception e) {
