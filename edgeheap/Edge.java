@@ -145,10 +145,13 @@ public class Edge extends Tuple{
 	}
 
 	public void print()
-	      throws IOException,
-	FieldNumberOutOfBoundException
 	{
-		System.out.println( getLabel() + " " + getSource()+ " "  + getDestination()+ " "  + getWeight() );
+		try{
+			System.out.println( getLabel() + " " + getSource()+ " "  + getDestination()+ " "  + getWeight() );
+		}catch(Exception e){
+			e.printStackTrace();
+		}
+		
 	}
 
 	public void edgeCopy(Edge fromEdge){
