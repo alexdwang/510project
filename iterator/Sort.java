@@ -46,7 +46,7 @@ public class Sort extends Iterator implements GlobalConst
   private boolean useBM = true; // flag for whether to use buffer manager
   private static Descriptor target;		   //to store target
 
-  private int temp_file_id;
+  private static int temp_file_id;
   
   /**
    * Set up for merging the runs.
@@ -850,7 +850,6 @@ public class Sort extends Iterator implements GlobalConst
 	if (temp_files[i] != null) {
 	  try {
 	    temp_files[i].deleteFile();
-      temp_file_id--;
 	  }
 	  catch (Exception e) {
 	    throw new SortException(e, "Sort.java: Heapfile error");

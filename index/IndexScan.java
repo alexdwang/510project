@@ -6,7 +6,7 @@ import btree.*;
 import iterator.*;
 import heap.*; 
 import java.io.*;
-
+import zindex.*;
 
 /**
  * Index Scan iterator will directly access the required tuple using
@@ -263,6 +263,12 @@ public class IndexScan extends Iterator {
       if (indScan instanceof BTFileScan) {
 	try {
 	  ((BTFileScan)indScan).DestroyBTreeFileScan();
+    if(indFile instanceof ZTreeFile){
+      ((ZTreeFile)indFile).close();
+    }else if(indFile instanceof BTreeFile){
+      ((BTreeFile)indFile).close();
+    }
+    
 	}
 	catch(Exception e) {
 	  throw new IndexException(e, "BTree error in destroying index scan.");
