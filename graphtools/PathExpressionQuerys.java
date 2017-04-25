@@ -280,10 +280,12 @@ public class PathExpressionQuerys implements GlobalConst {
 	public void printResult(List<Path> result) {
 		if (result.isEmpty()) {
 			System.out.println("No valid result!");
+			return;
 		}
 		for (Path r : result) {
 			System.out.println("head:" + r.head + " tail:" + r.tail);
 		}
+		System.out.println("result count=" + result.size());
 	}
 
 	public List<RID> getNIDFromResult(List<Path> result) {

@@ -21,6 +21,7 @@ public class IndexNLJ_EdgeSourceNode extends IndexedNestedLoopJoin {
     public static final int OUT_FLD_EDGE_ID = 2;
     public static final int OUT_FLD_EDGE_WGT = 3;
     public static final int OUT_FLD_EDGE_LABEL = 4;
+    public static final int OUT_FLD_EDGE_DST_LABEL = 5;
 
     public static final AttrType[] OUT_ATTRTYPES = new AttrType[] {
             new AttrType(AttrType.attrString),
@@ -91,13 +92,14 @@ public class IndexNLJ_EdgeSourceNode extends IndexedNestedLoopJoin {
     @Override
     protected void initJoinedTuple() throws InvalidTupleSizeException, IOException, InvalidTypeException {
         joinedTuple = new Tuple();
-        joinedTuple.setHdr((short) 4, new AttrType[] {
+        joinedTuple.setHdr((short) 5, new AttrType[] {
                 new AttrType(AttrType.attrString),
                 new AttrType(AttrType.attrInteger),
                 new AttrType(AttrType.attrInteger),
+                new AttrType(AttrType.attrString),
                 new AttrType(AttrType.attrString)
         }, new short[] {
-                Node.LABEL_MAX_LENGTH, Edge.LABEL_MAX_LENGTH
+                Node.LABEL_MAX_LENGTH, Edge.LABEL_MAX_LENGTH, Edge.LABEL_MAX_LENGTH
         });
     }
 
@@ -145,12 +147,14 @@ public class IndexNLJ_EdgeSourceNode extends IndexedNestedLoopJoin {
             int outEdgeId = curOuter.getIntFld(Edge.FLD_ID);
             int outEdgeWeight = curOuter.getIntFld(Edge.FLD_WGT);
             String outEdgeLabel = curOuter.getStrFld(Edge.FLD_LABEL);
+            String outEdgeDstLabel = curOuter.getStrFld(Edge.FLD_DST_LABEL);
 
             if (outerLabel.equals(innerLabel)) {
                 joinedTuple.setStrFld(OUT_FLD_NODE_LABEL, innerLabel);
                 joinedTuple.setIntFld(OUT_FLD_EDGE_ID, outEdgeId);
                 joinedTuple.setIntFld(OUT_FLD_EDGE_WGT, outEdgeWeight);
                 joinedTuple.setStrFld(OUT_FLD_EDGE_LABEL, outEdgeLabel);
+                joinedTuple.setStrFld(OUT_FLD_EDGE_DST_LABEL, outEdgeDstLabel);
                 break;
             }
         }

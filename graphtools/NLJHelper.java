@@ -23,6 +23,7 @@ class NLJHelper implements GlobalConst {
 	private static final int PROJ_EDGE_ID = 2;
 	private static final int PROJ_EDGE_WEIGHT = 3;
 	private static final int PROJ_EDGE_Laebl = 4;
+	private static final int PROJ_EDGE_DST_Laebl = 5;
 
 	public List<Path> nodeToAllwithEdgeWeight(List<Path> sourcelabel, int maxweight) {
 		List<Path> result = new LinkedList();
@@ -34,12 +35,8 @@ class NLJHelper implements GlobalConst {
 					// System.out.println(t.getIntFld(2));
 					int weight = t.getIntFld(NLJHelper.PROJ_EDGE_WEIGHT);
 					if (weight <= maxweight) {
-						IndexNLJ_NodeDestEdge findnodes = nodeDestJoinByEdgeId(t.getIntFld(NLJHelper.PROJ_EDGE_ID));
-						Tuple n = null;
-						while ((n = findnodes.get_next()) != null) {
-							result.add(new Path(source.head, n.getStrFld(NLJHelper.PROJ_NODE_LABEL),
-									weight + source.totalWeight));
-						}
+						result.add(new Path(source.head, t.getStrFld(NLJHelper.PROJ_EDGE_DST_Laebl),
+								weight + source.totalWeight));
 					}
 				}
 			} catch (IOException e) {
@@ -64,12 +61,9 @@ class NLJHelper implements GlobalConst {
 					// System.out.println(t.getIntFld(2));
 					String label = t.getStrFld(NLJHelper.PROJ_EDGE_Laebl);
 					if (label.equals(edgelabel)) {
-						IndexNLJ_NodeDestEdge findnodes = nodeDestJoinByEdgeId(t.getIntFld(NLJHelper.PROJ_EDGE_ID));
-						Tuple n = null;
-						while ((n = findnodes.get_next()) != null) {
-							result.add(new Path(source.head, n.getStrFld(NLJHelper.PROJ_NODE_LABEL),
-									t.getIntFld(NLJHelper.PROJ_EDGE_WEIGHT) + source.totalWeight));
-						}
+						result.add(new Path(source.head, t.getStrFld(NLJHelper.PROJ_EDGE_DST_Laebl),
+								t.getIntFld(NLJHelper.PROJ_EDGE_WEIGHT) + source.totalWeight));
+
 					}
 				}
 			} catch (IOException e) {
@@ -94,11 +88,8 @@ class NLJHelper implements GlobalConst {
 					// System.out.println(t.getIntFld(2));
 					int weight = t.getIntFld(NLJHelper.PROJ_EDGE_WEIGHT) + source.totalWeight;
 					if (weight <= maxweight) {
-						IndexNLJ_NodeDestEdge findnodes = nodeDestJoinByEdgeId(t.getIntFld(NLJHelper.PROJ_EDGE_ID));
-						Tuple n = null;
-						while ((n = findnodes.get_next()) != null) {
-							result.add(new Path(source.head, n.getStrFld(NLJHelper.PROJ_NODE_LABEL), weight));
-						}
+						result.add(new Path(source.head, t.getStrFld(NLJHelper.PROJ_EDGE_DST_Laebl),
+								t.getIntFld(NLJHelper.PROJ_EDGE_WEIGHT) + source.totalWeight));
 					}
 				}
 			} catch (IOException e) {
@@ -121,11 +112,7 @@ class NLJHelper implements GlobalConst {
 			try {
 				while ((t = edges.get_next()) != null) {
 					// System.out.println(t.getIntFld(2));
-					IndexNLJ_NodeDestEdge findnodes = nodeDestJoinByEdgeId(t.getIntFld(NLJHelper.PROJ_EDGE_ID));
-					Tuple n = null;
-					while ((n = findnodes.get_next()) != null) {
-						result.add(new Path(source.head, n.getStrFld(NLJHelper.PROJ_NODE_LABEL)));
-					}
+					result.add(new Path(source.head, t.getStrFld(NLJHelper.PROJ_EDGE_DST_Laebl)));
 				}
 			} catch (IOException e) {
 				// TODO Auto-generated catch block
@@ -145,6 +132,11 @@ class NLJHelper implements GlobalConst {
 			Tuple t = null;
 			try {
 				while ((t = edges.get_next()) != null) {
+					for (Path dest : destlabel) {
+						if (t.getStrFld(NLJHelper.PROJ_EDGE_DST_Laebl).equals(dest.tail))
+							result.add(new Path(source.head, t.getStrFld(NLJHelper.PROJ_EDGE_DST_Laebl)));
+					}
+
 					IndexNLJ_NodeDestEdge findnodes = nodeDestJoinByEdgeId(t.getIntFld(NLJHelper.PROJ_EDGE_ID));
 					Tuple n = null;
 					while ((n = findnodes.get_next()) != null) {
