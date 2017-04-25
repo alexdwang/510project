@@ -19,9 +19,11 @@ public class IndexNLJ_NodeDestEdge extends IndexedNestedLoopJoin {
 
     public static final int OUT_FLD_NODE_LABEL = 1;
     public static final int OUT_FLD_EDGE_ID = 2;
+    public static final int OUT_FLD_EDGE_WGT = 3;
 
     public static final AttrType[] OUT_ATTRTYPES = new AttrType[] {
             new AttrType(AttrType.attrString),
+            new AttrType(AttrType.attrInteger),
             new AttrType(AttrType.attrInteger)
     };
 
@@ -121,6 +123,16 @@ public class IndexNLJ_NodeDestEdge extends IndexedNestedLoopJoin {
                 null
         );
     }
+    
+    @Override
+    protected void initJoinedTuple() throws InvalidTupleSizeException, IOException, InvalidTypeException {
+        joinedTuple = new Tuple();
+        joinedTuple.setHdr((short) 3, new AttrType[] {
+                new AttrType(AttrType.attrString),
+                new AttrType(AttrType.attrInteger),
+                new AttrType(AttrType.attrInteger)
+        }, Node.STR_FLD_SIZE);
+    }
 
     @Override
     public Tuple get_next() throws UnknownKeyTypeException, IndexException, IOException, JoinsException, FieldNumberOutOfBoundException, PageNotReadException, WrongPermat, InvalidTypeException, InvalidTupleSizeException, PredEvalException, UnknowAttrType, UnknownIndexTypeException {
@@ -145,10 +157,12 @@ public class IndexNLJ_NodeDestEdge extends IndexedNestedLoopJoin {
             String outerLabel = curOuter.getStrFld(Node.FldID_Label);
             String innerLabel = curInner.getStrFld(Edge.FLD_DST_LABEL);
             int outEdgeId = curInner.getIntFld(Edge.FLD_ID);
+            int outEdgeWgt = curInner.getIntFld(Edge.FLD_WGT);
 
             if (outerLabel.equals(innerLabel)) {
                 joinedTuple.setStrFld(OUT_FLD_NODE_LABEL, outerLabel);
                 joinedTuple.setIntFld(OUT_FLD_EDGE_ID, outEdgeId);
+                joinedTuple.setIntFld(OUT_FLD_EDGE_WGT, outEdgeWgt);
                 break;
             }
         }
