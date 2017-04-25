@@ -54,11 +54,15 @@ public class queryExpr implements GlobalConst {
 			input.clear();
 			ninput.clear();
 			einput.clear();
+			int[] weight = new int[3];
+			String[] label = new String[3];
+			boolean distinct = false;
 			
 
 			switch (cmds[0]) {
 
 			case "PQ1a":
+				db.btmgr.openIndexFile(BTManager.nodeDescriptorTree_filename);
 				tokens1 = cmds[1];
 				tokens2 = tokens1.split(delimt2);
 				if (tokens2.length < 2) {
@@ -84,6 +88,7 @@ public class queryExpr implements GlobalConst {
 				break;
 
 			case "PQ1b":
+				db.btmgr.openIndexFile(BTManager.nodeDescriptorTree_filename);
 				tokens1 = cmds[1];
 				tokens2 = tokens1.split(delimt2);
 				if (tokens2.length < 2) {
@@ -105,10 +110,11 @@ public class queryExpr implements GlobalConst {
 
 				}
 				pathquery.printResult(pathquery.PQ1b(input));
-
+				db.clearPerTask();
 				break;
 
 			case "PQ1c":
+				db.btmgr.openIndexFile(BTManager.nodeDescriptorTree_filename);
 				tokens1 = cmds[1];
 				tokens2 = tokens1.split(delimt2);
 				if (tokens2.length < 2) {
@@ -130,7 +136,7 @@ public class queryExpr implements GlobalConst {
 
 				}
 				pathquery.printResult(pathquery.PQ1c(input));
-				
+				db.clearPerTask();
 				break;
 
 			case "PQ2a":
@@ -162,6 +168,7 @@ public class queryExpr implements GlobalConst {
 
 				}
 				pathquery.printResult(pathquery.PQ2a(ninput, einput));
+				db.clearPerTask();
 				break;
 
 			case "PQ2b":
@@ -192,6 +199,7 @@ public class queryExpr implements GlobalConst {
 					}
 				}
 				pathquery.printResult(pathquery.PQ2b(ninput, einput));
+				db.clearPerTask();
 				break;
 
 			case "PQ2c":
@@ -222,6 +230,7 @@ public class queryExpr implements GlobalConst {
 					}
 				}
 				pathquery.printResult(pathquery.PQ2c(ninput, einput));
+				db.clearPerTask();
 				break;
 				
 			case "PQ3a":
@@ -239,10 +248,14 @@ public class queryExpr implements GlobalConst {
 				} else if (res1 == "label") {
 					ninput.add(tokens2[0]);
 				}
-				if(tokens2[1].substring(0,2).equals("N:"))
+				if(tokens2[1].substring(0,2).equals("N:")){
 					pathquery.printResult(pathquery.PQ3a_max_num_edge(ninput, Integer.parseInt(tokens2[1].substring(2))));
-				else if(tokens2[1].substring(0,2).equals("W:"))
+					db.clearPerTask();
+				}
+				else if(tokens2[1].substring(0,2).equals("W:")){
 					pathquery.printResult(pathquery.PQ3a_max_weight(ninput, Integer.parseInt(tokens2[1].substring(2))));
+					db.clearPerTask();
+				}
 				else{
 					System.err.println("Invalid PQ3a fomat. Valid fomat should be like:");
 					System.err.println("'PQ3a<-NN//N:100' for max number of edges query");
@@ -264,10 +277,14 @@ public class queryExpr implements GlobalConst {
 				} else if (res1 == "label") {
 					ninput.add(tokens2[0]);
 				}
-				if(tokens2[1].substring(0,2).equals("N:"))
+				if(tokens2[1].substring(0,2).equals("N:")){
 					pathquery.printResult(pathquery.PQ3b_max_num_edge(ninput, Integer.parseInt(tokens2[1].substring(2))));
-				else if(tokens2[1].substring(0,2).equals("W:"))
+					db.clearPerTask();
+				}
+				else if(tokens2[1].substring(0,2).equals("W:")){
 					pathquery.printResult(pathquery.PQ3b_max_weight(ninput, Integer.parseInt(tokens2[1].substring(2))));
+				db.clearPerTask();
+				}
 				else{
 					System.err.println("Invalid PQ3b fomat. Valid fomat should be like:");
 					System.err.println("'PQ3b<-NN//N:100' for max number of edges query");
@@ -289,10 +306,14 @@ public class queryExpr implements GlobalConst {
 				} else if (res1 == "label") {
 					ninput.add(tokens2[0]);
 				}
-				if(tokens2[1].substring(0,2).equals("N:"))
+				if(tokens2[1].substring(0,2).equals("N:")){
 					pathquery.printResult(pathquery.PQ3c_max_num_edge(ninput, Integer.parseInt(tokens2[1].substring(2))));
-				else if(tokens2[1].substring(0,2).equals("W:"))
+					db.clearPerTask();
+				}
+				else if(tokens2[1].substring(0,2).equals("W:")){
 					pathquery.printResult(pathquery.PQ3c_max_weight(ninput, Integer.parseInt(tokens2[1].substring(2))));
+					db.clearPerTask();
+				}
 				else{
 					System.err.println("Invalid PQ3c fomat. Valid fomat should be like:");
 					System.err.println("'PQ3c<-NN//N:100' for max number of edges query");
@@ -309,11 +330,15 @@ public class queryExpr implements GlobalConst {
 				for (int i = 0; i < tokens2.length; i++) {
 					String res = parser.discrmE(tokens2[i]);
 					if (res == "label") {
-
+						weight[i] = -1;
+						label[i] = tokens2[i].substring(2);
 					} else if (res == "weight") {
-
+						weight[i] = Integer.valueOf(tokens2[i].substring(2));
+						label[i] = "";
 					}
 				}
+				SortMergeUtil.triangleQuery(weight, label, distinct);
+				db.clearPerTask();
 				break;
 
 			case "TQb":
@@ -325,11 +350,15 @@ public class queryExpr implements GlobalConst {
 				for (int i = 0; i < tokens2.length; i++) {
 					String res = parser.discrmE(tokens2[i]);
 					if (res == "label") {
-
+						weight[i] = -1;
+						label[i] = tokens2[i].substring(2);
 					} else if (res == "weight") {
-
+						weight[i] = Integer.valueOf(tokens2[i].substring(2));
+						label[i] = "";
 					}
 				}
+				SortMergeUtil.triangleQuery(weight, label, distinct);
+				db.clearPerTask();
 				break;
 
 			case "TQc":
@@ -341,17 +370,24 @@ public class queryExpr implements GlobalConst {
 				for (int i = 0; i < tokens2.length; i++) {
 					String res = parser.discrmE(tokens2[i]);
 					if (res == "label") {
-
+						weight[i] = -1;
+						label[i] = tokens2[i].substring(2);
 					} else if (res == "weight") {
-
+						weight[i] = Integer.valueOf(tokens2[i].substring(2));
+						label[i] = "";
 					}
 				}
+				distinct = true;
+				SortMergeUtil.triangleQuery(weight, label, distinct);
+				db.clearPerTask();
 				break;
+				
 			default:
 				System.out.printf("Invalid query expression!");
 				break;
 				
 			case "exit":
+				db.closeDB();
 				return;
 			}
 		}

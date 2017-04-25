@@ -27,7 +27,7 @@ public class GraphDBManager implements GlobalConst {
 	public void init(String dbname) {
 		dbpath = dbname + ".minibase-db";
 		logpath = dbname + ".minibase-log";
-		SystemDefs sysdef = new SystemDefs(dbpath, 50000, 500, "Clock");
+		SystemDefs sysdef = new SystemDefs(dbpath, 5000, 5000, "Clock");
 		System.out.println("\n" + "DB initializing" + "\n");
 		hfmgr = new HFManager();
 		btmgr = new BTManager();

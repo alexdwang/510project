@@ -149,7 +149,7 @@ public class SortMergeUtil implements GlobalConst {
 				Edge.FLD_TYPES, Edge.FLD_CNT, Edge.STR_FLD_SIZE,
 				Edge.FLD_DST_LABEL, Edge.LABEL_MAX_LENGTH, 
 				Edge.FLD_SRC_LABEL, Edge.LABEL_MAX_LENGTH, 
-				2000,
+				300,
 				am, am2, 
 				false, false, ascending,
 				expr, proj_list, 3);
@@ -236,7 +236,7 @@ public class SortMergeUtil implements GlobalConst {
 				Edge.FLD_TYPES, Edge.FLD_CNT, Edge.STR_FLD_SIZE,
 				(short)1, Edge.LABEL_MAX_LENGTH, 
 				Edge.FLD_DST_LABEL, Edge.LABEL_MAX_LENGTH, 
-				2000,
+				300,
 				am, am2, 
 				distinct, false, ascending,
 				expr1, proj_list1, 3);

@@ -329,15 +329,6 @@ public class GraphDBRunner implements GlobalConst{
 				case "help":
 					GraphDBRunner.help();
 					break;
-				case "freetest":
-				{
-					if(curdb == ""){
-						db.init("g9", 5000);
-						curdb = "g9";
-					}
-					db.hfmgr.mergeEdges();
-					break;
-				}
 				case "quit":
 				{
 					try{
