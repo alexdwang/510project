@@ -126,22 +126,39 @@ public class SortMergeUtil implements GlobalConst {
 		CondExpr [] expr = {
 			new CondExpr(),
 			new CondExpr(),
+			new CondExpr(),
+			new CondExpr(),
 			new CondExpr()
 		};
+		
+		
 		expr[0].next  = null;
 		expr[0].op    = new AttrOperator(AttrOperator.aopEQ);
 		expr[0].type1 = new AttrType(AttrType.attrSymbol);
     	expr[0].operand1.symbol = new FldSpec (new RelSpec(RelSpec.outer),Edge.FLD_DST_LABEL);
 	    expr[0].type2 = new AttrType(AttrType.attrSymbol);
     	expr[0].operand2.symbol = new FldSpec (new RelSpec(RelSpec.innerRel),Edge.FLD_SRC_LABEL);
-
-    	expr[1].next  = null;
-		expr[1].op    = new AttrOperator(AttrOperator.aopNE);
-		expr[1].type1 = new AttrType(AttrType.attrSymbol);
-    	expr[1].operand1.symbol = new FldSpec (new RelSpec(RelSpec.outer),Edge.FLD_SRC_LABEL);
-	    expr[1].type2 = new AttrType(AttrType.attrSymbol);
-    	expr[1].operand2.symbol = new FldSpec (new RelSpec(RelSpec.innerRel),Edge.FLD_DST_LABEL);
-    	expr[2] = null;
+    	if(!distinct){
+    		expr[1] = null;
+    		expr[2] = null;
+    		expr[3] = null;
+    		expr[4] = null;
+    	}else{
+    		expr[1].next  = null;
+    		expr[1].op    = new AttrOperator(AttrOperator.aopLT);
+    		expr[1].type1 = new AttrType(AttrType.attrSymbol);
+        	expr[1].operand1.symbol = new FldSpec (new RelSpec(RelSpec.outer),Edge.FLD_SRC_LABEL);
+    	    expr[1].type2 = new AttrType(AttrType.attrSymbol);
+        	expr[1].operand2.symbol = new FldSpec (new RelSpec(RelSpec.innerRel),Edge.FLD_SRC_LABEL);
+        	expr[2].next  = null;
+    		expr[2].op    = new AttrOperator(AttrOperator.aopLT);
+    		expr[2].type1 = new AttrType(AttrType.attrSymbol);
+        	expr[2].operand1.symbol = new FldSpec (new RelSpec(RelSpec.outer),Edge.FLD_SRC_LABEL);
+    	    expr[2].type2 = new AttrType(AttrType.attrSymbol);
+        	expr[2].operand2.symbol = new FldSpec (new RelSpec(RelSpec.innerRel),Edge.FLD_DST_LABEL);
+        	expr[3] = null;
+        	expr[4] = null;
+    	}
 
     	SortMerge sm = null;
 		try {
@@ -238,7 +255,7 @@ public class SortMergeUtil implements GlobalConst {
 				Edge.FLD_DST_LABEL, Edge.LABEL_MAX_LENGTH, 
 				300,
 				am, am2, 
-				distinct, false, ascending,
+				false, false, ascending,
 				expr1, proj_list1, 3);
 		}
 		catch (Exception e) {
