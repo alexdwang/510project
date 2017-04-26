@@ -339,6 +339,7 @@ public class queryExpr implements GlobalConst {
 						label[i] = "";
 					}
 				}
+				distinct = false;
 				SortMergeUtil.triangleQuery(weight, label, distinct);
 				db.clearPerTask();
 				break;
@@ -359,6 +360,7 @@ public class queryExpr implements GlobalConst {
 						label[i] = "";
 					}
 				}
+				distinct = false;
 				SortMergeUtil.triangleQuery(weight, label, distinct);
 				db.clearPerTask();
 				break;

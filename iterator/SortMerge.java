@@ -256,6 +256,7 @@ public class SortMerge extends Iterator implements GlobalConst
       
       int    comp_res;
       Tuple _tuple1,_tuple2;
+
       while(true){
     	  if (done) return null;
       if(id_in_temp1 == temp1.size()){// need to look for next equal
@@ -275,6 +276,7 @@ public class SortMerge extends Iterator implements GlobalConst
     		  }
     	  }
     	  // now we get both next
+        
     	  comp_res = TupleUtils.CompareTupleWithTuple(sortFldType, tuple1,
 				  jc_in1, tuple2, jc_in2);
     	  while(comp_res != 0){
@@ -315,10 +317,6 @@ public class SortMerge extends Iterator implements GlobalConst
     		  Tuple ttt1 = new Tuple(tuple1);
     		  temp1.add(ttt1);
     	  }
-    	  if(tuple1 == null){
-    		  done = true;
-    		  return null;
-    	  }
     	  
     	  while((tuple2 = p_i2.get_next()) != null){
     		  comp_res = TupleUtils.CompareTupleWithTuple(sortFldType, tt1,
@@ -326,10 +324,6 @@ public class SortMerge extends Iterator implements GlobalConst
     		  if(comp_res != 0) break;
     		  Tuple ttt2 = new Tuple(tuple2);
     		  temp2.add(ttt2);
-    	  }
-    	  if(tuple2 == null){
-    		  done = true;
-    		  return null;
     	  }
     	  id_in_temp1 = 0;
     	  id_in_temp2 = 0; 
@@ -341,7 +335,6 @@ public class SortMerge extends Iterator implements GlobalConst
 		  id_in_temp2 = 0;
 		  id_in_temp1++;
 	  }
-	  
 	  if (PredEval.Eval(OutputFilter, _tuple1, _tuple2, _in1, _in2) == true)
 		    {
 		      Projection.Join(_tuple1, _in1, 
