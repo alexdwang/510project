@@ -16,18 +16,6 @@ public class queryExpr implements GlobalConst {
 		String edgefilename = "EdgeInsertData.txt";
 		db.init(dbname);
 		
-		try {
-			db.btmgr.openAllFile();
-			db.insertNodes(nodefilename);
-			db.clearPerTask();
-			db.btmgr.openAllFile();
-			db.insertEdges(edgefilename);
-			db.clearPerTask();
-		} catch (Exception e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-		
 		PathExpressionQuerys pathquery = new PathExpressionQuerys();
 		NLJHelper njlhelper = new NLJHelper();
 		List<List<String>> input = new LinkedList();
@@ -60,7 +48,21 @@ public class queryExpr implements GlobalConst {
 			
 
 			switch (cmds[0]) {
-
+			case "insert":
+			{
+				try {
+					db.btmgr.openAllFile();
+					db.insertNodes(nodefilename);
+					db.clearPerTask();
+					db.btmgr.openAllFile();
+					db.insertEdges(edgefilename);
+					db.clearPerTask();
+				} catch (Exception e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+				break;
+			}
 			case "PQ1a":
 				db.btmgr.openIndexFile(BTManager.nodeDescriptorTree_filename);
 				tokens1 = cmds[1];
