@@ -323,7 +323,6 @@ class DoubleStringSort implements Comparator {
 
 	@Override
 	public int compare(Object re0, Object re1) {
-		// TODO Auto-generated method stub
 		Path first = (Path) re0;
 		Path second = (Path) re1;
 		if (first.head.compareTo(second.head) != 0) {

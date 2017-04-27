@@ -1,14 +1,11 @@
 package graphtools;
 
-import java.io.File;
 import java.io.IOException;
 import java.math.BigInteger;
-import java.util.Collections;
 import java.util.Comparator;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.PriorityQueue;
-import java.util.Scanner;
 
 import btree.*;
 import bufmgr.HashEntryNotFoundException;
@@ -54,7 +51,6 @@ public class BTManager {
 			try {
 				nodeDescriptorTree = new ZTreeFile("NodeDescriptorTree");
 			} catch (PinPageException e) {
-				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
 			edgelabelbtree = new BTreeFile("EdgeLabelTree", AttrType.attrString, 20, 1);
@@ -112,7 +108,6 @@ public class BTManager {
 
 		} catch (PageUnpinnedException | InvalidFrameNumberException | HashEntryNotFoundException
 				| ReplacerException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 	}
