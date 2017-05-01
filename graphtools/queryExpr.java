@@ -1,5 +1,6 @@
 package graphtools;
 
+import java.io.IOException;
 import java.lang.Integer;
 import java.util.LinkedList;
 import java.util.List;
@@ -7,10 +8,12 @@ import java.util.Scanner;
 
 import diskmgr.PCounter;
 import global.*;
+import heap.*;
+import nodeheap.Node;
 
 public class queryExpr implements GlobalConst {
 
-	public static void main(String[] argvs){
+	public static void main(String[] argvs) throws IOException, HFException, HFBufMgrException, HFDiskMgrException, InvalidTupleSizeException, InvalidTypeException, FieldNumberOutOfBoundException, SpaceNotAvailableException, InvalidSlotNumberException, FileAlreadyDeletedException {
 		//initiate database
 		String dbname = "testdb";
 		String nodefilename = "NodeInsertData.txt";
@@ -103,7 +106,6 @@ public class queryExpr implements GlobalConst {
 
 				PCounter.initialize();
 				for (int i = 0; i < tokens2.length; i++) {
-
 					// decide whether it is a node_lable or node descriptor
 					String res = parser.discrmN(tokens2[i]);
 					if (res == "descriptor") {
@@ -115,9 +117,18 @@ public class queryExpr implements GlobalConst {
 						labels.add(tokens2[i]);
 						input.add(labels);
 					}
-
 				}
-				pathquery.printResult(pathquery.PQ1b(input));
+				List<Path> resList = pathquery.PQ1b(input);
+				Heapfile tempHf = new Heapfile("pq1btempheap");
+				for (Path p : resList) {
+					Tuple t = new Tuple();
+					t.setHdr((short) 1, new AttrType[] { new AttrType(AttrType.attrString) }, new short[] { Node.LABEL_MAX_LENGTH } );
+					t.setStrFld(1, p.tail);
+					tempHf.insertRecord(t.getTupleByteArray());
+				}
+				tempHf.deleteFile();
+
+				pathquery.printResult(resList);
 				pathquery.printRWPerStep();
 				db.clearPerTask();
 				break;
@@ -215,7 +226,17 @@ public class queryExpr implements GlobalConst {
 						return;
 					}
 				}
-				pathquery.printResult(pathquery.PQ2b(ninput, einput));
+				List<Path> resList2 = pathquery.PQ2b(ninput, einput);
+				Heapfile tempHf2 = new Heapfile("pq2btempheap");
+				for (Path p : resList2) {
+					Tuple t = new Tuple();
+					t.setHdr((short) 1, new AttrType[] { new AttrType(AttrType.attrString) }, new short[] { Node.LABEL_MAX_LENGTH } );
+					t.setStrFld(1, p.tail);
+					tempHf2.insertRecord(t.getTupleByteArray());
+				}
+				tempHf2.deleteFile();
+
+				pathquery.printResult(resList2);
 				pathquery.printRWPerStep();
 				db.clearPerTask();
 				break;
@@ -316,6 +337,7 @@ public class queryExpr implements GlobalConst {
 					System.err.println("'PQ3b<-NN//N:100' for max number of edges query");
 					System.err.println("'PQ3b<-NN//W:100' for max total weight query");
 				}
+
 				pathquery.printRWPerStep();
 				break;
 				
