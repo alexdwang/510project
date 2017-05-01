@@ -136,15 +136,6 @@ class NLJHelper implements GlobalConst {
 						if (t.getStrFld(NLJHelper.PROJ_EDGE_DST_Laebl).equals(dest.tail))
 							result.add(new Path(source.head, t.getStrFld(NLJHelper.PROJ_EDGE_DST_Laebl)));
 					}
-
-					IndexNLJ_NodeDestEdge findnodes = nodeDestJoinByEdgeId(t.getIntFld(NLJHelper.PROJ_EDGE_ID));
-					Tuple n = null;
-					while ((n = findnodes.get_next()) != null) {
-						for (Path dest : destlabel) {
-							if (dest.tail.equals(n.getStrFld(NLJHelper.PROJ_NODE_LABEL)))
-								result.add(new Path(source.head, dest.tail));
-						}
-					}
 				}
 			} catch (IOException e) {
 				// TODO Auto-generated catch block
