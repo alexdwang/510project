@@ -340,7 +340,7 @@ public class queryExpr implements GlobalConst {
 					}
 				}
 				distinct = false;
-				SortMergeUtil.triangleQuery(weight, label, distinct);
+				SortMergeUtil.triangleQueryA(weight, label, distinct);
 				db.clearPerTask();
 				break;
 

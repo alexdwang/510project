@@ -152,6 +152,18 @@ public class FileScan extends  Iterator
 	closeFlag = true;
       } 
     }
+
+  public void restart() 
+  {
+    if (!closeFlag) {
+      scan.closescan();
+      try{
+        scan = f.openScan();
+      }catch(Exception e){
+        e.printStackTrace();
+      }
+    } 
+  }
   
 }
 
