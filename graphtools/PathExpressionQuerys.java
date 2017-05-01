@@ -8,6 +8,7 @@ import java.util.List;
 
 import btree.*;
 import diskmgr.DB;
+import diskmgr.PCounter;
 import global.GlobalConst;
 import global.RID;
 
@@ -16,7 +17,7 @@ public class PathExpressionQuerys implements GlobalConst {
 	/* NN/NN/NN* query */
 	private List<Path> PQ1(List<List<Path>> nodelabellist) {
 		System.out.println("Query Plan used:");
-		System.out.println("Node.label |><| (Pi(Edge.id, Edge.dest_label) (Edge.src_label |><| Node.label))");
+		System.out.println("Node.label |><| (Pi(Edge.id, Edge.dest_label) (Edge.src_label |><| Node.label))\n");
 
 		NLJHelper njlhelper = new NLJHelper();
 		for (int i = 0; i < nodelabellist.size() - 1; i++) {
@@ -71,7 +72,7 @@ public class PathExpressionQuerys implements GlobalConst {
 	/* NN/EN(/EN)* */
 	public List<Path> PQ2(List<List<Path>> nodelabellist, List edgecondition) {
 		System.out.println("Query Plan used:");
-		System.out.println("Sigma(Edge.label=edgeCondition) (Node.label |><| (Edge.src_label |><| Node.label))");
+		System.out.println("Sigma(Edge.label=edgeCondition) (Node.label |><| (Edge.src_label |><| Node.label))\n");
 
 		NLJHelper njlhelper = new NLJHelper();
 		for (int i = 0; i < edgecondition.size(); i++) {
@@ -131,7 +132,7 @@ public class PathExpressionQuerys implements GlobalConst {
 	/* NN//Bound_max_num_edge */
 	public List<Path> PQ3_max_num_edge(List<List<Path>> nodelabellist, int max_num_edge) {
 		System.out.println("Query Plan used:");
-		System.out.println("Edge.src_label |><| (Pi(Node.label) (Sigma(Node.desc=desc) Node))");
+		System.out.println("Edge.src_label |><| (Pi(Node.label) (Sigma(Node.desc=desc) Node))\n");
 
 		NLJHelper njlhelper = new NLJHelper();
 		for (int i = 0; i < max_num_edge; i++) {
@@ -157,7 +158,7 @@ public class PathExpressionQuerys implements GlobalConst {
 	/* NN//Bound_max_weight */
 	public List<Path> PQ3_max_weight(List<List<Path>> nodelabellist, int max_weight) {
 		System.out.println("Query Plan used:");
-		System.out.println("Edge.src_label |><| (Pi(Node.label) (Sigma(Node.desc=desc) Node))");
+		System.out.println("Edge.src_label |><| (Pi(Node.label) (Sigma(Node.desc=desc) Node))\n");
 
 		NLJHelper njlhelper = new NLJHelper();
 		boolean done = false;
@@ -291,13 +292,18 @@ public class PathExpressionQuerys implements GlobalConst {
 
 	public void printResult(List<Path> result) {
 		if (result.isEmpty()) {
-			System.out.println("No valid result!");
+			System.out.println("No valid result!\n");
 			return;
 		}
 		for (Path r : result) {
 			System.out.println("head:" + r.head + " tail:" + r.tail);
 		}
-		System.out.println("result count=" + result.size());
+		System.out.println("result count = " + result.size() + "\n");
+	}
+
+	public void printRWPerStep() {
+		System.out.println("Page read = " + PCounter.rcounter);
+		System.out.println("Page wrote = " + PCounter.wcounter + "\n");
 	}
 
 	public List<RID> getNIDFromResult(List<Path> result) {

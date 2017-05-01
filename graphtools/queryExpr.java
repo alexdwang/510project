@@ -5,6 +5,7 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Scanner;
 
+import diskmgr.PCounter;
 import global.*;
 
 public class queryExpr implements GlobalConst {
@@ -51,12 +52,14 @@ public class queryExpr implements GlobalConst {
 			case "insert":
 			{
 				try {
+					PCounter.initialize();
 					db.btmgr.openAllFile();
 					db.insertNodes(nodefilename);
 					db.clearPerTask();
 					db.btmgr.openAllFile();
 					db.insertEdges(edgefilename);
 					db.clearPerTask();
+					pathquery.printRWPerStep();
 				} catch (Exception e) {
 					e.printStackTrace();
 				}
@@ -70,6 +73,7 @@ public class queryExpr implements GlobalConst {
 					System.err.println("Invalid query path");
 				}
 
+				PCounter.initialize();
 				for (int i = 0; i < tokens2.length; i++) {
 
 					// decide whether it is a node_lable or node descriptor
@@ -85,6 +89,7 @@ public class queryExpr implements GlobalConst {
 					}
 				}
 				pathquery.printResult(pathquery.PQ1a(input));
+				pathquery.printRWPerStep();
 				db.clearPerTask();
 				break;
 
@@ -95,6 +100,8 @@ public class queryExpr implements GlobalConst {
 				if (tokens2.length < 2) {
 					System.err.println("Invalid query path");
 				}
+
+				PCounter.initialize();
 				for (int i = 0; i < tokens2.length; i++) {
 
 					// decide whether it is a node_lable or node descriptor
@@ -111,6 +118,7 @@ public class queryExpr implements GlobalConst {
 
 				}
 				pathquery.printResult(pathquery.PQ1b(input));
+				pathquery.printRWPerStep();
 				db.clearPerTask();
 				break;
 
@@ -121,6 +129,8 @@ public class queryExpr implements GlobalConst {
 				if (tokens2.length < 2) {
 					System.err.println("Invalid query path");
 				}
+
+				PCounter.initialize();
 				for (int i = 0; i < tokens2.length; i++) {
 
 					// decide whether it is a node_lable or node descriptor
@@ -137,6 +147,7 @@ public class queryExpr implements GlobalConst {
 
 				}
 				pathquery.printResult(pathquery.PQ1c(input));
+				pathquery.printRWPerStep();
 				db.clearPerTask();
 				break;
 
@@ -146,6 +157,8 @@ public class queryExpr implements GlobalConst {
 				if (tokens2.length < 2) {
 					System.err.println("Invalid query path");
 				}
+
+				PCounter.initialize();
 				res1 = parser.discrmN(tokens2[0]);
 				if (res1 == "descriptor") {
 					Descriptor desc = parser.convDesc(tokens2[0]);
@@ -169,6 +182,7 @@ public class queryExpr implements GlobalConst {
 
 				}
 				pathquery.printResult(pathquery.PQ2a(ninput, einput));
+				pathquery.printRWPerStep();
 				db.clearPerTask();
 				break;
 
@@ -178,6 +192,8 @@ public class queryExpr implements GlobalConst {
 				if (tokens2.length < 2) {
 					System.err.println("Invalid query path");
 				}
+
+				PCounter.initialize();
 				res1 = parser.discrmN(tokens2[0]);
 				if (res1 == "descriptor") {
 					Descriptor desc = parser.convDesc(tokens2[0]);
@@ -200,6 +216,7 @@ public class queryExpr implements GlobalConst {
 					}
 				}
 				pathquery.printResult(pathquery.PQ2b(ninput, einput));
+				pathquery.printRWPerStep();
 				db.clearPerTask();
 				break;
 
@@ -209,6 +226,8 @@ public class queryExpr implements GlobalConst {
 				if (tokens2.length < 2) {
 					System.err.println("Invalid query path");
 				}
+
+				PCounter.initialize();
 				res1 = parser.discrmN(tokens2[0]);
 				if (res1 == "descriptor") {
 					Descriptor desc = parser.convDesc(tokens2[0]);
@@ -231,6 +250,7 @@ public class queryExpr implements GlobalConst {
 					}
 				}
 				pathquery.printResult(pathquery.PQ2c(ninput, einput));
+				pathquery.printRWPerStep();
 				db.clearPerTask();
 				break;
 				
@@ -242,6 +262,8 @@ public class queryExpr implements GlobalConst {
 					System.err.println("Invalid query condition");
 					return;
 				}
+
+				PCounter.initialize();
 				if (res1 == "descriptor") {
 					Descriptor desc = parser.convDesc(tokens2[0]);
 					ninput = njlhelper.nodeDescToLabel(desc);
@@ -262,6 +284,7 @@ public class queryExpr implements GlobalConst {
 					System.err.println("'PQ3a<-NN//N:100' for max number of edges query");
 					System.err.println("'PQ3a<-NN//W:100' for max total weight query");
 				}
+				pathquery.printRWPerStep();
 				break;
 				
 			case "PQ3b":
@@ -271,6 +294,8 @@ public class queryExpr implements GlobalConst {
 				if (tokens2.length > 2) {
 					System.err.println("Invalid query condition");
 				}
+
+				PCounter.initialize();
 				if (res1 == "descriptor") {
 					Descriptor desc = parser.convDesc(tokens2[0]);
 					ninput = njlhelper.nodeDescToLabel(desc);
@@ -291,6 +316,7 @@ public class queryExpr implements GlobalConst {
 					System.err.println("'PQ3b<-NN//N:100' for max number of edges query");
 					System.err.println("'PQ3b<-NN//W:100' for max total weight query");
 				}
+				pathquery.printRWPerStep();
 				break;
 				
 			case "PQ3c":
@@ -300,6 +326,8 @@ public class queryExpr implements GlobalConst {
 				if (tokens2.length > 2) {
 					System.err.println("Invalid query condition");
 				}
+
+				PCounter.initialize();
 				if (res1 == "descriptor") {
 					Descriptor desc = parser.convDesc(tokens2[0]);
 					ninput = njlhelper.nodeDescToLabel(desc);
@@ -320,6 +348,7 @@ public class queryExpr implements GlobalConst {
 					System.err.println("'PQ3c<-NN//N:100' for max number of edges query");
 					System.err.println("'PQ3c<-NN//W:100' for max total weight query");
 				}
+				pathquery.printRWPerStep();
 				break;
 
 			case "TQa":
@@ -328,27 +357,8 @@ public class queryExpr implements GlobalConst {
 				if (tokens2.length != 3) {
 					System.err.println("Invalid query path");
 				}
-				for (int i = 0; i < tokens2.length; i++) {
-					String res = parser.discrmE(tokens2[i]);
-					if (res == "label") {
-						weight[i] = -1;
-						label[i] = tokens2[i].substring(2);
-					} else if (res == "weight") {
-						weight[i] = Integer.valueOf(tokens2[i].substring(2));
-						label[i] = "";
-					}
-				}
-				distinct = false;
-				SortMergeUtil.triangleQueryA(weight, label, distinct);
-				db.clearPerTask();
-				break;
 
-			case "TQb":
-				tokens1 = cmds[1];
-				tokens2 = tokens1.split(delimt3);
-				if (tokens2.length != 3) {
-					System.err.println("Invalid query path");
-				}
+				PCounter.initialize();
 				for (int i = 0; i < tokens2.length; i++) {
 					String res = parser.discrmE(tokens2[i]);
 					if (res == "label") {
@@ -361,6 +371,31 @@ public class queryExpr implements GlobalConst {
 				}
 				distinct = false;
 				SortMergeUtil.triangleQuery(weight, label, distinct);
+				pathquery.printRWPerStep();
+				db.clearPerTask();
+				break;
+
+			case "TQb":
+				tokens1 = cmds[1];
+				tokens2 = tokens1.split(delimt3);
+				if (tokens2.length != 3) {
+					System.err.println("Invalid query path");
+				}
+
+				PCounter.initialize();
+				for (int i = 0; i < tokens2.length; i++) {
+					String res = parser.discrmE(tokens2[i]);
+					if (res == "label") {
+						weight[i] = -1;
+						label[i] = tokens2[i].substring(2);
+					} else if (res == "weight") {
+						weight[i] = Integer.valueOf(tokens2[i].substring(2));
+						label[i] = "";
+					}
+				}
+				distinct = false;
+				SortMergeUtil.triangleQuery(weight, label, distinct);
+				pathquery.printRWPerStep();
 				db.clearPerTask();
 				break;
 
@@ -370,6 +405,8 @@ public class queryExpr implements GlobalConst {
 				if (tokens2.length != 3) {
 					System.err.println("Invalid query path");
 				}
+
+				PCounter.initialize();
 				for (int i = 0; i < tokens2.length; i++) {
 					String res = parser.discrmE(tokens2[i]);
 					if (res == "label") {
@@ -382,6 +419,7 @@ public class queryExpr implements GlobalConst {
 				}
 				distinct = true;
 				SortMergeUtil.triangleQuery(weight, label, distinct);
+				pathquery.printRWPerStep();
 				db.clearPerTask();
 				break;
 				
