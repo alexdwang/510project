@@ -218,21 +218,21 @@ public class BTManager {
 	public void insertNodetoZT(HFManager hfm, String filename) throws Exception {
 		System.out.println("start inserting nodes to Z-Tree");
 
-			RID rid = new RID();
-			Node node = new Node();
-			KeyClass key;
-			hfm.initScanNode();
-
-			while ((node = hfm.scanNextNode()) != null) {
-				rid = hfm.getCurRID();
-				key = new StringKey(ZEncoder.encode(node.getDesc()));
-				BTFileScan s = nodeDescriptorTree.new_scan(key, key);
-				if (s.get_next() != null)
-					continue;
-				nodeDescriptorTree.insert(key, rid);
-				s.DestroyBTreeFileScan();
-			}
-			hfm.closeScan();
+//			RID rid = new RID();
+//			Node node = new Node();
+//			KeyClass key;
+//			hfm.initScanNode();
+//
+//			while ((node = hfm.scanNextNode()) != null) {
+//				rid = hfm.getCurRID();
+//				key = new StringKey(ZEncoder.encode(node.getDesc()));
+//				BTFileScan s = nodeDescriptorTree.new_scan(key, key);
+//				if (s.get_next() != null)
+//					continue;
+//				nodeDescriptorTree.insert(key, rid);
+//				s.DestroyBTreeFileScan();
+//			}
+//			hfm.closeScan();
 	}
 
 	public RID getRIDFromLabel_Node(String label) throws ScanIteratorException, IteratorException,

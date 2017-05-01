@@ -5,8 +5,7 @@ import btree.KeyDataEntry;
 import btree.LeafData;
 import edgeheap.Edge;
 import global.*;
-import heap.Heapfile;
-import heap.Tuple;
+import heap.*;
 import iterator.*;
 import nodeheap.Node;
 import zindex.DescriptorKey;
@@ -293,25 +292,39 @@ class NLJHelper implements GlobalConst {
 		return null;
 	}
 
-	public List<String> nodeDescToLabel(Descriptor desc) {
-		ZTreeFile nodeDescTree = db.btmgr.getNodeDescriptorTree();
-		List<String> result = new LinkedList();
-		DescriptorKey searchKey = new DescriptorKey(ZEncoder.encode(desc));
-		BTFileScan scan = nodeDescTree.new_scan(searchKey, searchKey);
-		try {
-			KeyDataEntry data = scan.get_next();
-			while (data != null) {
-				RID rid = ((LeafData) data.data).getData();
-				Heapfile nodeHeap = db.hfmgr.getNodefile();
-				Node node = new Node(nodeHeap.getRecord(rid));
-				result.add(node.getLabel());
-				data = scan.get_next();
-				scan.DestroyBTreeFileScan();
-			}
-			return result;
-		} catch (Exception e) {
-			e.printStackTrace();
+//	public List<String> nodeDescToLabel(Descriptor desc) {
+//		ZTreeFile nodeDescTree = db.btmgr.getNodeDescriptorTree();
+//		List<String> result = new LinkedList();
+//		DescriptorKey searchKey = new DescriptorKey(ZEncoder.encode(desc));
+//		BTFileScan scan = nodeDescTree.new_scan(searchKey, searchKey);
+//		try {
+//			KeyDataEntry data = scan.get_next();
+//			while (data != null) {
+//				RID rid = ((LeafData) data.data).getData();
+//				Heapfile nodeHeap = db.hfmgr.getNodefile();
+//				Node node = new Node(nodeHeap.getRecord(rid));
+//				result.add(node.getLabel());
+//				data = scan.get_next();
+//				scan.DestroyBTreeFileScan();
+//			}
+//			return result;
+//		} catch (Exception e) {
+//			e.printStackTrace();
+//		}
+//		return null;
+//	}
+
+	public List<String> nodeDescToLabel(Descriptor desc) throws IOException, FieldNumberOutOfBoundException {
+		List<String> ret = new LinkedList<>();
+
+		db.hfmgr.initScanNode();
+		Node node = null;
+		while ((node = db.hfmgr.scanNextNode()) != null) {
+			if (node.getDesc().equals(desc))
+				ret.add(node.getLabel());
 		}
-		return null;
+		db.hfmgr.closeScan();
+
+		return ret;
 	}
 }
