@@ -117,11 +117,6 @@ public class SortMergeUtil implements GlobalConst {
 
 		IndexScan am2 = generateEdgeIndexScan(weights[1],labels[1]);
 
-		FldSpec [] proj_list = { 
-			new FldSpec(new RelSpec(RelSpec.outer), Edge.FLD_SRC_LABEL), 
-			new FldSpec(new RelSpec(RelSpec.outer), Edge.FLD_DST_LABEL), 
-			new FldSpec(new RelSpec(RelSpec.innerRel), Edge.FLD_DST_LABEL)
-		};
 
 		CondExpr [] expr = {
 			new CondExpr(),
@@ -138,27 +133,17 @@ public class SortMergeUtil implements GlobalConst {
     	expr[0].operand1.symbol = new FldSpec (new RelSpec(RelSpec.outer),Edge.FLD_DST_LABEL);
 	    expr[0].type2 = new AttrType(AttrType.attrSymbol);
     	expr[0].operand2.symbol = new FldSpec (new RelSpec(RelSpec.innerRel),Edge.FLD_SRC_LABEL);
-    	if(!distinct){
-    		expr[1] = null;
-    		expr[2] = null;
-    		expr[3] = null;
-    		expr[4] = null;
-    	}else{
-    		expr[1].next  = null;
-    		expr[1].op    = new AttrOperator(AttrOperator.aopLT);
-    		expr[1].type1 = new AttrType(AttrType.attrSymbol);
-        	expr[1].operand1.symbol = new FldSpec (new RelSpec(RelSpec.outer),Edge.FLD_SRC_LABEL);
-    	    expr[1].type2 = new AttrType(AttrType.attrSymbol);
-        	expr[1].operand2.symbol = new FldSpec (new RelSpec(RelSpec.innerRel),Edge.FLD_SRC_LABEL);
-        	expr[2].next  = null;
-    		expr[2].op    = new AttrOperator(AttrOperator.aopLT);
-    		expr[2].type1 = new AttrType(AttrType.attrSymbol);
-        	expr[2].operand1.symbol = new FldSpec (new RelSpec(RelSpec.outer),Edge.FLD_SRC_LABEL);
-    	    expr[2].type2 = new AttrType(AttrType.attrSymbol);
-        	expr[2].operand2.symbol = new FldSpec (new RelSpec(RelSpec.innerRel),Edge.FLD_DST_LABEL);
-        	expr[3] = null;
-        	expr[4] = null;
-    	}
+		expr[1] = null;
+		expr[2] = null;
+		expr[3] = null;
+		expr[4] = null;
+    	
+
+		FldSpec [] proj_list = { 
+			new FldSpec(new RelSpec(RelSpec.outer), Edge.FLD_SRC_LABEL), 
+			new FldSpec(new RelSpec(RelSpec.outer), Edge.FLD_DST_LABEL), 
+			new FldSpec(new RelSpec(RelSpec.innerRel), Edge.FLD_DST_LABEL)
+		};
 
     	SortMerge sm = null;
 		try {
@@ -170,6 +155,7 @@ public class SortMergeUtil implements GlobalConst {
 				am, am2, 
 				false, false, ascending,
 				expr, proj_list, 3);
+			
 		}
 		catch (Exception e) {
 			e.printStackTrace();
@@ -181,6 +167,7 @@ public class SortMergeUtil implements GlobalConst {
 			new AttrType (AttrType.attrString),
 			new AttrType (AttrType.attrString)
 		};
+
 		short[] temp_str_size = { Edge.LABEL_MAX_LENGTH, Edge.LABEL_MAX_LENGTH, Edge.LABEL_MAX_LENGTH };
 
 		String temp_file_name = "temp_jiandan_farker";
@@ -211,13 +198,14 @@ public class SortMergeUtil implements GlobalConst {
 			new FldSpec(new RelSpec(RelSpec.outer), 2),
 			new FldSpec(new RelSpec(RelSpec.outer), 3)
 		};
+
 		//do second join
 
 		//generate iterator for temp file
 		try {
-			am  = new FileScan(temp_file_name, jtype, temp_str_size, 
-					  (short)3, (short)3,
-					  Temprojection, null);
+				am  = new FileScan(temp_file_name, jtype, temp_str_size, 
+						  (short)3, (short)3,
+						  Temprojection, null);
 		}
 		catch (Exception e) {
 			e.printStackTrace();
@@ -230,6 +218,7 @@ public class SortMergeUtil implements GlobalConst {
 
     	CondExpr [] expr1 = {
 			new CondExpr(),
+			new CondExpr(),
 			new CondExpr()
 		};
 		expr1[0].next  = null;
@@ -237,7 +226,7 @@ public class SortMergeUtil implements GlobalConst {
 		expr1[0].type1 = new AttrType(AttrType.attrSymbol);
     	expr1[0].operand1.symbol = new FldSpec (new RelSpec(RelSpec.outer),(short)3);//use src of first edge
 	    expr1[0].type2 = new AttrType(AttrType.attrSymbol);
-    	expr1[0].operand2.symbol = new FldSpec (new RelSpec(RelSpec.innerRel),Edge.FLD_SRC_LABEL);	
+    	expr1[0].operand2.symbol = new FldSpec (new RelSpec(RelSpec.innerRel),Edge.FLD_SRC_LABEL);
     	expr1[1] = null;
 
     	FldSpec [] proj_list1 = { 
@@ -262,21 +251,93 @@ public class SortMergeUtil implements GlobalConst {
 			e.printStackTrace();
 		}
 
+
+
 		AttrType [] jtype1 = { 
 			new AttrType (AttrType.attrString), 
 			new AttrType (AttrType.attrString),
 			new AttrType (AttrType.attrString)
 		};
-		try {
-			while ((t = sm.get_next()) != null) {
-       			t.print(jtype1);
-      		}
-      		sm.close();
-		}catch (Exception e) {
-			e.printStackTrace();
+
+		if(!distinct){
+			try {
+				while ((t = sm.get_next()) != null) {
+	       			t.print(jtype1);
+	      		}
+	      		sm.close();
+			}catch (Exception e) {
+				e.printStackTrace();
+			}
+		}else{
+			String tfname = "temp_jiandan_farker1";
+			Heapfile f1 = null;
+			try {
+				f1 = new Heapfile(tfname);
+				while ((t = sm.get_next()) != null) {
+	       			//t.print(jtype1);
+	       			f1.insertRecord(t.getTupleByteArray() );
+	      		}
+	      		sm.close();
+			}catch (Exception e) {
+				e.printStackTrace();
+			}
+
+			// nested loop to kill duplication
+			FileScan am3 = null;
+			try {
+				am  = new FileScan(tfname, jtype, temp_str_size, 
+						  (short)3, (short)3,
+						  Temprojection, null);
+			}catch (Exception e) {
+				e.printStackTrace();
+			}
+
+			Tuple left = null;
+			Tuple right = null;
+			int cntl = 0;
+			try{
+				while((left = am.get_next()) != null){
+					cntl++;
+					int cntr = 0;
+					am3  = new FileScan(tfname, jtype, temp_str_size, 
+						  (short)3, (short)3,
+						  Temprojection, null);
+					while((right = am3.get_next()) != null){
+						cntr++;
+						if(left.getStrFld(1).compareTo(right.getStrFld(2)) == 0
+							    && left.getStrFld(2).compareTo(right.getStrFld(3)) == 0
+								&& left.getStrFld(3).compareTo(right.getStrFld(1)) == 0
+							|| left.getStrFld(1).compareTo(right.getStrFld(3)) == 0
+							    && left.getStrFld(2).compareTo(right.getStrFld(1)) == 0
+								&& left.getStrFld(3).compareTo(right.getStrFld(2)) == 0
+							|| left.getStrFld(1).compareTo(right.getStrFld(1)) == 0
+							    && left.getStrFld(2).compareTo(right.getStrFld(2)) == 0
+								&& left.getStrFld(3).compareTo(right.getStrFld(3)) == 0){
+							if(cntr >= cntl){//can print
+								left.print(jtype1);
+							}
+							break;
+						}
+					}
+					am3.close();
+				}
+			}catch(Exception e){
+				e.printStackTrace();
+			}	
+
+			try{
+				f1.deleteFile();
+			}catch (Exception e) {
+				e.printStackTrace();
+			}
+
+
 		}
+		
+
 
 		//destroy tempfile
+
 		try{
 			temp_file.deleteFile();
 		}catch (Exception e) {
@@ -285,4 +346,6 @@ public class SortMergeUtil implements GlobalConst {
 		
 
 	}
+
+
 }
