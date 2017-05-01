@@ -257,46 +257,12 @@ public class GraphDBManager implements GlobalConst {
 		String dbname = "testdb";
 		String nodefilename = "NodeInsertData.txt";
 		String edgefilename = "EdgeInsertData.txt";
-//		String insertdeletefilename = argvs[3];
-//		String nodedeletefilename = argvs[4];
 
 		try {
-//			GraphDBManager db = new GraphDBManager();
 			db.init(dbname);
 			
 			db.insertNodes(nodefilename);
 			db.insertEdges(edgefilename);
-//			NLJHelper nljHelper = new NLJHelper();
-//			String[] test = nljHelper.nodeToNode("5","6");
-//			if(test!=null)
-//				System.out.println(test[0] + ","+test[1]);
-//			PathExpressionQuerys pathquery = new PathExpressionQuerys();
-//			//test data
-//
-//			String[][] NNs= {
-//					{"8","1"},
-//					{"2"},
-//					{"4","5","7"},
-//					{"4","3"},
-//					{"2"},
-//					{"5"},
-//					{"6"}
-//			};
-//			
-//			String[] NN = {
-//					"1","2"
-//			};
-//			
-//			List edgecondition = new LinkedList();
-//			edgecondition.add("1_2");
-//			edgecondition.add("2_5");
-//			edgecondition.add(89);
-//			
-//			pathquery.printResult(pathquery.PQ2a(NN,edgecondition));
-			// db.insertNodes(insertdeletefilename);
-//			db.deleteEdge(nodedeletefilename);
-//			queryExpr qe = new queryExpr();
-//			qe.queryExprUI();
 
 			db.deleteDBFile();
 		} catch (Exception e) {

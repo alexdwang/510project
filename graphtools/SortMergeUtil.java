@@ -1,14 +1,9 @@
 package graphtools;
 
-import java.io.*;
-import java.util.*;
 import java.lang.*;
 import heap.*;
-import bufmgr.*;
-import diskmgr.*;
 import edgeheap.Edge;
 import global.*;
-import btree.*;
 import iterator.*;
 import index.*;
 
@@ -123,6 +118,7 @@ public class SortMergeUtil implements GlobalConst {
 						+ ";";
 
 		System.out.println(querystr);
+
 		TupleOrder ascending = new TupleOrder(TupleOrder.Ascending);
 
 		FldSpec [] Sprojection = {

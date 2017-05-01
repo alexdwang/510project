@@ -15,6 +15,9 @@ public class PathExpressionQuerys implements GlobalConst {
 
 	/* NN/NN/NN* query */
 	private List<Path> PQ1(List<List<Path>> nodelabellist) {
+		System.out.println("Query Plan used:");
+		System.out.println("Node.label |><| (Pi(Edge.id, Edge.dest_label) (Edge.src_label |><| Node.label))");
+
 		NLJHelper njlhelper = new NLJHelper();
 		for (int i = 0; i < nodelabellist.size() - 1; i++) {
 			List<Path> result = njlhelper.nodeToNode(nodelabellist.get(i), nodelabellist.get(i + 1));
@@ -67,6 +70,9 @@ public class PathExpressionQuerys implements GlobalConst {
 
 	/* NN/EN(/EN)* */
 	public List<Path> PQ2(List<List<Path>> nodelabellist, List edgecondition) {
+		System.out.println("Query Plan used:");
+		System.out.println("Sigma(Edge.label=edgeCondition) (Node.label |><| (Edge.src_label |><| Node.label))");
+
 		NLJHelper njlhelper = new NLJHelper();
 		for (int i = 0; i < edgecondition.size(); i++) {
 			List<Path> result = new LinkedList();
@@ -124,6 +130,9 @@ public class PathExpressionQuerys implements GlobalConst {
 
 	/* NN//Bound_max_num_edge */
 	public List<Path> PQ3_max_num_edge(List<List<Path>> nodelabellist, int max_num_edge) {
+		System.out.println("Query Plan used:");
+		System.out.println("Edge.src_label |><| (Pi(Node.label) (Sigma(Node.desc=desc) Node))");
+
 		NLJHelper njlhelper = new NLJHelper();
 		for (int i = 0; i < max_num_edge; i++) {
 			List<Path> result = njlhelper.nodeToAll(nodelabellist.get(i));
@@ -147,6 +156,9 @@ public class PathExpressionQuerys implements GlobalConst {
 
 	/* NN//Bound_max_weight */
 	public List<Path> PQ3_max_weight(List<List<Path>> nodelabellist, int max_weight) {
+		System.out.println("Query Plan used:");
+		System.out.println("Edge.src_label |><| (Pi(Node.label) (Sigma(Node.desc=desc) Node))");
+
 		NLJHelper njlhelper = new NLJHelper();
 		boolean done = false;
 		for (int i = 0; !done; i++) {
@@ -323,7 +335,6 @@ class DoubleStringSort implements Comparator {
 
 	@Override
 	public int compare(Object re0, Object re1) {
-		// TODO Auto-generated method stub
 		Path first = (Path) re0;
 		Path second = (Path) re1;
 		if (first.head.compareTo(second.head) != 0) {
