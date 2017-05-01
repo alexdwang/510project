@@ -65,6 +65,9 @@ public class SortMergeUtil implements GlobalConst {
 	}
 
 	public static void triangleQuery(int[] weights, String[] labels, boolean distinct){
+		System.out.println("Query Plan used:");
+		System.out.println("");
+
 		TupleOrder ascending = new TupleOrder(TupleOrder.Ascending);
 
 		FldSpec [] Sprojection = {

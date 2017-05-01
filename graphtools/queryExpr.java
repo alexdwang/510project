@@ -58,7 +58,6 @@ public class queryExpr implements GlobalConst {
 					db.insertEdges(edgefilename);
 					db.clearPerTask();
 				} catch (Exception e) {
-					// TODO Auto-generated catch block
 					e.printStackTrace();
 				}
 				break;
@@ -164,7 +163,7 @@ public class queryExpr implements GlobalConst {
 						einput.add(Integer.parseInt(tokens2[i].substring(2)));
 					} else if(res.isEmpty()){
 						System.out.println("Invalid input");
-						System.out.println("Should be like: PQ1a<-NN/E:5_2/W:20/...");
+						System.out.println("Should be like: PQ2a<-NN/E:5_2/W:20/...");
 						return;
 					}
 
@@ -259,7 +258,7 @@ public class queryExpr implements GlobalConst {
 					db.clearPerTask();
 				}
 				else{
-					System.err.println("Invalid PQ3a fomat. Valid fomat should be like:");
+					System.err.println("Invalid PQ3a format. Valid format should be like:");
 					System.err.println("'PQ3a<-NN//N:100' for max number of edges query");
 					System.err.println("'PQ3a<-NN//W:100' for max total weight query");
 				}
